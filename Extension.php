@@ -5,17 +5,6 @@ if (!defined('BASEPATH')) exit('No direct access allowed');
 class Extension extends \Base_Extension
 {
 
-	public function extensionMeta() {
-		return array(
-			'code'        => 'reservation_module',
-			'name'       => 'Reservation',
-			'description' => 'Accept restaurant reservations and table bookings online. Confirm or reject your reservations.',
-			'author'      => 'SamPoyigi',
-			'icon'        => 'fa-calendar',
-			'version'     => '1.2',
-		);
-	}
-
 	public function registerComponents() {
 		return array(
 			'reservation_module/components/Reservation_module' => array(
