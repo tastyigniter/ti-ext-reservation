@@ -2,7 +2,7 @@
   "code": "reservation_module",
   "name": "Reservations",
   "description": "Accept restaurant reservations and table bookings online. Confirm or reject your reservations.",
-  "version": "1.1",
+  "version": "1.1.0",
   "author": "SamPoyigi",
   "icon": "fa-calendar",
   "homepage": "https://github.com/igniter-labs/ti-reservations-extension",
