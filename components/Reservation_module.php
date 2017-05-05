@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct access allowed');
 
-class Reservation_module extends Base_Component
+class Reservation_module extends BaseComponent
 {
 
 	public function index() {
