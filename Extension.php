@@ -1,28 +1,15 @@
-<?php namespace Reservation_module;
+<?php namespace SamPoyigi\Reservation;
 
-if (!defined('BASEPATH')) exit('No direct access allowed');
-
-class Extension extends \Base_Extension
+class Extension extends \System\Classes\BaseExtension
 {
-
-	public function registerComponents() {
-		return array(
-			'reservation_module/components/Reservation_module' => array(
-				'code'        => 'reservation_module',
-				'name'       => 'lang:reservation_module.text_component_title',
-				'description' => 'lang:reservation_module.text_component_desc',
-			),
-		);
-	}
-
-	public function registerPermissions() {
-		return array(
-			'name'        => 'Module.ReservationModule',
-			'action'      => array('manage'),
-			'description' => 'Ability to manage reservation module',
-		);
-	}
+    public function registerComponents()
+    {
+        return [
+            'SamPoyigi\Reservation\components\SeatBooker' => [
+                'code'        => 'sampoyigi.reservation',
+                'name'        => 'lang:sampoyigi.reservation::default.text_component_title',
+                'description' => 'lang:sampoyigi.reservation::default.text_component_desc',
+            ],
+        ];
+    }
 }
-
-/* End of file Extension.php */
-/* Location: ./extensions/reservation_module/Extension.php */
