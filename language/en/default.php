@@ -3,8 +3,8 @@
 return [
     '_text_title'          => 'Reservation',
     'text_tab_general'     => 'General',
-    'text_component_title' => 'Reservation Component',
-    'text_component_desc'  => 'Displays the reservation form',
+    'text_component_title' => 'Booking Component',
+    'text_component_desc'  => 'Displays the booking form',
 
     'text_heading'         => 'Find A Table',
     'text_time_heading'    => 'Select Time',
@@ -16,6 +16,8 @@ return [
     'text_no_time_slot'    => '<span class="text-danger">No reservation time slot available, please go back to check your table details.</span>',
     'text_location_closed' => 'Sorry, but we\'re closed, come back during opening hours',
     'text_date_format'     => '%D, %M %j, %Y',
+    'text_person'          => 'person',
+    'text_people'          => 'people',
 
     'label_status'    => 'Status',
     'label_location'  => 'Location',
@@ -26,7 +28,7 @@ return [
 
     'button_find_table'  => 'Find Table',
     'button_select_time' => 'Select Time',
-    'button_back'        => 'Back',
+    'button_change'      => 'Change details',
     'button_reset'       => 'Reset',
 
     'error_indate'       => 'Date must be after today, you can only make future reservations!',
