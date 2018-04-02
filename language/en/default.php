@@ -6,7 +6,8 @@ return [
     'text_component_title' => 'Booking Component',
     'text_component_desc'  => 'Displays the booking form',
 
-    'text_heading'         => 'Find A Table',
+    'text_heading'         => 'Reserve A Table',
+    'text_success_heading' => 'Reservation Confirmation',
     'text_time_heading'    => 'Select Time',
     'text_reservation'     => 'My Reservation',
     'text_heading_success' => 'Reservation Confirmed',
@@ -19,22 +20,37 @@ return [
     'text_person'          => 'person',
     'text_people'          => 'people',
 
+    'text_subject'   => 'Table Reserved - %s!',
+    'text_greetings' => 'Thank You %s,',
+    'text_success_message'   => 'Your reservation at %s has been booked for %s on %s.<br />Thanks for reserving with us online!',
+
     'label_status'    => 'Status',
     'label_location'  => 'Location',
     'label_guest_num' => 'Number of guests',
     'label_date'      => 'Date',
     'label_time'      => 'Time',
+    'label_occasion'  => 'Occasion',
     'label_select'    => '- please select -',
+
+    'label_first_name'    => 'First Name',
+    'label_last_name'     => 'Last Name',
+    'label_email'         => 'Email Address',
+    'label_confirm_email' => 'Confirm Email Address',
+    'label_telephone'     => 'Telephone',
+    'label_comment'       => 'Special Requests',
 
     'button_find_table'  => 'Find Table',
     'button_select_time' => 'Select Time',
     'button_change'      => 'Change details',
     'button_reset'       => 'Reset',
 
-    'error_indate'       => 'Date must be after today, you can only make future reservations!',
+    'button_find_again'  => 'Find Table Again',
+    'button_reservation' => 'Make Reservation',
+
+    'error_invalid_date' => 'Date must be after today, you can only make future reservations!',
     'error_invalid_time' => 'Time must be between restaurant opening time!',
 
-    'alert_reservation_disabled' => '<p class="alert-danger">Table reservation has been disabled, please contact administrator.</p>',
-    'alert_no_table_available'   => '<p class="alert-danger">No tables available at the selected location.</p>',
-    'alert_fully_booked'         => '<p class="alert-danger">We are fully booked for the selected date and time, please select a different date or time.</p>',
+    'alert_reservation_disabled' => 'Table reservation has been disabled, please contact administrator.',
+    'alert_no_table_available'   => 'No table found for the specified number of guests at the selected location.',
+    'alert_fully_booked'         => 'We are fully booked for the selected date and time, please select a different date or time.',
 ];

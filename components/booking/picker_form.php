@@ -1,4 +1,4 @@
-<?= form_open($booking->getFormAction(),
+<?= form_open($__SELF__->getFormAction(),
     [
         'id'      => 'picker-form',
         'role'    => 'form',
@@ -6,7 +6,7 @@
     ]
 ); ?>
 
-<input type="hidden" name="hash" value="<?= $booking->uniqueHash ?>">
+<input type="hidden" name="hash" value="<?= $__SELF__->uniqueHash ?>">
 
 <div class="row wrap-vertical">
     <div class="col-xs-12 col-sm-3 wrap-none">
@@ -19,7 +19,7 @@
                 id="location"
                 class="form-control"
             >
-                <?php foreach ($booking->getLocations() as $key => $value) { ?>
+                <?php foreach ($__SELF__->getLocations() as $key => $value) { ?>
                     <option
                         value="<?= $key; ?>"
                         <?= set_select('location', $key); ?>
@@ -38,7 +38,7 @@
                 id="noOfGuests"
                 class="form-control"
             >
-                <?php foreach ($booking->getGuestSizeOptions() as $key => $value) { ?>
+                <?php foreach ($__SELF__->getGuestSizeOptions() as $key => $value) { ?>
                     <option
                         value="<?= $key; ?>"
                         <?= set_select('guest', $key); ?>
@@ -65,14 +65,14 @@
                 <input
                     type="hidden"
                     name="date"
-                    value="<?= set_value('date', $selectedDate); ?>"
+                    value="<?= set_value('date', $selectedDate->format('Y-m-d')); ?>"
                 >
                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
             </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-2 wrap-none">
-        <div class="form-group <?= (form_error('time')) ? 'has-error' : ''; ?>">
+        <div class="form-group <?= form_error('time') ? 'has-error' : ''; ?>">
             <label class="sr-only" for="time">
                 <?= lang('sampoyigi.reservation::default.label_time'); ?>
             </label>
@@ -81,7 +81,7 @@
                 id="time"
                 class="form-control"
             >
-                <?php foreach ($booking->getTimePickerOptions() as $key => $value) { ?>
+                <?php foreach ($__SELF__->getTimePickerOptions() as $key => $value) { ?>
                     <option
                         value="<?= $key; ?>"
                         <?= set_select('time', $key); ?>

@@ -1,12 +1,12 @@
 <div data-control="booking">
-    <?php if ($booking->pickerStep == 'info') { ?>
+    <?php if ($__SELF__->pickerStep == 'info') { ?>
         <h3><?= lang('sampoyigi.reservation::default.text_reservation'); ?></h3>
 
         <?= partial('@info') ?>
 
         <?= partial('@booking_form') ?>
 
-    <?php } else if ($booking->pickerStep == 'timeslot') { ?>
+    <?php } else if ($__SELF__->pickerStep == 'timeslot') { ?>
         <h3><?= lang('sampoyigi.reservation::default.text_time_heading'); ?></h3>
 
         <?= partial('@timeslot') ?>
