@@ -228,7 +228,7 @@ class Booking extends BaseComponent
         if (!get('hash'))
             return;
 
-        $openingSchedule = $this->location->workingSchedule('opening', $dateTime);
+        $openingSchedule = $this->location->workingSchedule('opening');
 
         try {
             $data = get();
@@ -236,18 +236,22 @@ class Booking extends BaseComponent
                 if ($dateTime->lt(Carbon::now()))
                     $validator->errors()->add('date', lang('sampoyigi.reservation::default.error_invalid_date'));
 
-                if ($openingSchedule->getStatus($dateTime) == WorkingHour::CLOSED)
+                if ($openingSchedule->isClosed($dateTime))
                     $validator->errors()->add('time', lang('sampoyigi.reservation::default.error_invalid_time'));
-            });
+
+                $tables = $this->getAvailableTables();
+                if (!count($tables))
+                    $validator->errors()->add('guest', lang('sampoyigi.reservation::default.alert_no_table_available'));
+                });
 
             $this->validate($data, $this->createRules('picker'));
 
             $this->pickerStep = 'timeslot';
-            if (array_get($data, 'sdateTime'))
+            if (array_get($data, 'sdateTime')) {
                 $this->pickerStep = 'info';
+            }
 
             $this->page['pickerStep'] = $this->pickerStep;
-            // check availability for selected date
 
         } catch (Exception $ex) {
             flash()->warning($ex->getMessage());
@@ -348,7 +352,7 @@ class Booking extends BaseComponent
         $reservation->reserve_date = $dateTime->format('Y-m-d');
         $reservation->reserve_time = $dateTime->format('H:i:s');
         $reservation->duration = $this->location->getReservationStayTime();
-        $reservation->status = setting('default_reservation_status');
+        $reservation->status = setting('default_reservation_status', 0);
         $reservation->save();
 
         return $reservation;
