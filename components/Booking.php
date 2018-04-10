@@ -324,11 +324,11 @@ class Booking extends BaseComponent
                 ];
             case 'booking':
                 return [
-                    ['first_name', 'lang:main::default.reservation.label_first_name', 'required|min:2|max:32'],
-                    ['last_name', 'lang:main::default.reservation.label_last_name', 'required|min:2|max:32'],
-                    ['email', 'lang:main::default.reservation.label_email', 'required|email'],
-                    ['telephone', 'lang:main::default.reservation.label_telephone', 'required'],
-                    ['comment', 'lang:main::default.reservation.label_comment', 'max:520'],
+                    ['first_name', 'lang:sampoyigi.reservation::default.label_first_name', 'required|min:2|max:32'],
+                    ['last_name', 'lang:sampoyigi.reservation::default.label_last_name', 'required|min:2|max:32'],
+                    ['email', 'lang:sampoyigi.reservation::default.label_email', 'required|email'],
+                    ['telephone', 'lang:sampoyigi.reservation::default.label_telephone', 'required'],
+                    ['comment', 'lang:sampoyigi.reservation::default.label_comment', 'max:520'],
                 ];
         }
     }
