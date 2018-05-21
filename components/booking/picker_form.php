@@ -1,8 +1,8 @@
 <?= form_open($__SELF__->getFormAction(),
     [
-        'id'      => 'picker-form',
-        'role'    => 'form',
-        'method'  => 'GET',
+        'id'     => 'picker-form',
+        'role'   => 'form',
+        'method' => 'GET',
     ]
 ); ?>
 

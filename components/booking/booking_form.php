@@ -45,7 +45,7 @@
                 name="email"
                 id="email"
                 class="form-control"
-                    placeholder="<?= lang('sampoyigi.reservation::default.label_email'); ?>"
+                placeholder="<?= lang('sampoyigi.reservation::default.label_email'); ?>"
                 value="<?= set_value('email', $reservation->email); ?>"
             />
             <?= form_error('email', '<span class="text-danger">', '</span>'); ?>

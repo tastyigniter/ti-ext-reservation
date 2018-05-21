@@ -12,8 +12,8 @@ use Carbon\Carbon;
 use DateInterval;
 use DatePeriod;
 use Exception;
-use Igniter\Flame\Location\Models\WorkingHour;
 use Location;
+use Main\Template\Page;
 use Redirect;
 use Request;
 use System\Classes\BaseComponent;
@@ -97,15 +97,22 @@ class Booking extends BaseComponent
             ],
             'bookingPage'         => [
                 'label'   => 'Booking Page',
-                'type'    => 'text',
+                'type'    => 'select',
                 'default' => 'reservation/reservation',
+                'options' => [static::class, 'getPageOptions'],
             ],
             'successPage'         => [
                 'label'   => 'Page to redirect to when checkout is successful',
-                'type'    => 'text',
+                'type'    => 'select',
                 'default' => 'reservation/success',
+                'options' => [static::class, 'getPageOptions'],
             ],
         ];
+    }
+
+    public static function getPageOptions()
+    {
+        return Page::lists('baseFileName', 'baseFileName');
     }
 
     public function initialize()
@@ -233,16 +240,8 @@ class Booking extends BaseComponent
         try {
             $data = get();
             $this->validateAfter(function ($validator) use ($dateTime, $openingSchedule) {
-                if ($dateTime->lt(Carbon::now()))
-                    $validator->errors()->add('date', lang('sampoyigi.reservation::default.error_invalid_date'));
-
-                if ($openingSchedule->isClosed($dateTime))
-                    $validator->errors()->add('time', lang('sampoyigi.reservation::default.error_invalid_time'));
-
-                $tables = $this->getAvailableTables();
-                if (!count($tables))
-                    $validator->errors()->add('guest', lang('sampoyigi.reservation::default.alert_no_table_available'));
-                });
+                $this->processValidateAfter($validator, $dateTime, $openingSchedule);
+            });
 
             $this->validate($data, $this->createRules('picker'));
 
@@ -252,7 +251,6 @@ class Booking extends BaseComponent
             }
 
             $this->page['pickerStep'] = $this->pickerStep;
-
         } catch (Exception $ex) {
             flash()->warning($ex->getMessage());
         }
@@ -358,6 +356,19 @@ class Booking extends BaseComponent
         return $reservation;
     }
 
+    protected function processValidateAfter($validator, $dateTime, $openingSchedule)
+    {
+        if ($dateTime->lt(Carbon::now()))
+            $validator->errors()->add('date', lang('sampoyigi.reservation::default.error_invalid_date'));
+
+        if ($openingSchedule->isClosed($dateTime))
+            $validator->errors()->add('time', lang('sampoyigi.reservation::default.error_invalid_time'));
+
+        $tables = $this->getAvailableTables();
+        if (!count($tables))
+            $validator->errors()->add('guest', lang('sampoyigi.reservation::default.alert_no_table_available'));
+    }
+
     protected function loadAssets()
     {
         $this->addCss('vendor/datepicker/bootstrap-datepicker3.min.css', 'bootstrap-datepicker3-css');
@@ -372,9 +383,9 @@ class Booking extends BaseComponent
 
         return [
             'first_name' => $customer ? $customer->first_name : null,
-            'last_name' => $customer ? $customer->last_name : null,
-            'email' => $customer ? $customer->email : null,
-            'telephone' => $customer ? $customer->telephone : null,
+            'last_name'  => $customer ? $customer->last_name : null,
+            'email'      => $customer ? $customer->email : null,
+            'telephone'  => $customer ? $customer->telephone : null,
         ];
     }
 
@@ -419,10 +430,10 @@ class Booking extends BaseComponent
             return $this->existingReservationsCache;
 
         $existing = Reservations_model::whereLocationId(input('location'))
-                                 ->whereBetweenPeriod(
-                                     $start->format('Y-m-d H:i:s'),
-                                     $end->format('Y-m-d H:i:s')
-                                 )->get();
+                                      ->whereBetweenPeriod(
+                                          $start->format('Y-m-d H:i:s'),
+                                          $end->format('Y-m-d H:i:s')
+                                      )->get();
 
         return $this->existingReservationsCache = $existing;
     }

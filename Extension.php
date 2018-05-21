@@ -16,7 +16,7 @@ class Extension extends \System\Classes\BaseExtension
     public function registerMailTemplates()
     {
         return [
-            'sampoyigi.reservation::mail.reservation' => 'Reservation confirmation email to customer',
+            'sampoyigi.reservation::mail.reservation'       => 'Reservation confirmation email to customer',
             'sampoyigi.reservation::mail.reservation_alert' => 'New reservation alert email to admin',
         ];
     }

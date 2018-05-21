@@ -20,9 +20,9 @@ return [
     'text_person'          => 'person',
     'text_people'          => 'people',
 
-    'text_subject'   => 'Table Reserved - %s!',
-    'text_greetings' => 'Thank You %s,',
-    'text_success_message'   => 'Your reservation at %s has been booked for %s on %s.<br />Thanks for reserving with us online!',
+    'text_subject'         => 'Table Reserved - %s!',
+    'text_greetings'       => 'Thank You %s,',
+    'text_success_message' => 'Your reservation at %s has been booked for %s on %s.<br />Thanks for reserving with us online!',
 
     'label_status'    => 'Status',
     'label_location'  => 'Location',
