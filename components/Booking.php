@@ -11,7 +11,6 @@ use Auth;
 use Carbon\Carbon;
 use DateInterval;
 use DatePeriod;
-use Exception;
 use Location;
 use Main\Template\Page;
 use Redirect;
@@ -41,6 +40,11 @@ class Booking extends BaseComponent
     public function defineProperties()
     {
         return [
+            'mode'                => [
+                'label'   => 'Enable or disable booking',
+                'type'    => 'switch',
+                'default' => FALSE,
+            ],
             'maxGuestSize'        => [
                 'label'   => 'The maximum guest size',
                 'type'    => 'number',
@@ -237,32 +241,30 @@ class Booking extends BaseComponent
 
         $openingSchedule = $this->location->workingSchedule('opening');
 
-        try {
-            $data = get();
-            $this->validateAfter(function ($validator) use ($dateTime, $openingSchedule) {
-                $this->processValidateAfter($validator, $dateTime, $openingSchedule);
-            });
+        $data = get();
+        $this->validateAfter(function ($validator) use ($dateTime, $openingSchedule) {
+            $this->processValidateAfter($validator, $dateTime, $openingSchedule);
+        });
 
-            $this->validate($data, $this->createRules('picker'));
+        if (!$this->validatePasses($data, $this->createRules('picker')))
+            return;
 
-            $this->pickerStep = 'timeslot';
-            if (array_get($data, 'sdateTime')) {
-                $this->pickerStep = 'info';
-            }
-
-            $this->page['pickerStep'] = $this->pickerStep;
-        } catch (Exception $ex) {
-            flash()->warning($ex->getMessage());
+        $this->pickerStep = 'timeslot';
+        if (array_get($data, 'sdateTime')) {
+            $this->pickerStep = 'info';
         }
+
+        $this->page['pickerStep'] = $this->pickerStep;
     }
 
     public function onComplete()
     {
+        $data = input();
+
+        if (!$this->validatePasses($data, $this->createRules('booking')))
+            return Redirect::back()->withInput();
+
         try {
-            $data = input();
-
-            $this->validate($data, $this->createRules('booking'));
-
             $table = $this->findAvailableTable();
 
             $reservation = $this->createReservation($table, $data);
@@ -273,7 +275,8 @@ class Booking extends BaseComponent
                 $redirect = $this->property('successPage');
 
             return Redirect::to($this->pageUrl($redirect, ['hash' => $reservation->hash]));
-        } catch (Exception $ex) {
+        }
+        catch (ApplicationException $ex) {
             flash()->warning($ex->getMessage());
 
             return Redirect::back()->withInput();
@@ -350,7 +353,7 @@ class Booking extends BaseComponent
         $reservation->reserve_date = $dateTime->format('Y-m-d');
         $reservation->reserve_time = $dateTime->format('H:i:s');
         $reservation->duration = $this->location->getReservationStayTime();
-        $reservation->status = setting('default_reservation_status', 0);
+        $reservation->status_id = setting('default_reservation_status', 0);
         $reservation->save();
 
         return $reservation;
@@ -358,6 +361,12 @@ class Booking extends BaseComponent
 
     protected function processValidateAfter($validator, $dateTime, $openingSchedule)
     {
+        if (!(bool)$this->property('mode', TRUE)) {
+            $validator->errors()->add('location', lang('sampoyigi.reservation::default.alert_reservation_disabled'));
+
+            return;
+        }
+
         if ($dateTime->lt(Carbon::now()))
             $validator->errors()->add('date', lang('sampoyigi.reservation::default.error_invalid_date'));
 
