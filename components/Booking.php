@@ -1,6 +1,6 @@
 <?php
 
-namespace SamPoyigi\Reservation\Components;
+namespace Igniter\Reservation\Components;
 
 use Admin\Models\Locations_model;
 use Admin\Models\Reservations_model;
@@ -12,7 +12,7 @@ use Carbon\Carbon;
 use DateInterval;
 use DatePeriod;
 use Location;
-use Main\Template\Page;
+use Main\Traits\HasPageOptions;
 use Redirect;
 use Request;
 use System\Classes\BaseComponent;
@@ -20,6 +20,7 @@ use System\Classes\BaseComponent;
 class Booking extends BaseComponent
 {
     use ValidatesForm;
+    use HasPageOptions;
 
     public $uniqueHash;
 
@@ -40,83 +41,78 @@ class Booking extends BaseComponent
     public function defineProperties()
     {
         return [
-            'mode'                => [
-                'label'   => 'Enable or disable booking',
-                'type'    => 'switch',
+            'mode' => [
+                'label' => 'Enable or disable booking',
+                'type' => 'switch',
                 'default' => FALSE,
             ],
-            'maxGuestSize'        => [
-                'label'   => 'The maximum guest size',
-                'type'    => 'number',
+            'maxGuestSize' => [
+                'label' => 'The maximum guest size',
+                'type' => 'number',
                 'default' => 20,
             ],
-            'timePickerInterval'  => [
-                'label'   => 'The interval to use for the time picker',
-                'type'    => 'number',
+            'timePickerInterval' => [
+                'label' => 'The interval to use for the time picker',
+                'type' => 'number',
                 'default' => 30,
             ],
-            'timeSlotsInterval'   => [
-                'label'   => 'The interval to use for the time slots',
-                'type'    => 'number',
+            'timeSlotsInterval' => [
+                'label' => 'The interval to use for the time slots',
+                'type' => 'number',
                 'default' => 15,
             ],
-            'dateFormat'          => [
-                'label'   => 'Date format to use for the date picker',
-                'type'    => 'text',
+            'dateFormat' => [
+                'label' => 'Date format to use for the date picker',
+                'type' => 'text',
                 'default' => 'M d, yyyy',
             ],
-            'timeFormat'          => [
-                'label'   => 'Time format to use for the time dropdown',
-                'type'    => 'text',
+            'timeFormat' => [
+                'label' => 'Time format to use for the time dropdown',
+                'type' => 'text',
                 'default' => 'h:i a',
             ],
-            'dateTimeFormat'      => [
-                'label'   => 'Date time format to use for the book summary',
-                'type'    => 'text',
+            'dateTimeFormat' => [
+                'label' => 'Date time format to use for the book summary',
+                'type' => 'text',
                 'default' => 'l, F j, Y \\a\\t h:i a',
             ],
-            'showLocationThumb'   => [
+            'showLocationThumb' => [
                 'label' => 'Show Location Image Thumbnail',
-                'type'  => 'switch',
+                'type' => 'switch',
             ],
-            'locationThumbWidth'  => [
-                'label'   => 'Height',
-                'type'    => 'number',
+            'locationThumbWidth' => [
+                'label' => 'Height',
+                'type' => 'number',
                 'default' => 95,
                 'trigger' => [
-                    'action'    => 'show',
-                    'field'     => 'showLocationThumb',
+                    'action' => 'show',
+                    'field' => 'showLocationThumb',
                     'condition' => 'checked',
                 ],
             ],
             'locationThumbHeight' => [
-                'label'   => 'Width',
-                'type'    => 'number',
+                'label' => 'Width',
+                'type' => 'number',
                 'default' => 80,
                 'trigger' => [
-                    'action'    => 'show',
-                    'field'     => 'showLocationThumb',
+                    'action' => 'show',
+                    'field' => 'showLocationThumb',
                     'condition' => 'checked',
                 ],
             ],
-            'bookingPage'         => [
-                'label'   => 'Booking Page',
-                'type'    => 'select',
+            'bookingPage' => [
+                'label' => 'Booking Page',
+                'type' => 'select',
                 'default' => 'reservation/reservation',
                 'options' => [static::class, 'getPageOptions'],
             ],
-            'successPage'         => [
-                'label'   => 'Page to redirect to when checkout is successful',
-                'type'    => 'select',
+            'successPage' => [
+                'label' => 'Page to redirect to when checkout is successful',
+                'type' => 'select',
                 'default' => 'reservation/success',
                 'options' => [static::class, 'getPageOptions'],
             ],
         ];
-    }
-
-    public static function getPageOptions()
-    {
-        return Page::lists('baseFileName', 'baseFileName');
     }
 
     public function initialize()
@@ -152,7 +148,7 @@ class Booking extends BaseComponent
 
     public function getFormAction()
     {
-        return $this->pageUrl($this->property('bookingPage'));
+        return $this->controller->pageUrl($this->property('bookingPage'));
     }
 
     public function getLocations()
@@ -166,8 +162,8 @@ class Booking extends BaseComponent
         $maxGuestSize = $this->property('maxGuestSize');
         for ($i = 1; $i <= $maxGuestSize; $i++) {
             $options[$i] = "{$i} ".(($i > 1)
-                    ? lang('sampoyigi.reservation::default.text_people')
-                    : lang('sampoyigi.reservation::default.text_person'));
+                    ? lang('igniter.reservation::default.text_people')
+                    : lang('igniter.reservation::default.text_person'));
         }
 
         if (is_null($noOfGuests))
@@ -274,7 +270,7 @@ class Booking extends BaseComponent
             if (!$redirect = input('redirect'))
                 $redirect = $this->property('successPage');
 
-            return Redirect::to($this->pageUrl($redirect, ['hash' => $reservation->hash]));
+            return Redirect::to($this->controller->pageUrl($redirect, ['hash' => $reservation->hash]));
         }
         catch (ApplicationException $ex) {
             flash()->warning($ex->getMessage());
@@ -303,8 +299,8 @@ class Booking extends BaseComponent
 
         foreach ($dateTimes as $date) {
             $timeSlot[] = (object)[
-                'rawTime'   => $date->format('Y-m-d H:i'),
-                'time'      => $date->format($this->timeFormat),
+                'rawTime' => $date->format('Y-m-d H:i'),
+                'time' => $date->format($this->timeFormat),
                 'actionUrl' => Request::fullUrl().'&sdateTime='.urlencode($date->format('Y-m-d H:i')),
             ];
         }
@@ -317,19 +313,19 @@ class Booking extends BaseComponent
         switch ($form) {
             case 'picker':
                 return [
-                    ['location', 'lang:sampoyigi.reservation::default.label_location', 'required|integer'],
-                    ['guest', 'lang:sampoyigi.reservation::default.label_guest_num', 'required|integer'],
-                    ['date', 'lang:sampoyigi.reservation::default.label_date', 'required|date_format:Y-m-d'],
-                    ['time', 'lang:sampoyigi.reservation::default.label_time', 'required|date_format:H:i'],
-                    ['sdateTime', 'lang:sampoyigi.reservation::default.label_time', 'sometimes|date_format:Y-m-d H:i'],
+                    ['location', 'lang:igniter.reservation::default.label_location', 'required|integer'],
+                    ['guest', 'lang:igniter.reservation::default.label_guest_num', 'required|integer'],
+                    ['date', 'lang:igniter.reservation::default.label_date', 'required|date_format:Y-m-d'],
+                    ['time', 'lang:igniter.reservation::default.label_time', 'required|date_format:H:i'],
+                    ['sdateTime', 'lang:igniter.reservation::default.label_time', 'sometimes|date_format:Y-m-d H:i'],
                 ];
             case 'booking':
                 return [
-                    ['first_name', 'lang:sampoyigi.reservation::default.label_first_name', 'required|min:2|max:32'],
-                    ['last_name', 'lang:sampoyigi.reservation::default.label_last_name', 'required|min:2|max:32'],
-                    ['email', 'lang:sampoyigi.reservation::default.label_email', 'required|email'],
-                    ['telephone', 'lang:sampoyigi.reservation::default.label_telephone', 'required'],
-                    ['comment', 'lang:sampoyigi.reservation::default.label_comment', 'max:520'],
+                    ['first_name', 'lang:igniter.reservation::default.label_first_name', 'required|min:2|max:32'],
+                    ['last_name', 'lang:igniter.reservation::default.label_last_name', 'required|min:2|max:32'],
+                    ['email', 'lang:igniter.reservation::default.label_email', 'required|email'],
+                    ['telephone', 'lang:igniter.reservation::default.label_telephone', 'required'],
+                    ['comment', 'lang:igniter.reservation::default.label_comment', 'max:520'],
                 ];
         }
     }
@@ -362,20 +358,20 @@ class Booking extends BaseComponent
     protected function processValidateAfter($validator, $dateTime, $openingSchedule)
     {
         if (!(bool)$this->property('mode', TRUE)) {
-            $validator->errors()->add('location', lang('sampoyigi.reservation::default.alert_reservation_disabled'));
+            $validator->errors()->add('location', lang('igniter.reservation::default.alert_reservation_disabled'));
 
             return;
         }
 
         if ($dateTime->lt(Carbon::now()))
-            $validator->errors()->add('date', lang('sampoyigi.reservation::default.error_invalid_date'));
+            $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
 
         if ($openingSchedule->isClosed($dateTime))
-            $validator->errors()->add('time', lang('sampoyigi.reservation::default.error_invalid_time'));
+            $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
         $tables = $this->getAvailableTables();
         if (!count($tables))
-            $validator->errors()->add('guest', lang('sampoyigi.reservation::default.alert_no_table_available'));
+            $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
     }
 
     protected function loadAssets()
@@ -392,9 +388,9 @@ class Booking extends BaseComponent
 
         return [
             'first_name' => $customer ? $customer->first_name : null,
-            'last_name'  => $customer ? $customer->last_name : null,
-            'email'      => $customer ? $customer->email : null,
-            'telephone'  => $customer ? $customer->telephone : null,
+            'last_name' => $customer ? $customer->last_name : null,
+            'email' => $customer ? $customer->email : null,
+            'telephone' => $customer ? $customer->telephone : null,
         ];
     }
 
@@ -407,13 +403,13 @@ class Booking extends BaseComponent
 
         $tables = $this->getAvailableTables();
         if (!count($tables))
-            throw new ApplicationException(lang('sampoyigi.reservation::default.alert_no_table_available'));
+            throw new ApplicationException(lang('igniter.reservation::default.alert_no_table_available'));
 
         $reservedTables = $this->filterReservedTables($this->getExistingReservations($start, $end), $selectedDate);
 
         $availableTables = $tables->diff($reservedTables);
         if (!count($availableTables))
-            throw new ApplicationException(lang('sampoyigi.reservation::default.alert_fully_booked'));
+            throw new ApplicationException(lang('igniter.reservation::default.alert_fully_booked'));
 
         $result = $availableTables->sortBy('max_capacity')->first();
 
@@ -464,8 +460,8 @@ class Booking extends BaseComponent
 
     protected function sendConfirmationMail($reservation)
     {
-        $reservation->mailSend('sampoyigi.reservation::mail.reservation', 'customer');
-        $reservation->mailSend('sampoyigi.reservation::mail.reservation_alert', 'location');
-        $reservation->mailSend('sampoyigi.reservation::mail.reservation_alert', 'admin');
+        $reservation->mailSend('igniter.reservation::mail.reservation', 'customer');
+        $reservation->mailSend('igniter.reservation::mail.reservation_alert', 'location');
+        $reservation->mailSend('igniter.reservation::mail.reservation_alert', 'admin');
     }
 }

@@ -1,14 +1,14 @@
-<?php namespace SamPoyigi\Reservation;
+<?php namespace Igniter\Reservation;
 
 class Extension extends \System\Classes\BaseExtension
 {
     public function registerComponents()
     {
         return [
-            'SamPoyigi\Reservation\Components\Booking' => [
-                'code'        => 'booking',
-                'name'        => 'lang:sampoyigi.reservation::default.text_component_title',
-                'description' => 'lang:sampoyigi.reservation::default.text_component_desc',
+            'Igniter\Reservation\Components\Booking' => [
+                'code' => 'booking',
+                'name' => 'lang:igniter.reservation::default.text_component_title',
+                'description' => 'lang:igniter.reservation::default.text_component_desc',
             ],
         ];
     }
@@ -16,8 +16,8 @@ class Extension extends \System\Classes\BaseExtension
     public function registerMailTemplates()
     {
         return [
-            'sampoyigi.reservation::mail.reservation'       => 'Reservation confirmation email to customer',
-            'sampoyigi.reservation::mail.reservation_alert' => 'New reservation alert email to admin',
+            'igniter.reservation::mail.reservation' => 'Reservation confirmation email to customer',
+            'igniter.reservation::mail.reservation_alert' => 'New reservation alert email to admin',
         ];
     }
 }

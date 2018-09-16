@@ -1,7 +1,7 @@
 <?= form_open($__SELF__->getFormAction(),
     [
-        'id'     => 'picker-form',
-        'role'   => 'form',
+        'id' => 'picker-form',
+        'role' => 'form',
         'method' => 'GET',
     ]
 ); ?>
@@ -11,7 +11,7 @@
 <div class="form-row">
     <div class="col-sm-3 mb-3">
         <label class="sr-only" for="location">
-            <?= lang('sampoyigi.reservation::default.label_location'); ?>
+            <?= lang('igniter.reservation::default.label_location'); ?>
         </label>
         <select
             name="location"
@@ -28,7 +28,7 @@
     </div>
     <div class="col-sm-2 mb-3">
         <label class="sr-only" for="noOfGuests">
-            <?= lang('sampoyigi.reservation::default.label_guest_num'); ?>
+            <?= lang('igniter.reservation::default.label_guest_num'); ?>
         </label>
         <select
             name="guest"
@@ -45,7 +45,7 @@
     </div>
     <div class="col-sm-3 mb-3">
         <label class="sr-only" for="date">
-            <?= lang('sampoyigi.reservation::default.label_date'); ?>
+            <?= lang('igniter.reservation::default.label_date'); ?>
         </label>
         <div class="input-group date">
             <input
@@ -69,7 +69,7 @@
     </div>
     <div class="col-sm-2 mb-3">
         <label class="sr-only" for="time">
-            <?= lang('sampoyigi.reservation::default.label_time'); ?>
+            <?= lang('igniter.reservation::default.label_time'); ?>
         </label>
         <select
             name="time"
@@ -88,7 +88,7 @@
         <button
             type="submit"
             class="btn btn-primary btn-block"
-        ><?= lang('sampoyigi.reservation::default.button_find_table'); ?></button>
+        ><?= lang('igniter.reservation::default.button_find_table'); ?></button>
     </div>
 </div>
 <div class="form-row">

@@ -1,5 +1,5 @@
 <p>
-    <?= sprintf(lang('sampoyigi.reservation::default.text_time_msg'), $longDateTime, $guestSize); ?>
+    <?= sprintf(lang('igniter.reservation::default.text_time_msg'), $longDateTime, $guestSize); ?>
 </p>
 
 <?php if (count($timeSlots = $__SELF__->getTimeSlots())) { ?>
@@ -13,5 +13,5 @@
         ><?= $slot->time; ?></a>
     <?php } ?>
 <?php } else { ?>
-    <?= lang('sampoyigi.reservation::default.text_no_time_slot'); ?>
+    <?= lang('igniter.reservation::default.text_no_time_slot'); ?>
 <?php } ?>
