@@ -24,6 +24,9 @@ class Booking extends BaseComponent
 
     public $uniqueHash;
 
+    /**
+     * @var Locations_model
+     */
     public $location;
 
     public $reservation;
@@ -33,6 +36,11 @@ class Booking extends BaseComponent
     public $timeFormat;
 
     public $pickerStep;
+
+    /**
+     * @var \Igniter\Flame\Location\WorkingSchedule
+     */
+    protected $schedule;
 
     protected $availableTablesCache;
 
@@ -44,7 +52,7 @@ class Booking extends BaseComponent
             'mode' => [
                 'label' => 'Enable or disable booking',
                 'type' => 'switch',
-                'default' => FALSE,
+                'default' => TRUE,
             ],
             'maxGuestSize' => [
                 'label' => 'The maximum guest size',
@@ -235,11 +243,11 @@ class Booking extends BaseComponent
         if (!get('hash'))
             return;
 
-        $openingSchedule = $this->location->workingSchedule('opening');
+        $this->schedule = $this->getSchedule($dateTime);
 
         $data = get();
-        $this->validateAfter(function ($validator) use ($dateTime, $openingSchedule) {
-            $this->processValidateAfter($validator, $dateTime, $openingSchedule);
+        $this->validateAfter(function ($validator) use ($dateTime) {
+            $this->processValidateAfter($validator, $dateTime);
         });
 
         if (!$this->validatePasses($data, $this->createRules('picker')))
@@ -287,6 +295,12 @@ class Booking extends BaseComponent
         return Location::getById($locationId);
     }
 
+    protected function getSchedule($dateTime)
+    {
+        $interval = $this->location->getReservationInterval();
+        return $this->location->newWorkingSchedule('opening', null, $interval)->setNow($dateTime);
+    }
+
     protected function createTimeSlots()
     {
         $selectedDate = Carbon::createFromFormat('Y-m-d H:i', input('date').' '.input('time'));
@@ -297,6 +311,7 @@ class Booking extends BaseComponent
         $dateInterval = new DateInterval("PT".$interval."M");
         $dateTimes = new DatePeriod($start, $dateInterval, $end);
 
+        $timeSlot = [];
         foreach ($dateTimes as $date) {
             $timeSlot[] = (object)[
                 'rawTime' => $date->format('Y-m-d H:i'),
@@ -332,7 +347,7 @@ class Booking extends BaseComponent
 
     protected function createReservation($table, $data)
     {
-        $customerId = ($user = Auth::getUser()) ? $user->getId() : null;
+        $customerId = ($user = Auth::getUser()) ? $user->getKey() : null;
 
         $reservation = $this->getReservation();
         $reservation->customer_id = $customerId;
@@ -355,7 +370,7 @@ class Booking extends BaseComponent
         return $reservation;
     }
 
-    protected function processValidateAfter($validator, $dateTime, $openingSchedule)
+    protected function processValidateAfter($validator, $dateTime)
     {
         if (!(bool)$this->property('mode', TRUE)) {
             $validator->errors()->add('location', lang('igniter.reservation::default.alert_reservation_disabled'));
@@ -366,7 +381,7 @@ class Booking extends BaseComponent
         if ($dateTime->lt(Carbon::now()))
             $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
 
-        if ($openingSchedule->isClosed($dateTime))
+        if (!$this->schedule->isOpen())
             $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
         $tables = $this->getAvailableTables();
@@ -378,8 +393,8 @@ class Booking extends BaseComponent
     {
         $this->addCss('vendor/datepicker/bootstrap-datepicker3.min.css', 'bootstrap-datepicker3-css');
         $this->addCss('css/booking.css', 'booking-css');
-        $this->addJs("vendor/datepicker/bootstrap-datepicker.min.js", 'bootstrap-datepicker-js');
-        $this->addJs("js/booking.js", 'booking-js');
+        $this->addJs('vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
+        $this->addJs('js/booking.js', 'booking-js');
     }
 
     protected function getDefaultAttributes()
