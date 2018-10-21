@@ -10,6 +10,11 @@ class Extension extends \System\Classes\BaseExtension
                 'name' => 'lang:igniter.reservation::default.text_component_title',
                 'description' => 'lang:igniter.reservation::default.text_component_desc',
             ],
+            'Igniter\Reservation\Components\Reservations' => [
+                'code' => 'accountReservations',
+                'name' => 'lang:igniter.reservations::default.reservations.component_title',
+                'description' => 'lang:igniter.reservations::default.reservations.component_desc',
+            ],
         ];
     }
 
