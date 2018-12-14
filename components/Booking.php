@@ -297,8 +297,7 @@ class Booking extends BaseComponent
 
     protected function getSchedule($dateTime)
     {
-        $interval = $this->location->getReservationInterval();
-        return $this->location->newWorkingSchedule('opening', null, $interval)->setNow($dateTime);
+        return $this->location->newWorkingSchedule('opening')->setNow($dateTime);
     }
 
     protected function createTimeSlots()
