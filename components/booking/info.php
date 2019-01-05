@@ -1,6 +1,8 @@
 <div class="form-row mb-4">
     <div class="col-sm-2">
-        <img class="img-responsive img-rounded" src="<?= $bookingLocation->getThumb(); ?>">
+        <?php if ($bookingLocation->hasMedia()) { ?>
+            <img class="img-responsive img-rounded" src="<?= $bookingLocation->getThumb(); ?>">
+        <?php } ?>
     </div>
     <div class="col-sm-3">
         <h5 class="text-muted"><?= lang('igniter.reservation::default.label_guest_num'); ?></h5>
