@@ -42,9 +42,9 @@ class Booking extends BaseComponent
      */
     protected $schedule;
 
-    protected $availableTablesCache;
+    protected $availableTablesCache = [];
 
-    protected $existingReservationsCache;
+    protected $existingReservationsCache = [];
 
     public function defineProperties()
     {

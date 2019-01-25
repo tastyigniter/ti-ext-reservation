@@ -2,12 +2,12 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th><?= lang('igniter.reservations::default.reservations.column_id'); ?></th>
-            <th><?= lang('igniter.reservations::default.reservations.column_status'); ?></th>
-            <th><?= lang('igniter.reservations::default.reservations.column_location'); ?></th>
-            <th><?= lang('igniter.reservations::default.reservations.column_date'); ?></th>
-            <th><?= lang('igniter.reservations::default.reservations.column_table'); ?></th>
-            <th><?= lang('igniter.reservations::default.reservations.column_guest'); ?></th>
+            <th><?= lang('igniter.reservation::default.reservations.column_id'); ?></th>
+            <th><?= lang('igniter.reservation::default.reservations.column_status'); ?></th>
+            <th><?= lang('igniter.reservation::default.reservations.column_location'); ?></th>
+            <th><?= lang('igniter.reservation::default.reservations.column_date'); ?></th>
+            <th><?= lang('igniter.reservation::default.reservations.column_table'); ?></th>
+            <th><?= lang('igniter.reservation::default.reservations.column_guest'); ?></th>
             <th></th>
         </tr>
         </thead>
@@ -29,7 +29,7 @@
                     <td><?= $reservation->guest_num; ?></td>
                     <td>
                         <a
-                            title="<?= lang('igniter.reservations::default.reservations.text_leave_review'); ?>"
+                            title="<?= lang('igniter.reservation::default.reservations.text_leave_review'); ?>"
                             href="<?= site_url($addReviewsPage, [
                                 'saleType' => 'reservation',
                                 'saleId' => $reservation->reservation_id,
@@ -40,7 +40,7 @@
             <?php } ?>
         <?php } else { ?>
             <tr>
-                <td colspan="9999"><?= lang('igniter.reservations::default.reservations.text_empty'); ?></td>
+                <td colspan="9999"><?= lang('igniter.reservation::default.reservations.text_empty'); ?></td>
             </tr>
         <?php } ?>
         </tbody>
