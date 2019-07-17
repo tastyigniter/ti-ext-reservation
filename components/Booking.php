@@ -3,14 +3,13 @@
 namespace Igniter\Reservation\Components;
 
 use Admin\Models\Locations_model;
-use Admin\Models\Reservations_model;
-use Admin\Models\Tables_model;
 use Admin\Traits\ValidatesForm;
-use ApplicationException;
 use Auth;
 use Carbon\Carbon;
 use DateInterval;
 use DatePeriod;
+use Exception;
+use Igniter\Reservation\Classes\BookingManager;
 use Location;
 use Main\Traits\HasPageOptions;
 use Redirect;
@@ -22,12 +21,15 @@ class Booking extends BaseComponent
     use ValidatesForm;
     use HasPageOptions;
 
-    public $uniqueHash;
-
     /**
      * @var Locations_model
      */
     public $location;
+
+    /**
+     * @var \Igniter\Reservation\Classes\BookingManager
+     */
+    protected $manager;
 
     public $reservation;
 
@@ -36,15 +38,6 @@ class Booking extends BaseComponent
     public $timeFormat;
 
     public $pickerStep;
-
-    /**
-     * @var \Igniter\Flame\Location\WorkingSchedule
-     */
-    protected $schedule;
-
-    protected $availableTablesCache = [];
-
-    protected $existingReservationsCache = [];
 
     public function defineProperties()
     {
@@ -125,26 +118,27 @@ class Booking extends BaseComponent
 
     public function initialize()
     {
-        $this->location = $this->getLocation();
+        $this->manager = BookingManager::instance();
+        $this->manager->useLocation($this->getLocation());
+
         $this->processPickerForm();
     }
 
     public function onRun()
     {
-        $this->page['reservation'] = $this->getReservation();
-
         $this->loadAssets();
         $this->prepareVars();
     }
 
     protected function prepareVars()
     {
-        $this->uniqueHash = uniqid('booking');
+        $this->page['pickerStep'] = $this->pickerStep;
         $this->page['bookingDateFormat'] = $this->dateFormat = $this->property('dateFormat');
         $this->page['bookingTimeFormat'] = $this->timeFormat = $this->property('timeFormat');
         $this->page['bookingDateTimeFormat'] = $this->property('dateTimeFormat');
 
-        $this->page['bookingLocation'] = $this->location;
+        $this->page['reservation'] = $this->getReservation();
+        $this->page['bookingLocation'] = $this->getLocation();
         $this->page['bookingEventHandler'] = $this->getEventHandler('onComplete');
 
         $this->page['showLocationThumb'] = $this->property('showLocationThumb');
@@ -182,12 +176,10 @@ class Booking extends BaseComponent
 
     public function getTimePickerOptions()
     {
-        $timePickerInterval = $this->property('timePickerInterval');
-        $interval = new DateInterval("PT{$timePickerInterval}M");
+        $options = [];
         $startTime = Carbon::createFromTime(00, 00, 00);
         $endTime = Carbon::createFromTime(23, 59, 59);
-
-        $options = [];
+        $interval = new DateInterval("PT{$this->property('timePickerInterval')}M");
         $dateTimes = new DatePeriod($startTime, $interval, $endTime);
         foreach ($dateTimes as $dateTime) {
             $options[$dateTime->format('H:i')] = $dateTime->format($this->timeFormat);
@@ -199,11 +191,21 @@ class Booking extends BaseComponent
     public function getTimeSlots()
     {
         $result = [];
+        $selectedDate = Carbon::createFromFormat('Y-m-d H:i', input('date').' '.input('time'));
+        $interval = $this->property('timeSlotsInterval', $this->location->getReservationInterval());
+        $dateTimes = $this->manager->makeTimeSlots($selectedDate, $interval);
+        $query = Request::query();
+        foreach ($dateTimes as $date) {
+            $query['sdateTime'] = $date->format('Y-m-d H:i');
+            $result[] = (object)[
+                'rawTime' => $date->format('Y-m-d H:i'),
+                'time' => $date->format($this->timeFormat),
+                'fullyBooked' => $this->manager->isFullyBookedOn($date, input('guest')),
+                'actionUrl' => Request::url().'?'.http_build_query($query),
+            ];
+        }
 
-        if (!$location = $this->location)
-            return $result;
-
-        return $this->createTimeSlots();
+        return $result;
     }
 
     /**
@@ -214,38 +216,28 @@ class Booking extends BaseComponent
         if (!is_null($this->reservation))
             return $this->reservation;
 
-        $reservation = null;
-        if ($hash = $this->param('hash'))
-            $reservation = Reservations_model::where('hash', $hash)->first();
-
-        if (!$reservation)
-            $reservation = Reservations_model::make($this->getDefaultAttributes());
+        if (strlen($hash = $this->param('hash'))) {
+            $reservation = $this->manager->getReservationByHash($hash);
+        }
+        else {
+            $reservation = $this->manager->getReservation();
+        }
 
         return $this->reservation = $reservation;
     }
 
     public function processPickerForm()
     {
+        $dateTime = $this->getSelectedDateTime();
+        $this->page['selectedDate'] = $dateTime;
+        $this->page['longDateTime'] = $dateTime->format($this->property('dateTimeFormat'));
         $this->page['guestSize'] = input('guest', 2);
 
-        $startDate = strlen(input('date'))
-            ? Carbon::createFromFormat('Y-m-d H:i', input('date').' '.input('time'))
-            : Carbon::tomorrow();
-
-        $dateTime = ($sdateTime = input('sdateTime'))
-            ? Carbon::createFromFormat('Y-m-d H:i', $sdateTime)
-            : $startDate;
-
-        $dateTimeFormat = $this->property('dateTimeFormat');
-        $this->page['longDateTime'] = $dateTime->format($dateTimeFormat);
-        $this->page['selectedDate'] = $dateTime;
-
-        if (!get('hash'))
+        if (!get('picker_form'))
             return;
 
-        $this->schedule = $this->getSchedule($dateTime);
-
         $data = get();
+
         $this->validateAfter(function ($validator) use ($dateTime) {
             $this->processValidateAfter($validator, $dateTime);
         });
@@ -253,12 +245,7 @@ class Booking extends BaseComponent
         if (!$this->validatePasses($data, $this->createRules('picker')))
             return;
 
-        $this->pickerStep = 'timeslot';
-        if (array_get($data, 'sdateTime')) {
-            $this->pickerStep = 'info';
-        }
-
-        $this->page['pickerStep'] = $this->pickerStep;
+        $this->pickerStep = array_get($data, 'sdateTime') ? 'info' : 'timeslot';
     }
 
     public function onComplete()
@@ -269,57 +256,35 @@ class Booking extends BaseComponent
             return Redirect::back()->withInput();
 
         try {
-            $table = $this->findAvailableTable();
+            $reservation = $this->getReservation();
 
-            $reservation = $this->createReservation($table, $data);
-
-            $this->sendConfirmationMail($reservation);
+            $this->manager->saveReservation($reservation, $data);
 
             if (!$redirect = input('redirect'))
                 $redirect = $this->property('successPage');
 
             return Redirect::to($this->controller->pageUrl($redirect, ['hash' => $reservation->hash]));
         }
-        catch (ApplicationException $ex) {
+        catch (Exception $ex) {
             flash()->warning($ex->getMessage());
 
             return Redirect::back()->withInput();
         }
     }
 
+    //
+    //
+    //
+
     protected function getLocation()
     {
         if (!is_numeric($locationId = input('location')))
             return null;
 
-        return Location::getById($locationId);
-    }
+        if (!is_null($this->location))
+            return $this->location;
 
-    protected function getSchedule($dateTime)
-    {
-        return $this->location->newWorkingSchedule('opening')->setNow($dateTime);
-    }
-
-    protected function createTimeSlots()
-    {
-        $selectedDate = Carbon::createFromFormat('Y-m-d H:i', input('date').' '.input('time'));
-        $interval = $this->location->getReservationInterval();
-        $start = $selectedDate->copy()->subMinutes($interval * 2);
-        $end = $selectedDate->copy()->addMinutes($interval * 3);
-
-        $dateInterval = new DateInterval("PT".$interval."M");
-        $dateTimes = new DatePeriod($start, $dateInterval, $end);
-
-        $timeSlot = [];
-        foreach ($dateTimes as $date) {
-            $timeSlot[] = (object)[
-                'rawTime' => $date->format('Y-m-d H:i'),
-                'time' => $date->format($this->timeFormat),
-                'actionUrl' => Request::fullUrl().'&sdateTime='.urlencode($date->format('Y-m-d H:i')),
-            ];
-        }
-
-        return $timeSlot;
+        return $this->location = Location::getById($locationId);
     }
 
     protected function createRules($form)
@@ -344,49 +309,35 @@ class Booking extends BaseComponent
         }
     }
 
-    protected function createReservation($table, $data)
-    {
-        $customerId = ($user = Auth::getUser()) ? $user->getKey() : null;
-
-        $reservation = $this->getReservation();
-        $reservation->customer_id = $customerId;
-        $reservation->location_id = $this->location->getKey();
-        $reservation->table_id = $table->getKey();
-        $reservation->guest_num = array_get($data, 'guest');
-        $reservation->first_name = array_get($data, 'first_name');
-        $reservation->last_name = array_get($data, 'last_name');
-        $reservation->email = array_get($data, 'email');
-        $reservation->telephone = array_get($data, 'telephone');
-        $reservation->comment = array_get($data, 'comment');
-
-        $dateTime = Carbon::createFromFormat('Y-m-d H:i', array_get($data, 'sdateTime'));
-        $reservation->reserve_date = $dateTime->format('Y-m-d');
-        $reservation->reserve_time = $dateTime->format('H:i:s');
-        $reservation->duration = $this->location->getReservationStayTime();
-        $reservation->status_id = setting('default_reservation_status', 0);
-        $reservation->save();
-
-        return $reservation;
-    }
-
     protected function processValidateAfter($validator, $dateTime)
     {
         if (!(bool)$this->property('mode', TRUE)) {
-            $validator->errors()->add('location', lang('igniter.reservation::default.alert_reservation_disabled'));
-
-            return;
+            return $validator->errors()->add('location', lang('igniter.reservation::default.alert_reservation_disabled'));
         }
 
+        if (!$this->getLocation())
+            return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_location'));
+
         if ($dateTime->lt(Carbon::now()))
-            $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
+            return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
 
-        if (!$this->schedule->isOpen())
-            $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
+        if (!$this->manager->getSchedule()->isOpenAt($dateTime))
+            return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
-        $tables = $this->getAvailableTables();
-        if (!count($tables))
-            $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
+        if (!$this->manager->hasAvailableTables(input('guest')))
+            return $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
+
+        $this->pickerStep = 'timeslot';
+
+        if (strlen(input('sdateTime')) AND $this->manager->isFullyBookedOn($dateTime, input('guest')))
+            return $validator->errors()->add('sdateTime', lang('igniter.reservation::default.alert_fully_booked'));
+
+        $this->pickerStep = 'info';
     }
+
+    //
+    // Helpers
+    //
 
     protected function loadAssets()
     {
@@ -396,86 +347,19 @@ class Booking extends BaseComponent
         $this->addJs('js/booking.js', 'booking-js');
     }
 
-    protected function getDefaultAttributes()
+    /**
+     * @return \Carbon\Carbon
+     */
+    protected function getSelectedDateTime()
     {
-        $customer = Auth::getUser();
+        $startDate = strlen(input('date'))
+            ? Carbon::createFromFormat('Y-m-d H:i', input('date').' '.input('time'))
+            : Carbon::tomorrow();
 
-        return [
-            'first_name' => $customer ? $customer->first_name : null,
-            'last_name' => $customer ? $customer->last_name : null,
-            'email' => $customer ? $customer->email : null,
-            'telephone' => $customer ? $customer->telephone : null,
-        ];
-    }
+        $dateTime = ($sdateTime = input('sdateTime'))
+            ? Carbon::createFromFormat('Y-m-d H:i', $sdateTime)
+            : $startDate;
 
-    protected function findAvailableTable()
-    {
-        $selectedDate = Carbon::createFromFormat('Y-m-d H:i', input('sdateTime'));
-        $interval = $this->location->getReservationInterval();
-        $start = $selectedDate->copy()->subMinutes($interval * 2);
-        $end = $selectedDate->copy()->addMinutes($interval * 3);
-
-        $tables = $this->getAvailableTables();
-        if (!count($tables))
-            throw new ApplicationException(lang('igniter.reservation::default.alert_no_table_available'));
-
-        $reservedTables = $this->filterReservedTables($this->getExistingReservations($start, $end), $selectedDate);
-
-        $availableTables = $tables->diff($reservedTables);
-        if (!count($availableTables))
-            throw new ApplicationException(lang('igniter.reservation::default.alert_fully_booked'));
-
-        $result = $availableTables->sortBy('max_capacity')->first();
-
-        return $result ?: $tables->first();
-    }
-
-    protected function getAvailableTables()
-    {
-        if (count($this->availableTablesCache))
-            return $this->availableTablesCache;
-
-        $availableTables = Tables_model::isEnabled()
-                                       ->whereHasLocation(input('location'))
-                                       ->whereBetweenCapacity(input('guest'))
-                                       ->get();
-
-        return $this->availableTablesCache = $availableTables;
-    }
-
-    protected function getExistingReservations($start, $end)
-    {
-        if (count($this->existingReservationsCache))
-            return $this->existingReservationsCache;
-
-        $existing = Reservations_model::whereLocationId(input('location'))
-                                      ->whereBetweenPeriod(
-                                          $start->format('Y-m-d H:i:s'),
-                                          $end->format('Y-m-d H:i:s')
-                                      )->get();
-
-        return $this->existingReservationsCache = $existing;
-    }
-
-    protected function filterReservedTables($reservations, $dateTime = null)
-    {
-        $filtered = $reservations;
-        if ($dateTime) {
-            $filtered = $reservations->filter(function ($reservation) use ($dateTime) {
-                return ($reservation->reservation_datetime->lte($dateTime)
-                    AND $reservation->reservation_end_datetime->gte($dateTime));
-            });
-        }
-
-        return $filtered->map(function ($reservation) {
-            return $reservation->related_table;
-        });
-    }
-
-    protected function sendConfirmationMail($reservation)
-    {
-        $reservation->mailSend('igniter.reservation::mail.reservation', 'customer');
-        $reservation->mailSend('igniter.reservation::mail.reservation_alert', 'location');
-        $reservation->mailSend('igniter.reservation::mail.reservation_alert', 'admin');
+        return $dateTime;
     }
 }

@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped">
+    <table class="table table-borderless">
         <thead>
         <tr>
             <th><?= lang('igniter.reservation::default.reservations.column_id'); ?></th>

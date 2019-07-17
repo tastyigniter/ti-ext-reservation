@@ -25,4 +25,12 @@ class Extension extends \System\Classes\BaseExtension
             'igniter.reservation::mail.reservation_alert' => 'New reservation alert email to admin',
         ];
     }
+    protected function bindReservationEvents()
+    {
+        Event::listen('igniter.reservation.completed', function ($model) {
+            $model->mailSend('igniter.reservation::mail.reservation', 'customer');
+            $model->mailSend('igniter.reservation::mail.reservation_alert', 'location');
+            $model->mailSend('igniter.reservation::mail.reservation_alert', 'admin');
+        });
+    }
 }

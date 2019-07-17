@@ -6,7 +6,7 @@
     ]
 ); ?>
 
-<input type="hidden" name="hash" value="<?= $__SELF__->uniqueHash ?>">
+<input type="hidden" name="picker_form" value="1">
 
 <div class="form-row">
     <div class="col-sm-3 mb-3">

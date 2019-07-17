@@ -47,6 +47,7 @@ return [
     'button_find_again' => 'Find Table Again',
     'button_reservation' => 'Complete Reservation',
 
+    'error_invalid_location' => 'Selected location is invalid.',
     'error_invalid_date' => 'Date must be after today, you can only make future reservations!',
     'error_invalid_time' => 'Time must be between restaurant opening time!',
 
