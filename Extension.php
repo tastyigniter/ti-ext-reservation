@@ -1,7 +1,14 @@
 <?php namespace Igniter\Reservation;
 
+use Event;
+
 class Extension extends \System\Classes\BaseExtension
 {
+    public function boot()
+    {
+        $this->bindReservationEvents();
+    }
+
     public function registerComponents()
     {
         return [
@@ -25,9 +32,19 @@ class Extension extends \System\Classes\BaseExtension
             'igniter.reservation::mail.reservation_alert' => 'New reservation alert email to admin',
         ];
     }
+
+    public function registerActivityTypes()
+    {
+        return [
+            ActivityTypes\ReservationCreated::class,
+        ];
+    }
+
     protected function bindReservationEvents()
     {
         Event::listen('igniter.reservation.completed', function ($model) {
+            ActivityTypes\ReservationCreated::pushActivityLog($model);
+
             $model->mailSend('igniter.reservation::mail.reservation', 'customer');
             $model->mailSend('igniter.reservation::mail.reservation_alert', 'location');
             $model->mailSend('igniter.reservation::mail.reservation_alert', 'admin');
