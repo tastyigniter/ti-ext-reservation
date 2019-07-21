@@ -59,5 +59,40 @@ permalink: /reservation
 ...
 ```
 
+
+### Event Rules
+
+## Events
+- New Reservation Event
+- Reservation Status Update Event
+- Reservation Assigned Event
+
+## Conditions
+- Reservation Attributes
+- Reservation Status Attributes
+
+### Notifications
+
+- Reservation confirmation notification
+- Reservation status update notification
+- Reservation assigned notification
+
+### Events
+
+The Booking Manager used with this extension will fire some global events that can be useful for interacting with other extensions.
+
+| Event | Description | Parameters |
+| ----- | ----------- | ---------- |
+| `igniter.reservation.beforeSaveReservation` |    When a reservation is being created.    |           |
+| `igniter.reservation.confirmed` |      When a reservation has been placed.       |      The `CartItem` instance     |
+
+**Example of hooking an event**
+
+```
+Event::listen('igniter.reservation.confirmed', function($cartItem) {
+    // ...
+});
+```
+
 ### License
 [The MIT License (MIT)](https://tastyigniter.com/licence/)

@@ -98,7 +98,7 @@ class BookingManager
         $status = Statuses_model::find(setting('default_reservation_status'));
         $reservation->addStatusHistory($status, ['notify' => FALSE]);
 
-        Event::fire('igniter.reservation.completed', [$reservation]);
+        Event::fire('igniter.reservation.confirmed', [$reservation]);
     }
 
     //
