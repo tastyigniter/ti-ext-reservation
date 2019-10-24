@@ -73,8 +73,6 @@ return [
         'column_table' => 'Table Name',
         'column_guest' => 'Guest Number',
         'column_occasion' => 'Occasion',
-        'column_name' => 'Name',
-        'column_email' => 'Email',
         'column_telephone' => 'Telephone',
         'column_comment' => 'Comment',
 

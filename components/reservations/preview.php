@@ -27,11 +27,11 @@
             </td>
         </tr>
         <tr>
-            <td><b><?= lang('igniter.reservation::default.reservations.column_name'); ?>:</b></td>
+            <td><b><?= lang('admin::lang.label_name'); ?>:</b></td>
             <td><?= $customerReservation->first_name; ?><?= $customerReservation->last_name; ?></td>
         </tr>
         <tr>
-            <td><b><?= lang('igniter.reservation::default.reservations.column_email'); ?>:</b></td>
+            <td><b><?= lang('admin::lang.label_email'); ?>:</b></td>
             <td><?= $customerReservation->email; ?></td>
         </tr>
         <tr>
