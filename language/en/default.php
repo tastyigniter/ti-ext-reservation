@@ -64,7 +64,6 @@ return [
         'text_my_account' => 'My Account',
         'text_view_heading' => 'My Reservation View',
         'text_empty' => 'There are no reservation(s).',
-        'text_leave_review' => 'Leave review',
 
         'column_id' => 'Reservation ID',
         'column_status' => 'Status',
@@ -78,5 +77,6 @@ return [
 
         'button_reserve' => 'Make Reservation',
         'button_back' => 'Back',
+        'btn_view' => 'View',
     ],
 ];

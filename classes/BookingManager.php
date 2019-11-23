@@ -40,12 +40,22 @@ class BookingManager
 
     public function getReservation()
     {
+        return $this->loadReservation();
+    }
+
+    public function loadReservation()
+    {
         return Reservations_model::make($this->getRequiredAttributes());
     }
 
-    public function getReservationByHash($hash)
+    public function getReservationByHash($hash, $customer = null)
     {
-        return Reservations_model::where('hash', $hash)->first();
+        $query = Reservations_model::whereHash($hash);
+
+        if (!is_null($customer))
+            $query->where('customer_id', $customer->getKey());
+
+        return $query->first();
     }
 
     /**

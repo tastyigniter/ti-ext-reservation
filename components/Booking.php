@@ -73,7 +73,7 @@ class Booking extends BaseComponent
                 'default' => 'h:i a',
             ],
             'dateTimeFormat' => [
-                'label' => 'Date time format to use for the book summary',
+                'label' => 'Date time format to use for displaying reservation date & time',
                 'type' => 'text',
                 'default' => 'l, F j, Y \\a\\t h:i a',
             ],
@@ -220,7 +220,7 @@ class Booking extends BaseComponent
             $reservation = $this->manager->getReservationByHash($hash);
         }
         else {
-            $reservation = $this->manager->getReservation();
+            $reservation = $this->manager->loadReservation();
         }
 
         return $this->reservation = $reservation;
