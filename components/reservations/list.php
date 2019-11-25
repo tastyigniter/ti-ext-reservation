@@ -16,7 +16,7 @@
                 <tr>
                     <td><?= $reservation->location ? $reservation->location->location_name : null; ?></td>
                     <td><b><?= $reservation->status->status_name; ?></b></td>
-                    <td><?= $reservation->reserve_date->setTimeFromTimeString($reservation->reserve_time)->format($reservationDateTimeFormat); ?></td>
+                    <td><?= $reservation->reserve_date->setTimeFromTimeString($reservation->reserve_time)->isoFormat($reservationDateTimeFormat); ?></td>
                     <td><?= $reservation->related_table ? $reservation->related_table->table_name : null; ?></td>
                     <td><?= $reservation->guest_num; ?></td>
                     <td>

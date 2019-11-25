@@ -22,15 +22,10 @@ class Reservations extends \System\Classes\BaseComponent
                 'label' => 'Sort order',
                 'type' => 'string',
             ],
-            'dateTimeFormat' => [
+            'reservationDateTimeFormat' => [
                 'label' => 'Date time format to use for displaying reservation date & time',
                 'type' => 'text',
-                'default' => 'l, F j, Y \\a\\t h:i a',
-            ],
-            'addReviewsPage' => [
-                'label' => 'Add review page',
-                'type' => 'string',
-                'default' => 'account/reviews',
+                'default' => 'DD MMM \a\t HH:mm',
             ],
             'reservationsPage' => [
                 'label' => 'Account Reservations Page',
@@ -48,10 +43,9 @@ class Reservations extends \System\Classes\BaseComponent
     public function onRun()
     {
         $this->page['reservationsPage'] = $this->property('reservationsPage');
-        $this->page['addReviewsPage'] = $this->property('addReviewsPage');
         $this->page['showReviews'] = setting('allow_reviews') == 1;
         $this->page['customerReservations'] = $this->loadReservations();
-        $this->page['reservationDateTimeFormat'] = $this->property('dateTimeFormat');
+        $this->page['reservationDateTimeFormat'] = $this->property('reservationDateTimeFormat');
 
         $this->page['customerReservation'] = $this->getReservation();
     }

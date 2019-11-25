@@ -7,5 +7,5 @@
     <?= sprintf(lang('igniter.reservation::default.text_success_message'),
         $reservation->location->location_name,
         $reservation->guest_num,
-        $reservation->reservation_datetime->format($bookingDateTimeFormat)); ?>
+        $reservation->reservation_datetime->isoFormat($bookingDateTimeFormat)); ?>
 </p>

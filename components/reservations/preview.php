@@ -7,7 +7,7 @@
         <tr>
             <td><b><?= lang('igniter.reservation::default.reservations.column_date'); ?>:</b></td>
             <td>
-                <?= $customerReservation->reserve_date->setTimeFromTimeString($customerReservation->reserve_time)->format($reservationDateTimeFormat); ?>
+                <?= $customerReservation->reserve_date->setTimeFromTimeString($customerReservation->reserve_time)->isoFormat($reservationDateTimeFormat); ?>
             </td>
         </tr>
         <tr>

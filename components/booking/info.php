@@ -10,11 +10,11 @@
     </div>
     <div class="col-sm-2">
         <h5 class="text-muted"><?= lang('igniter.reservation::default.label_date'); ?></h5>
-        <h4 class="font-weight-normal"><?= $selectedDate->format('d M'); ?></h4>
+        <h4 class="font-weight-normal"><?= $selectedDate->isoFormat($bookingDateFormat); ?></h4>
     </div>
     <div class="col-sm-2">
         <h5 class="text-muted"><?= lang('igniter.reservation::default.label_time'); ?></h5>
-        <h4 class="font-weight-normal"><?= $selectedDate->format($bookingTimeFormat); ?></h4>
+        <h4 class="font-weight-normal"><?= $selectedDate->isoFormat($bookingTimeFormat); ?></h4>
     </div>
     <div class="col-sm-3">
         <h5 class="text-muted"><?= lang('igniter.reservation::default.label_location'); ?></h5>
