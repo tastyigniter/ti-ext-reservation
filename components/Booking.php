@@ -52,6 +52,11 @@ class Booking extends BaseComponent
                 'type' => 'number',
                 'default' => 20,
             ],
+            'datePickerNoOfDays' => [
+                'label' => 'The number of days to list for the date picker',
+                'type' => 'number',
+                'default' => 30,
+            ],
             'timePickerInterval' => [
                 'label' => 'The interval to use for the time picker',
                 'type' => 'number',
@@ -126,7 +131,9 @@ class Booking extends BaseComponent
 
     public function onRun()
     {
-        $this->loadAssets();
+        $this->addCss('css/booking.css', 'booking-css');
+        $this->addJs('js/booking.js', 'booking-js');
+
         $this->prepareVars();
     }
 
@@ -172,6 +179,20 @@ class Booking extends BaseComponent
             return $options;
 
         return array_get($options, $noOfGuests);
+    }
+
+    public function getDatePickerOptions()
+    {
+        $options = [];
+
+        $noOfDays = $this->property('datePickerNoOfDays');
+        $start = Carbon::now()->startOfDay();
+        $end = Carbon::now()->addDays($noOfDays);
+        for ($date = $start; $date->lte($end); $date->addDay()) {
+            $options[] = $date->copy();
+        }
+
+        return $options;
     }
 
     public function getTimePickerOptions()
@@ -338,14 +359,6 @@ class Booking extends BaseComponent
     //
     // Helpers
     //
-
-    protected function loadAssets()
-    {
-        $this->addCss('vendor/datepicker/bootstrap-datepicker3.min.css', 'bootstrap-datepicker3-css');
-        $this->addCss('css/booking.css', 'booking-css');
-        $this->addJs('vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
-        $this->addJs('js/booking.js', 'booking-js');
-    }
 
     /**
      * @return \Carbon\Carbon

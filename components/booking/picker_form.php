@@ -47,25 +47,18 @@
         <label class="sr-only" for="date">
             <?= lang('igniter.reservation::default.label_date'); ?>
         </label>
-        <div class="input-group date">
-            <input
-                type="text"
-                id="date"
-                class="form-control"
-                value=""
-                data-control="booking-datepicker"
-                data-format="<?= $bookingDateFormat ?>"
-                data-value-element="[name='date']"
-            />
-            <input
-                type="hidden"
-                name="date"
-                value="<?= set_value('date', $selectedDate->format('Y-m-d')); ?>"
-            >
-            <span class="input-group-addon">
-                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-            </span>
-        </div>
+        <select
+            name="date"
+            id="date"
+            class="form-control"
+        >
+            <?php foreach ($__SELF__->getDatePickerOptions() as $date) { ?>
+                <option
+                    value="<?= $date->format('Y-m-d'); ?>"
+                    <?= set_select('date', $date->format('Y-m-d')); ?>
+                ><?= $date->isoFormat($bookingDateFormat); ?></option>
+            <?php } ?>
+        </select>
     </div>
     <div class="col-sm-2 mb-3">
         <label class="sr-only" for="time">
