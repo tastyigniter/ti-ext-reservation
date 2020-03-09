@@ -42,6 +42,22 @@ class Extension extends \System\Classes\BaseExtension
         ];
     }
 
+    public function registerAutomationRules()
+    {
+        return [
+            'events' => [
+                'igniter.reservation.confirmed' => \Igniter\Reservation\AutomationRules\Events\NewReservation::class,
+                'igniter.reservation.beforeAddReservationStatus' => \Igniter\Reservation\AutomationRules\Events\NewReservationStatus::class,
+                'admin.assignable.assigned' => \Igniter\Reservation\AutomationRules\Events\ReservationAssigned::class,
+            ],
+            'actions' => [],
+            'conditions' => [
+                \Igniter\Reservation\AutomationRules\Conditions\ReservationAttribute::class,
+                \Igniter\Reservation\AutomationRules\Conditions\ReservationStatusAttribute::class,
+            ],
+        ];
+    }
+
     public function registerEventRules()
     {
         return [
