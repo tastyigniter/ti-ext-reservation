@@ -1,7 +1,7 @@
 <div class="table-responsive">
     <table class="table table-borderless">
         <tr>
-            <td><b><?= lang('igniter.reservation::default.reservations.column_id'); ?>:</b></td>
+            <td><b><?= lang('admin::lang.column_id'); ?>:</b></td>
             <td><?= $customerReservation->reservation_id; ?></td>
         </tr>
         <tr>

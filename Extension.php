@@ -48,7 +48,7 @@ class Extension extends \System\Classes\BaseExtension
             'events' => [
                 'igniter.reservation.confirmed' => \Igniter\Reservation\EventRules\Events\NewReservation::class,
                 'igniter.reservation.beforeAddReservationStatus' => \Igniter\Reservation\EventRules\Events\NewReservationStatus::class,
-                'admin.reservation.assigned' => \Igniter\Reservation\EventRules\Events\ReservationAssigned::class,
+                'admin.assignable.assigned' => \Igniter\Reservation\EventRules\Events\ReservationAssigned::class,
             ],
             'actions' => [],
             'conditions' => [
@@ -72,7 +72,7 @@ class Extension extends \System\Classes\BaseExtension
     protected function bindReservationEvent()
     {
         Event::listen('igniter.reservation.confirmed', function (Reservations_model $model) {
-            ActivityTypes\ReservationCreated::pushActivityLog($model);
+            ActivityTypes\ReservationCreated::log($model);
 
             $model->mailSend('igniter.reservation::mail.reservation', 'customer');
             $model->mailSend('igniter.reservation::mail.reservation_alert', 'location');
