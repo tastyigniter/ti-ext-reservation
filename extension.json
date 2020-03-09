@@ -2,7 +2,7 @@
   "code": "igniter.reservation",
   "name": "Reservation",
   "description": "Provides a simple booking form to accept table reservations.",
-  "version": "v1.1.4",
+  "version": "v1.1.5",
   "author": "SamPoyigi",
   "icon": {
     "class": "fa fa-calendar",
