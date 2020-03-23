@@ -64,7 +64,7 @@ class Extension extends \System\Classes\BaseExtension
             'events' => [
                 'igniter.reservation.confirmed' => \Igniter\Reservation\EventRules\Events\NewReservation::class,
                 'igniter.reservation.beforeAddReservationStatus' => \Igniter\Reservation\EventRules\Events\NewReservationStatus::class,
-                'admin.assignable.assigned' => \Igniter\Reservation\EventRules\Events\ReservationAssigned::class,
+                'igniter.reservation.assigned' => \Igniter\Reservation\EventRules\Events\ReservationAssigned::class,
             ],
             'actions' => [],
             'conditions' => [
@@ -103,6 +103,13 @@ class Extension extends \System\Classes\BaseExtension
                 return;
 
             Event::fire('igniter.reservation.beforeAddReservationStatus', [$model, $object, $statusId, $previousStatus], TRUE);
+        });
+
+        Event::listen('admin.assignable.assigned', function ($model) {
+            if (!$model instanceof Reservations_model)
+                return;
+
+            Event::fire('igniter.reservation.assigned', [$model], TRUE);
         });
     }
 }
