@@ -11,7 +11,6 @@ use DatePeriod;
 use Exception;
 use Igniter\Reservation\Classes\BookingManager;
 use Location;
-use Main\Traits\HasPageOptions;
 use Redirect;
 use Request;
 use System\Classes\BaseComponent;
@@ -19,7 +18,7 @@ use System\Classes\BaseComponent;
 class Booking extends BaseComponent
 {
     use ValidatesForm;
-    use HasPageOptions;
+    use \Main\Traits\UsesPage;
 
     /**
      * @var Locations_model
@@ -110,13 +109,13 @@ class Booking extends BaseComponent
                 'label' => 'Booking Page',
                 'type' => 'select',
                 'default' => 'reservation/reservation',
-                'options' => [static::class, 'getPageOptions'],
+                'options' => [static::class, 'getThemePageOptions'],
             ],
             'successPage' => [
                 'label' => 'Page to redirect to when checkout is successful',
                 'type' => 'select',
                 'default' => 'reservation/success',
-                'options' => [static::class, 'getPageOptions'],
+                'options' => [static::class, 'getThemePageOptions'],
             ],
         ];
     }
