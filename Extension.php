@@ -74,17 +74,6 @@ class Extension extends \System\Classes\BaseExtension
         ];
     }
 
-    public function registerNotifications()
-    {
-        return [
-            'templates' => [
-                'igniter.reservation::notification.newReservation' => \Igniter\Reservation\Notifications\NewReservation::class,
-                'igniter.reservation::notification.reservationStatusChanged' => \Igniter\Reservation\Notifications\ReservationStatusChanged::class,
-                'igniter.reservation::notification.reservationAssigned' => \Igniter\Reservation\Notifications\ReservationAssigned::class,
-            ],
-        ];
-    }
-
     protected function bindReservationEvent()
     {
         Event::listen('igniter.reservation.confirmed', function (Reservations_model $model) {
