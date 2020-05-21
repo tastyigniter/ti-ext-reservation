@@ -322,7 +322,7 @@ class Booking extends BaseComponent
                 return [
                     ['first_name', 'lang:igniter.reservation::default.label_first_name', 'required|min:1|max:48'],
                     ['last_name', 'lang:igniter.reservation::default.label_last_name', 'required|min:1|max:48'],
-                    ['email', 'lang:igniter.reservation::default.label_email', 'required|email'],
+                    ['email', 'lang:igniter.reservation::default.label_email', 'required|email:filter'],
                     ['telephone', 'lang:igniter.reservation::default.label_telephone', 'required'],
                     ['comment', 'lang:igniter.reservation::default.label_comment', 'max:520'],
                 ];
