@@ -320,9 +320,9 @@ class Booking extends BaseComponent
                 ];
             case 'booking':
                 return [
-                    ['first_name', 'lang:igniter.reservation::default.label_first_name', 'required|min:1|max:48'],
-                    ['last_name', 'lang:igniter.reservation::default.label_last_name', 'required|min:1|max:48'],
-                    ['email', 'lang:igniter.reservation::default.label_email', 'required|email:filter'],
+                    ['first_name', 'lang:igniter.reservation::default.label_first_name', 'required|between:1,48'],
+                    ['last_name', 'lang:igniter.reservation::default.label_last_name', 'required|between:1,48'],
+                    ['email', 'lang:igniter.reservation::default.label_email', 'required|email:filter|max:96'],
                     ['telephone', 'lang:igniter.reservation::default.label_telephone', 'required'],
                     ['comment', 'lang:igniter.reservation::default.label_comment', 'max:520'],
                 ];
