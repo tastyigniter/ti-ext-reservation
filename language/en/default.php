@@ -1,7 +1,6 @@
 <?php
 
 return [
-    '_text_title' => 'Reservation',
     'text_tab_general' => 'General',
     'text_component_title' => 'Booking Component',
     'text_component_desc' => 'Displays the booking form',
