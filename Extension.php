@@ -58,22 +58,6 @@ class Extension extends \System\Classes\BaseExtension
         ];
     }
 
-    public function registerEventRules()
-    {
-        return [
-            'events' => [
-                'igniter.reservation.confirmed' => \Igniter\Reservation\EventRules\Events\NewReservation::class,
-                'igniter.reservation.beforeAddReservationStatus' => \Igniter\Reservation\EventRules\Events\NewReservationStatus::class,
-                'igniter.reservation.assigned' => \Igniter\Reservation\EventRules\Events\ReservationAssigned::class,
-            ],
-            'actions' => [],
-            'conditions' => [
-                \Igniter\Reservation\EventRules\Conditions\ReservationAttribute::class,
-                \Igniter\Reservation\EventRules\Conditions\ReservationStatusAttribute::class,
-            ],
-        ];
-    }
-
     protected function bindReservationEvent()
     {
         Event::listen('igniter.reservation.confirmed', function (Reservations_model $model) {

@@ -61,7 +61,7 @@ permalink: /reservation
 ```
 
 
-### Event Rules
+### Automations
 
 ## Events
 - New Reservation Event
