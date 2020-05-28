@@ -38,7 +38,7 @@ class Extension extends \System\Classes\BaseExtension
     public function registerActivityTypes()
     {
         return [
-            ActivityTypes\ReservationCreated::class,
+            ActivityTypes\ReservationCreated::class => 'reservationCreated',
         ];
     }
 
@@ -48,7 +48,7 @@ class Extension extends \System\Classes\BaseExtension
             'events' => [
                 'igniter.reservation.confirmed' => \Igniter\Reservation\AutomationRules\Events\NewReservation::class,
                 'igniter.reservation.beforeAddReservationStatus' => \Igniter\Reservation\AutomationRules\Events\NewReservationStatus::class,
-                'admin.assignable.assigned' => \Igniter\Reservation\AutomationRules\Events\ReservationAssigned::class,
+                'igniter.reservation.assigned' => \Igniter\Reservation\AutomationRules\Events\ReservationAssigned::class,
             ],
             'actions' => [],
             'conditions' => [

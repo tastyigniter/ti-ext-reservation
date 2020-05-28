@@ -11,7 +11,7 @@ class ReservationAssigned extends BaseEvent
     {
         return [
             'name' => 'Reservation Assigned Event',
-            'description' => 'When an reservation is assigned to a staff',
+            'description' => 'When a reservation is assigned to a staff',
             'group' => 'reservation',
         ];
     }

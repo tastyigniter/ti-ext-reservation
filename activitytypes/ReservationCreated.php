@@ -9,20 +9,31 @@ use Igniter\Flame\ActivityLog\Models\Activity;
 
 class ReservationCreated implements ActivityInterface
 {
-    public $reservation;
+    public $type;
 
-    public function __construct(Reservations_model $reservation)
+    public $subject;
+
+    public function __construct(string $type, Reservations_model $subject)
     {
-        $this->reservation = $reservation;
+        $this->type = $type;
+        $this->subject = $subject;
     }
 
-    public static function log($model)
+    public static function log($reservation)
     {
         $recipients = Staffs_model::isEnabled()->get()->map(function ($model) {
             return $model->user;
         })->all();
 
-        activity()->pushLog(new static($model), $recipients);
+        activity()->pushLog(new static('reservationCreated', $reservation), $recipients);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**
@@ -30,7 +41,7 @@ class ReservationCreated implements ActivityInterface
      */
     public function getCauser()
     {
-        return $this->reservation->customer;
+        return $this->subject->customer;
     }
 
     /**
@@ -38,7 +49,7 @@ class ReservationCreated implements ActivityInterface
      */
     public function getSubject()
     {
-        return $this->reservation;
+        return $this->subject;
     }
 
     /**
@@ -47,31 +58,9 @@ class ReservationCreated implements ActivityInterface
     public function getProperties()
     {
         return [
-            'reservation_id' => $this->reservation->reservation_id,
-            'full_name' => $this->reservation->customer_name,
+            'reservation_id' => $this->subject->reservation_id,
+            'full_name' => $this->subject->customer_name,
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getType()
-    {
-        return 'reservationCreated';
-    }
-
-    public static function getUrl(Activity $activity)
-    {
-        $url = 'reservations';
-        if ($activity->subject)
-            $url .= '/edit/'.$activity->subject->reservation_id;
-
-        return admin_url($url);
-    }
-
-    public static function getMessage(Activity $activity)
-    {
-        return lang('igniter.reservation::default.activity_reservation_created');
     }
 
     /**
@@ -80,5 +69,24 @@ class ReservationCreated implements ActivityInterface
     public static function getSubjectModel()
     {
         return Reservations_model::class;
+    }
+
+    public static function getTitle(Activity $activity)
+    {
+        return lang('igniter.reservation::default.activity_reservation_created_title');
+    }
+
+    public static function getUrl(Activity $activity)
+    {
+        $url = 'reservations';
+        if ($activity->subject)
+            $url .= '/edit/'.$activity->subject->getKey();
+
+        return admin_url($url);
+    }
+
+    public static function getMessage(Activity $activity)
+    {
+        return lang('igniter.reservation::default.activity_reservation_created');
     }
 }
