@@ -198,6 +198,7 @@ class Booking extends BaseComponent
     {
         $options = [];
         $startTime = Carbon::createFromTime(00, 00, 00);
+        $startTime->addMinutes(30);
         $endTime = Carbon::createFromTime(23, 59, 59);
         $interval = new DateInterval("PT{$this->property('timePickerInterval')}M");
         $dateTimes = new DatePeriod($startTime, $interval, $endTime);
