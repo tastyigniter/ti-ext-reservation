@@ -1,4 +1,6 @@
-<?php namespace Igniter\Reservation;
+<?php
+
+namespace Igniter\Reservation;
 
 use Admin\Models\Reservations_model;
 use Admin\Models\Status_history_model;

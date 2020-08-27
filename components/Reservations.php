@@ -1,4 +1,6 @@
-<?php namespace Igniter\Reservation\Components;
+<?php
+
+namespace Igniter\Reservation\Components;
 
 use Admin\Models\Reservations_model;
 use Auth;

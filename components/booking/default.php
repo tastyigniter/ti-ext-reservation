@@ -4,7 +4,7 @@
 
         <?= partial('@booking_form') ?>
 
-    <?php } else if ($__SELF__->pickerStep == 'timeslot') { ?>
+    <?php } elseif ($__SELF__->pickerStep == 'timeslot') { ?>
         <h1 class="h3"><?= lang('igniter.reservation::default.text_time_heading'); ?></h1>
 
         <?= partial('@timeslot') ?>

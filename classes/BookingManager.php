@@ -86,7 +86,7 @@ class BookingManager
     {
         Event::fire('igniter.reservation.beforeSaveReservation', [$reservation, $data]);
 
-        $reservation->customer_id = $this->customer ? $this->customer->getKey() : null;;
+        $reservation->customer_id = $this->customer ? $this->customer->getKey() : null;
         $reservation->location_id = $this->location ? $this->location->getKey() : null;
 
         $reservation->guest_num = array_get($data, 'guest');
