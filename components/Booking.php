@@ -185,10 +185,13 @@ class Booking extends BaseComponent
         $options = [];
 
         $noOfDays = $this->property('datePickerNoOfDays');
+        
         $start = Carbon::now()->startOfDay();
         $end = Carbon::now()->addDays($noOfDays);
+        $schedule = $this->manager->getSchedule($noOfDays);
         for ($date = $start; $date->lte($end); $date->addDay()) {
-            $options[] = $date->copy();
+	        if (count($schedule->forDate($date)))        
+	            $options[] = $date->copy();
         }
 
         return $options;
@@ -196,12 +199,14 @@ class Booking extends BaseComponent
 
     public function getTimePickerOptions()
     {
+        $noOfDays = $this->property('datePickerNoOfDays');
+        $schedule = $this->manager->getSchedule($noOfDays)->forDate($this->getSelectedDate());
+
+        $interval = new DateInterval("PT".$this->property('timePickerInterval')."M");
+        $leadTime = new DateInterval("PT".$this->location->options['reservation_lead_time']."M");
+
         $options = [];
-        $startTime = Carbon::createFromTime(00, 00, 00);
-        $startTime->addMinutes(30);
-        $endTime = Carbon::createFromTime(23, 59, 59);
-        $interval = new DateInterval("PT{$this->property('timePickerInterval')}M");
-        $dateTimes = new DatePeriod($startTime, $interval, $endTime);
+        $dateTimes = $schedule->timeslot($interval, $leadTime);
         foreach ($dateTimes as $dateTime) {
             $options[$dateTime->format('H:i')] = Carbon::parse($dateTime)->isoFormat($this->timeFormat);
         }
@@ -213,7 +218,7 @@ class Booking extends BaseComponent
     {
         $result = [];
         $selectedDate = Carbon::createFromFormat('Y-m-d H:i', input('date').' '.input('time'));
-        $interval = $this->property('timeSlotsInterval', $this->location->getReservationInterval());
+        $interval = $this->location->getReservationInterval();
         $dateTimes = $this->manager->makeTimeSlots($selectedDate, $interval);
         $query = Request::query();
         foreach ($dateTimes as $date) {
@@ -249,13 +254,25 @@ class Booking extends BaseComponent
 
     public function processPickerForm()
     {
+        if (!($pickerStep = get('picker_step')))
+            return;
+            
+	    $this->pickerStep = 'dateselect';
+
+        // location selection
+        if ($pickerStep == 1)
+            return;
+        
+        $this->pickerStep = 'timeselect';
+        
+        // date selection
+        if ($pickerStep == 2)
+            return;
+
         $dateTime = $this->getSelectedDateTime();
         $this->page['selectedDate'] = $dateTime;
         $this->page['longDateTime'] = $dateTime->isoFormat($this->property('bookingDateTimeFormat'));
         $this->page['guestSize'] = input('guest', 2);
-
-        if (!get('picker_form'))
-            return;
 
         $data = get();
 
@@ -300,12 +317,15 @@ class Booking extends BaseComponent
     protected function getLocation()
     {
         if (!is_numeric($locationId = input('location')))
-            return null;
+            $locationId = params('default_location_id');
 
         if (!is_null($this->location))
             return $this->location;
 
-        return $this->location = Location::getById($locationId);
+        $this->location = Location::getById($locationId);
+        $this->location->parseOptionsValue();
+
+        return $this->location;
     }
 
     protected function createRules($form)
@@ -359,6 +379,18 @@ class Booking extends BaseComponent
     //
     // Helpers
     //
+    
+    /**
+     * @return \Carbon\Carbon
+     */
+    public function getSelectedDate()
+    {
+        $date = strlen(input('date'))
+            ? Carbon::createFromFormat('Y-m-d', input('date'))
+            : Carbon::tomorrow();
+
+        return $date;
+    }
 
     /**
      * @return \Carbon\Carbon

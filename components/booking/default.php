@@ -4,13 +4,21 @@
 
         <?= partial('@booking_form') ?>
 
-    <?php } elseif ($__SELF__->pickerStep == 'timeslot') { ?>
+    <?php } else if ($__SELF__->pickerStep == 'timeslot') { ?>
         <h1 class="h3"><?= lang('igniter.reservation::default.text_time_heading'); ?></h1>
 
         <?= partial('@timeslot') ?>
+    <?php } else if ($__SELF__->pickerStep == 'timeselect') { ?>
+        <h1 class="h3"><?= lang('igniter.reservation::default.text_heading'); ?></h1>
+
+        <?= partial('@timeselect') ?>
+    <?php } else if ($__SELF__->pickerStep == 'dateselect') { ?>
+        <h1 class="h3"><?= lang('igniter.reservation::default.text_heading'); ?></h1>
+
+        <?= partial('@dateselect') ?>
     <?php } else { ?>
         <h1 class="h3"><?= lang('igniter.reservation::default.text_heading'); ?></h1>
 
-        <?= partial('@picker_form') ?>
+        <?= partial('@locations') ?>
     <?php } ?>
 </div>
