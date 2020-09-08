@@ -284,15 +284,15 @@ class Booking extends BaseComponent
             return;
             
 	    $this->pickerStep = 'dateselect';
+	    
+	    $this->page['timeOptions'] = $this->getTimePickerOptions();
+	    $this->page['disabledDaysOfWeek'] = $this->getDisabledDaysOfWeek();
+	    $this->page['disabledDates'] = $this->getDisabledDates();
 
         // location selection made, show date selection
         if ($pickerStep == 1) {
             return;
         }
-
-	    $this->page['timeOptions'] = $this->getTimePickerOptions();
-	    $this->page['disabledDaysOfWeek'] = $this->getDisabledDaysOfWeek();
-	    $this->page['disabledDates'] = $this->getDisabledDates();
 
         $dateTime = $this->getSelectedDateTime();
         $this->page['selectedDate'] = $dateTime;
