@@ -144,7 +144,6 @@ class Booking extends BaseComponent
     protected function prepareVars()
     {
         $this->page['pickerStep'] = $this->pickerStep;
-        $this->page['today'] = Carbon::now();
         $this->page['bookingDateFormat'] = $this->dateFormat = $this->property('bookingDateFormat');
         $this->page['bookingTimeFormat'] = $this->timeFormat = $this->property('bookingTimeFormat');
         $this->page['bookingDateTimeFormat'] = $this->property('bookingDateTimeFormat');
@@ -285,6 +284,7 @@ class Booking extends BaseComponent
             
 	    $this->pickerStep = 'dateselect';
 	    
+	    $this->page['nextOpen'] = Carbon::parse($this->manager->getSchedule()->getOpenTime());
 	    $this->page['timeOptions'] = $this->getTimePickerOptions();
 	    $this->page['disabledDaysOfWeek'] = $this->getDisabledDaysOfWeek();
 	    $this->page['disabledDates'] = $this->getDisabledDates();
@@ -412,7 +412,7 @@ class Booking extends BaseComponent
     {
         $date = strlen(input('date'))
             ? Carbon::createFromFormat('Y-m-d', input('date'))
-            : Carbon::tomorrow();
+            : Carbon::now();
 
         return $date;
     }
