@@ -1,6 +1,6 @@
 <div 
 	data-control="booking"
-	data-datepicker-startdate="<?= $nextOpen ? $nextOpen->format('Y-m-d') : null ?>"
+	data-datepicker-startdate="<?= isset($nextOpen) ? $nextOpen->format('Y-m-d') : null ?>"
 	data-datepicker-disableddaysofweek='<?= json_encode($disabledDaysOfWeek ?? []); ?>'
 	data-datepicker-disableddates='<?= json_encode($disabledDates ?? []); ?>'
 >
