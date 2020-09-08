@@ -1,4 +1,9 @@
-<div data-control="booking">
+<div 
+	data-control="booking"
+	data-datepicker-startdate="<?= $today->format('Y-m-d') ?>"
+	data-datepicker-disableddaysofweek='<?= json_encode($disabledDaysOfWeek ?? []); ?>'
+	data-datepicker-disableddates='<?= json_encode($disabledDates ?? []); ?>'
+>
     <?php if ($__SELF__->pickerStep == 'info') { ?>
         <?= partial('@info') ?>
 
@@ -8,10 +13,6 @@
         <h1 class="h3"><?= lang('igniter.reservation::default.text_time_heading'); ?></h1>
 
         <?= partial('@timeslot') ?>
-    <?php } else if ($__SELF__->pickerStep == 'timeselect') { ?>
-        <h1 class="h3"><?= lang('igniter.reservation::default.text_heading'); ?></h1>
-
-        <?= partial('@timeselect') ?>
     <?php } else if ($__SELF__->pickerStep == 'dateselect') { ?>
         <h1 class="h3"><?= lang('igniter.reservation::default.text_heading'); ?></h1>
 

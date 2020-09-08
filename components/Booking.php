@@ -130,6 +130,11 @@ class Booking extends BaseComponent
 
     public function onRun()
     {
+        $this->addJs('~/app/system/assets/ui/js/vendor/moment.min.js', 'moment-js');
+        $this->addCss('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
+        $this->addJs('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
+        $this->addCss('~/app/admin/formwidgets/datepicker/assets/css/datepicker.css', 'datepicker-css');
+        //$this->addJs('~/app/admin/formwidgets/datepicker/assets/js/datepicker.js', 'datepicker-js');
         $this->addCss('css/booking.css', 'booking-css');
         $this->addJs('js/booking.js', 'booking-js');
 
@@ -139,6 +144,7 @@ class Booking extends BaseComponent
     protected function prepareVars()
     {
         $this->page['pickerStep'] = $this->pickerStep;
+        $this->page['today'] = Carbon::now();
         $this->page['bookingDateFormat'] = $this->dateFormat = $this->property('bookingDateFormat');
         $this->page['bookingTimeFormat'] = $this->timeFormat = $this->property('bookingTimeFormat');
         $this->page['bookingDateTimeFormat'] = $this->property('bookingDateTimeFormat');
@@ -161,7 +167,7 @@ class Booking extends BaseComponent
 
     public function getLocations()
     {
-        return Locations_model::isEnabled()->dropdown('location_name');
+        return Locations_model::isEnabled()->get();//->dropdown('location_name');
     }
 
     public function getGuestSizeOptions($noOfGuests = null)
@@ -199,21 +205,41 @@ class Booking extends BaseComponent
 
     public function getTimePickerOptions()
     {
-        $noOfDays = $this->property('datePickerNoOfDays');
-        $schedule = $this->manager->getSchedule($noOfDays)->forDate($this->getSelectedDate());
-
+	    // get schedule for the day selected
+        $schedule = $this->manager->getSchedule()->forDate($this->getSelectedDate());
+ 
         $interval = new DateInterval("PT".$this->property('timePickerInterval')."M");
         $leadTime = new DateInterval("PT".$this->location->options['reservation_lead_time']."M");
 
         $options = [];
         $dateTimes = $schedule->timeslot($interval, $leadTime);
         foreach ($dateTimes as $dateTime) {
-            $options[$dateTime->format('H:i')] = Carbon::parse($dateTime)->isoFormat($this->timeFormat);
+            $options[$dateTime->format('H:i')] = Carbon::createFromTimeString($dateTime->format('H:i'))->isoFormat($this->property('bookingTimeFormat'));
         }
 
         return $options;
     }
-
+    
+    public function getDisabledDaysOfWeek()
+    {
+	    // get a 7 day schedule
+        $schedule = $this->manager->getSchedule(7);
+        
+        $disabled = [];
+        foreach ($schedule->getPeriods() as $index=>$day) {
+	        if ($day->isEmpty())
+	        	$disabled[] = (int)date("w", strtotime($index));
+        }
+        	    
+	    return $disabled;
+    }
+    
+    public function getDisabledDates()
+    {
+	   // future proofing - ability to disable specific days
+	   return [];	    
+    }
+    
     public function getTimeSlots()
     {
         $result = [];
@@ -259,15 +285,14 @@ class Booking extends BaseComponent
             
 	    $this->pickerStep = 'dateselect';
 
-        // location selection
-        if ($pickerStep == 1)
+        // location selection made, show date selection
+        if ($pickerStep == 1) {
             return;
-        
-        $this->pickerStep = 'timeselect';
-        
-        // date selection
-        if ($pickerStep == 2)
-            return;
+        }
+
+	    $this->page['timeOptions'] = $this->getTimePickerOptions();
+	    $this->page['disabledDaysOfWeek'] = $this->getDisabledDaysOfWeek();
+	    $this->page['disabledDates'] = $this->getDisabledDates();
 
         $dateTime = $this->getSelectedDateTime();
         $this->page['selectedDate'] = $dateTime;
@@ -398,7 +423,7 @@ class Booking extends BaseComponent
     protected function getSelectedDateTime()
     {
         $startDate = strlen(input('date'))
-            ? Carbon::createFromFormat('Y-m-d H:i', input('date').' '.input('time'))
+            ? Carbon::createFromFormat('Y-m-d H:i', input('date').' '.(input('time') ?? '00:01'))
             : Carbon::tomorrow();
 
         $dateTime = ($sdateTime = input('sdateTime'))
