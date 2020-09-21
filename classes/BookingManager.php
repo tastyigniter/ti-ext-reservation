@@ -64,16 +64,14 @@ class BookingManager
      * @return array|\DatePeriod|\DateTime[]
      * @throws \Exception
      */
-    public function makeTimeSlots(Carbon $date, $interval)
+    public function makeTimeSlots(Carbon $date, $interval, $lead = 0)
     {
         if (!$this->location)
             return [];
 
-        $start = $date->copy()->subMinutes($interval * 2);
-        $end = $date->copy()->addMinutes($interval * 3);
-
         $dateInterval = new DateInterval('PT'.$interval.'M');
-        $dateTimes = new DatePeriod($start, $dateInterval, $end);
+        $leadTime = new DateInterval('PT'.$lead.'M');
+        $dateTimes = $this->getSchedule()->forDate($date)->timeslot($dateInterval, $leadTime);
 
         return $dateTimes;
     }
@@ -86,7 +84,7 @@ class BookingManager
     {
         Event::fire('igniter.reservation.beforeSaveReservation', [$reservation, $data]);
 
-        $reservation->customer_id = $this->customer ? $this->customer->getKey() : null;
+        $reservation->customer_id = $this->customer ? $this->customer->getKey() : null;;
         $reservation->location_id = $this->location ? $this->location->getKey() : null;
 
         $reservation->guest_num = array_get($data, 'guest');
@@ -119,9 +117,9 @@ class BookingManager
      * @param $dateTime
      * @return \Igniter\Flame\Location\WorkingSchedule
      */
-    public function getSchedule()
+    public function getSchedule($days = null)
     {
-        return $this->location->newWorkingSchedule('opening');
+        return $this->location->newWorkingSchedule('opening', $days);
     }
 
     public function hasAvailableTables($noOfGuests)
@@ -129,7 +127,7 @@ class BookingManager
         return $this->getAvailableTables($noOfGuests)->isNotEmpty();
     }
 
-    public function isFullyBookedOn(\DateTime $dateTime, $noOfGuests)
+    public function isFullyBookedOn(\Carbon\Carbon $dateTime, $noOfGuests)
     {
         return $this->getBookableTables($dateTime, $noOfGuests)->isEmpty();
     }
@@ -139,14 +137,14 @@ class BookingManager
      * @param int $noOfGuests
      * @return \Illuminate\Support\Collection|null
      */
-    public function getBookableTables(\DateTime $dateTime, $noOfGuests)
+    public function getBookableTables(\Carbon\Carbon $dateTime, $noOfGuests)
     {
         $tables = $this->getAvailableTables($noOfGuests);
 
         $reserved = Reservations_model::findReservedTables(
             $this->location, $dateTime
         );
-
+        
         $tables = $tables->diff($reserved)->sortBy('max_capacity');
 
         return $this->filterBookableTables($tables, $noOfGuests);

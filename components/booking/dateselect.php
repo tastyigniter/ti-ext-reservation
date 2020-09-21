@@ -42,9 +42,10 @@
 		    >
 		        <?php foreach ($timeOptions as $key => $value) { ?>
 		            <option
-		                value="<?= $key; ?>"
-		                <?= set_select('time', $key); ?>
-		            ><?= e($value); ?></option>
+		                value="<?= $value->rawTime; ?>"
+		                <?= set_select('time', $value->rawTime); ?>
+						<?= $value->fullyBooked ? 'disabled="disabled"' : '' ?>
+		            ><?= e($value->time); ?></option>
 		        <?php } ?>
 		    </select>
 	    </div>

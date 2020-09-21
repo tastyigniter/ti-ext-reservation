@@ -5,17 +5,23 @@
         this.$el = $(element)
         this.options = options || {}
         this.$picker = null
-        this.$dataLocker = null
+        this.$pickerValue = null
+        this.$guestPicker = null
+        this.$guestPickerValue = 1
 
         this.init()
     }
 
     Booking.prototype.init = function () {
 	    if (this.$picker = this.$el.find('[data-control="datepicker"]'))
-            this.initDatepicker();	    
+            this.initDatepicker();
+            
+	    if (this.$guestPicker = this.$el.find('[name="guest"]'))
+            this.initGuestpicker();
     }
     
     Booking.prototype.initDatepicker = function () {
+        this.$pickerValue = this.options.datepickerStartdate;
         this.$picker.datepicker({
 	        daysOfWeekDisabled: this.options.datepickerDisableddaysofweek,
 	        datesDisabled: this.options.datepickerDisableddates,
@@ -26,7 +32,7 @@
                 up: "fa fa-arrow-up",
                 down: "fa fa-arrow-down"
             },
-            startDate: this.options.datepickerStartdate,//'08-09-2020',
+            startDate: this.options.datepickerStartdate,
             todayHighlight: true,
         });
         
@@ -34,26 +40,38 @@
         this.$picker.on('changeDate', $.proxy(this.onSelectDatePicker, this))	    
     }
     
+    Booking.prototype.initGuestpicker = function () {
+        this.$el.delegate('[name="guest"]', 'change', $.proxy(this.onSelectGuestPicker, this))	    
+	}
+    
     Booking.prototype.onSelectDatePicker = function(event) {
         var pickerDate = moment(event.date.toDateString())
         var lockerValue = pickerDate.format('YYYY-MM-DD')
-
-        this.$dataLocker.val(lockerValue);
-        
-		jQuery.ajax(location.pathname + '?picker_step=' + (parseInt(this.$el.find('[name="picker_step"]').val())-1) + '&location=' + this.$el.find('[name="location"]').val() + '&date=' + lockerValue, {
+        this.$pickerValue = lockerValue;
+        this.onHtmlUpdate();
+    }
+    
+    Booking.prototype.onSelectGuestPicker = function(event) {
+        var lockerValue = $(event.target).val();
+        this.$guestPickerValue = lockerValue;
+        this.onHtmlUpdate();
+    }
+    
+    Booking.prototype.onHtmlUpdate = function() {
+		jQuery.ajax(location.pathname + '?&date=' + this.$pickerValue + '&guest=' + this.$guestPickerValue, {
 	         dataType: 'html'
-	     })
-	     .done(function (html) {
-	         html = jQuery.parseHTML(html);
-	         html.forEach(function (node) {
-	             if (node.tagName && node.tagName.toUpperCase() == 'MAIN') {
-	                 var newEl, currentEl;
-	                 if ((newEl = node.querySelector('#ti-datepicker-options')) && (currentEl = document.querySelector('#ti-datepicker-options'))) {
-	                     currentEl.innerHTML = newEl.innerHTML;
-	                 }
-	             }
-	         });
-	     });        
+	    })
+	    .done(function(html) {    
+		    html = jQuery.parseHTML(html);
+		    html.forEach(function (node) {
+		        if (node.tagName && node.tagName.toUpperCase() == 'MAIN') {
+		            var newEl, currentEl;
+		            if ((newEl = node.querySelector('#ti-datepicker-options')) && (currentEl = document.querySelector('#ti-datepicker-options'))) {
+		                currentEl.innerHTML = newEl.innerHTML;
+		            }
+		        }
+		    });
+	    });	    
     }
 
     Booking.DEFAULTS = {

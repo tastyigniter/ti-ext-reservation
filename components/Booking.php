@@ -46,6 +46,11 @@ class Booking extends BaseComponent
                 'type' => 'switch',
                 'default' => TRUE,
             ],
+            'minGuestSize' => [
+                'label' => 'The minimum guest size',
+                'type' => 'number',
+                'default' => 2,
+            ],            
             'maxGuestSize' => [
                 'label' => 'The maximum guest size',
                 'type' => 'number',
@@ -117,6 +122,17 @@ class Booking extends BaseComponent
                 'default' => 'reservation/success',
                 'options' => [static::class, 'getThemePageOptions'],
             ],
+            'defaultLocationParam' => [
+                'label' => 'The default location route parameter (used internally when no location is selected)',
+                'type' => 'text',
+                'default' => 'local',
+            ],
+            'locationNotFoundPage' => [
+                'label' => 'Page to redirect to when no location is found',
+                'type' => 'select',
+                'options' => [static::class, 'getThemePageOptions'],
+                'default' => 'home',
+            ],
         ];
     }
 
@@ -130,6 +146,9 @@ class Booking extends BaseComponent
 
     public function onRun()
     {
+        if ($redirect = $this->checkLocationParam())
+            return $redirect;
+        
         $this->addJs('~/app/system/assets/ui/js/vendor/moment.min.js', 'moment-js');
         $this->addCss('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
         $this->addJs('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
@@ -172,8 +191,9 @@ class Booking extends BaseComponent
     public function getGuestSizeOptions($noOfGuests = null)
     {
         $options = [];
+        $minGuestSize = $this->property('minGuestSize');
         $maxGuestSize = $this->property('maxGuestSize');
-        for ($i = 1; $i <= $maxGuestSize; $i++) {
+        for ($i = $minGuestSize; $i <= $maxGuestSize; $i++) {
             $options[$i] = "{$i} ".(($i > 1)
                     ? lang('igniter.reservation::default.text_people')
                     : lang('igniter.reservation::default.text_person'));
@@ -183,40 +203,6 @@ class Booking extends BaseComponent
             return $options;
 
         return array_get($options, $noOfGuests);
-    }
-
-    public function getDatePickerOptions()
-    {
-        $options = [];
-
-        $noOfDays = $this->property('datePickerNoOfDays');
-        
-        $start = Carbon::now()->startOfDay();
-        $end = Carbon::now()->addDays($noOfDays);
-        $schedule = $this->manager->getSchedule($noOfDays);
-        for ($date = $start; $date->lte($end); $date->addDay()) {
-	        if (count($schedule->forDate($date)))        
-	            $options[] = $date->copy();
-        }
-
-        return $options;
-    }
-
-    public function getTimePickerOptions()
-    {
-	    // get schedule for the day selected
-        $schedule = $this->manager->getSchedule()->forDate($this->getSelectedDate());
- 
-        $interval = new DateInterval("PT".$this->property('timePickerInterval')."M");
-        $leadTime = new DateInterval("PT".$this->location->options['reservation_lead_time']."M");
-
-        $options = [];
-        $dateTimes = $schedule->timeslot($interval, $leadTime);
-        foreach ($dateTimes as $dateTime) {
-            $options[$dateTime->format('H:i')] = Carbon::createFromTimeString($dateTime->format('H:i'))->isoFormat($this->property('bookingTimeFormat'));
-        }
-
-        return $options;
     }
     
     public function getDisabledDaysOfWeek()
@@ -242,17 +228,15 @@ class Booking extends BaseComponent
     public function getTimeSlots()
     {
         $result = [];
-        $selectedDate = Carbon::createFromFormat('Y-m-d H:i', input('date').' '.input('time'));
+        $selectedDate = $this->getSelectedDate();
         $interval = $this->location->getReservationInterval();
         $dateTimes = $this->manager->makeTimeSlots($selectedDate, $interval);
-        $query = Request::query();
         foreach ($dateTimes as $date) {
-            $query['sdateTime'] = $date->format('Y-m-d H:i');
+            $dateTime = $selectedDate->copy()->setTimeFromTimeString($date->format());
             $result[] = (object)[
-                'rawTime' => $date->format('Y-m-d H:i'),
-                'time' => Carbon::parse($date)->isoFormat($this->timeFormat),
-                'fullyBooked' => $this->manager->isFullyBookedOn($date, input('guest')),
-                'actionUrl' => Request::url().'?'.http_build_query($query),
+                'rawTime' => $dateTime->format('H:i'),
+                'time' => $dateTime->isoFormat($this->property('bookingTimeFormat')),
+                'fullyBooked' => $this->manager->isFullyBookedOn($dateTime, input('guest', $this->property('minGuestSize'))),
             ];
         }
 
@@ -279,13 +263,12 @@ class Booking extends BaseComponent
 
     public function processPickerForm()
     {
-        if (!($pickerStep = get('picker_step')))
-            return;
+        $pickerStep = get('picker_step', 1);
             
 	    $this->pickerStep = 'dateselect';
 	    
 	    $this->page['nextOpen'] = Carbon::parse($this->manager->getSchedule()->getOpenTime());
-	    $this->page['timeOptions'] = $this->getTimePickerOptions();
+	    $this->page['timeOptions'] = $this->getTimeSlots();
 	    $this->page['disabledDaysOfWeek'] = $this->getDisabledDaysOfWeek();
 	    $this->page['disabledDates'] = $this->getDisabledDates();
 
@@ -308,7 +291,7 @@ class Booking extends BaseComponent
         if (!$this->validatePasses($data, $this->createRules('picker')))
             return;
 
-        $this->pickerStep = array_get($data, 'sdateTime') ? 'info' : 'timeslot';
+        $this->pickerStep = 'info';
     }
 
     public function onComplete()
@@ -338,6 +321,18 @@ class Booking extends BaseComponent
     //
     //
     //
+    
+    protected function checkLocationParam()
+    {
+        $param = $this->param('location', 'local');
+        if (is_single_location() AND $param === $this->property('defaultLocationParam', 'local'))
+            return;
+
+        if ($this->location = Location::getBySlug($param))
+            return;
+
+        return \Redirect::to($this->pageUrl($this->property('locationNotFoundPage')));
+    }
 
     protected function getLocation()
     {
@@ -362,7 +357,6 @@ class Booking extends BaseComponent
                     ['guest', 'lang:igniter.reservation::default.label_guest_num', 'required|integer'],
                     ['date', 'lang:igniter.reservation::default.label_date', 'required|date_format:Y-m-d'],
                     ['time', 'lang:igniter.reservation::default.label_time', 'required|date_format:H:i'],
-                    ['sdateTime', 'lang:igniter.reservation::default.label_time', 'sometimes|date_format:Y-m-d H:i'],
                 ];
             case 'booking':
                 return [
@@ -394,11 +388,6 @@ class Booking extends BaseComponent
             return $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
 
         $this->pickerStep = 'timeslot';
-
-        if (strlen(input('sdateTime')) AND $this->manager->isFullyBookedOn($dateTime, input('guest')))
-            return $validator->errors()->add('sdateTime', lang('igniter.reservation::default.alert_fully_booked'));
-
-        $this->pickerStep = 'info';
     }
 
     //
@@ -412,7 +401,7 @@ class Booking extends BaseComponent
     {
         $date = strlen(input('date'))
             ? Carbon::createFromFormat('Y-m-d', input('date'))
-            : Carbon::now();
+            : Carbon::tomorrow();
 
         return $date;
     }
