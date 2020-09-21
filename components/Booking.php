@@ -6,13 +6,10 @@ use Admin\Models\Locations_model;
 use Admin\Traits\ValidatesForm;
 use Auth;
 use Carbon\Carbon;
-use DateInterval;
-use DatePeriod;
 use Exception;
 use Igniter\Reservation\Classes\BookingManager;
 use Location;
 use Redirect;
-use Request;
 use System\Classes\BaseComponent;
 
 class Booking extends BaseComponent
@@ -50,7 +47,7 @@ class Booking extends BaseComponent
                 'label' => 'The minimum guest size',
                 'type' => 'number',
                 'default' => 2,
-            ],            
+            ],
             'maxGuestSize' => [
                 'label' => 'The maximum guest size',
                 'type' => 'number',
@@ -183,11 +180,6 @@ class Booking extends BaseComponent
         return $this->controller->pageUrl($this->property('bookingPage'));
     }
 
-    public function getLocations()
-    {
-        return Locations_model::isEnabled()->get();//->dropdown('location_name');
-    }
-
     public function getGuestSizeOptions($noOfGuests = null)
     {
         $options = [];
@@ -207,24 +199,24 @@ class Booking extends BaseComponent
     
     public function getDisabledDaysOfWeek()
     {
-	    // get a 7 day schedule
+        // get a 7 day schedule
         $schedule = $this->manager->getSchedule(7);
-        
+
         $disabled = [];
         foreach ($schedule->getPeriods() as $index=>$day) {
-	        if ($day->isEmpty())
-	        	$disabled[] = (int)date("w", strtotime($index));
+	         if ($day->isEmpty())
+	             $disabled[] = (int)date("w", strtotime($index));
         }
-        	    
-	    return $disabled;
+	    
+        return $disabled;
     }
     
     public function getDisabledDates()
     {
-	   // future proofing - ability to disable specific days
-	   return [];	    
+        // future proofing - ability to disable specific days
+        return [];	    
     }
-    
+
     public function getTimeSlots()
     {
         $result = [];
@@ -264,13 +256,13 @@ class Booking extends BaseComponent
     public function processPickerForm()
     {
         $pickerStep = get('picker_step', 1);
-            
-	    $this->pickerStep = 'dateselect';
-	    
-	    $this->page['nextOpen'] = Carbon::parse($this->manager->getSchedule()->getOpenTime());
-	    $this->page['timeOptions'] = $this->getTimeSlots();
-	    $this->page['disabledDaysOfWeek'] = $this->getDisabledDaysOfWeek();
-	    $this->page['disabledDates'] = $this->getDisabledDates();
+
+        $this->pickerStep = 'dateselect';
+
+        $this->page['nextOpen'] = Carbon::parse($this->manager->getSchedule()->getOpenTime());
+        $this->page['timeOptions'] = $this->getTimeSlots();
+        $this->page['disabledDaysOfWeek'] = $this->getDisabledDaysOfWeek();
+        $this->page['disabledDates'] = $this->getDisabledDates();
 
         // location selection made, show date selection
         if ($pickerStep == 1) {
@@ -321,7 +313,7 @@ class Booking extends BaseComponent
     //
     //
     //
-    
+
     protected function checkLocationParam()
     {
         $param = $this->param('location', 'local');
@@ -393,7 +385,7 @@ class Booking extends BaseComponent
     //
     // Helpers
     //
-    
+
     /**
      * @return \Carbon\Carbon
      */
