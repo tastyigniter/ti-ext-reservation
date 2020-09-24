@@ -41,13 +41,15 @@
     }
     
     Booking.prototype.initGuestpicker = function () {
-        this.$el.delegate('[name="guest"]', 'change', $.proxy(this.onSelectGuestPicker, this))	    
+        this.$el.delegate('[name="guest"]', 'change', $.proxy(this.onSelectGuestPicker, this));
+        this.$guestPickerValue = this.$el.find('[name="guest"]').val();
 	}
     
     Booking.prototype.onSelectDatePicker = function(event) {
         var pickerDate = moment(event.date.toDateString())
         var lockerValue = pickerDate.format('YYYY-MM-DD')
         this.$pickerValue = lockerValue;
+        this.$dataLocker.val(lockerValue);
         this.onHtmlUpdate();
     }
     
@@ -58,6 +60,7 @@
     }
     
     Booking.prototype.onHtmlUpdate = function() {
+        
 		jQuery.ajax(location.pathname + '?&date=' + this.$pickerValue + '&guest=' + this.$guestPickerValue, {
 	         dataType: 'html'
 	    })

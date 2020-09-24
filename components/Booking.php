@@ -372,8 +372,8 @@ class Booking extends BaseComponent
 
         if ($dateTime->lt(Carbon::now()))
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
-
-        if (!$this->manager->getSchedule()->isOpenAt($dateTime))
+                                  
+        if (!$this->manager->makeTimeSlots($dateTime, $this->location->getReservationInterval())->count())
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
         if (!$this->manager->hasAvailableTables(input('guest')))
