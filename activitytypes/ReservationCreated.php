@@ -87,6 +87,6 @@ class ReservationCreated implements ActivityInterface
 
     public static function getMessage(Activity $activity)
     {
-        return lang('igniter.reservation::default.activity_reservation_created');
+        return sprintf(lang('igniter.reservation::default.activity_reservation_created'), $activity->properties['full_name']);
     }
 }
