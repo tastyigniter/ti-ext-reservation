@@ -289,10 +289,9 @@ class Booking extends BaseComponent
     public function onComplete()
     {
         $data = input();
-
+        
         if (!$this->validatePasses($data, $this->createRules('booking')))
             return Redirect::back()->withInput();
-
         try {
             $reservation = $this->getReservation();
 
@@ -303,9 +302,8 @@ class Booking extends BaseComponent
 
             return Redirect::to($this->controller->pageUrl($redirect, ['hash' => $reservation->hash]));
         }
-        catch (Exception $ex) {
+        catch (Exception $ex) {            
             flash()->warning($ex->getMessage());
-
             return Redirect::back()->withInput();
         }
     }

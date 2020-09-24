@@ -94,7 +94,7 @@ class BookingManager
         $reservation->telephone = array_get($data, 'telephone', $reservation->telephone);
         $reservation->comment = array_get($data, 'comment');
 
-        $dateTime = Carbon::createFromFormat('Y-m-d H:i', array_get($data, 'sdateTime'));
+        $dateTime = Carbon::createFromFormat('Y-m-d H:i', array_get($data, 'date').' '.array_get($data, 'time'));
         $reservation->reserve_date = $dateTime->format('Y-m-d');
         $reservation->reserve_time = $dateTime->format('H:i:s');
         $reservation->duration = $this->location->getReservationLeadTime();
@@ -146,7 +146,7 @@ class BookingManager
         );
         
         $tables = $tables->diff($reserved)->sortBy('max_capacity');
-
+        
         return $this->filterBookableTables($tables, $noOfGuests);
     }
 
@@ -182,8 +182,8 @@ class BookingManager
             $result->push($table);
             if ($previousCapacity >= $noOfGuests)
                 break;
-        }
-
+        } 
+        
         return $result;
     }
 
