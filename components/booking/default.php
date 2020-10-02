@@ -12,6 +12,6 @@
     <?php } else { ?>
         <h1 class="h3"><?= lang('igniter.reservation::default.text_heading'); ?></h1>
 
-        <?= partial('@dateselect') ?>
+        <?= partial('@picker_form') ?>
     <?php } ?>
 </div>

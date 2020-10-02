@@ -14,13 +14,13 @@
 
     Booking.prototype.init = function () {
 	    if (this.$picker = this.$el.find('[data-control="datepicker"]'))
-            this.initDatepicker();
+            this.initDatePicker();
             
 	    if (this.$guestPicker = this.$el.find('[name="guest"]'))
-            this.initGuestpicker();
+            this.initGuestPicker();
     }
     
-    Booking.prototype.initDatepicker = function () {
+    Booking.prototype.initDatePicker = function () {
         this.$pickerValue = this.options.datepickerStartdate;
         this.$picker.datepicker({
 	        daysOfWeekDisabled: this.options.datepickerDisableddaysofweek,
@@ -40,7 +40,7 @@
         this.$picker.on('changeDate', $.proxy(this.onSelectDatePicker, this))	    
     }
     
-    Booking.prototype.initGuestpicker = function () {
+    Booking.prototype.initGuestPicker = function () {
         this.$el.delegate('[name="guest"]', 'change', $.proxy(this.onSelectGuestPicker, this));
         this.$guestPickerValue = this.$el.find('[name="guest"]').val();
 	}

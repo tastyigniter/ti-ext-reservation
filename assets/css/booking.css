@@ -11,3 +11,6 @@
 .datepicker-inline table {
 	width: 100%;
 }
+.datepicker-inline table .day {
+	padding: 12px;
+}
