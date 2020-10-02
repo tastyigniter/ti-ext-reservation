@@ -8,7 +8,6 @@ use Admin\Models\Tables_model;
 use Auth;
 use Carbon\Carbon;
 use DateInterval;
-use DatePeriod;
 use Event;
 use Igniter\Flame\Traits\Singleton;
 
@@ -60,8 +59,9 @@ class BookingManager
 
     /**
      * @param \Carbon\Carbon $date
-     * @param $interval
-     * @return array|\DatePeriod|\DateTime[]
+     * @param int $interval
+     * @param int $lead
+     * @return array|\Illuminate\Support\Collection
      * @throws \Exception
      */
     public function makeTimeSlots(Carbon $date, $interval, $lead = 0)
@@ -71,9 +71,8 @@ class BookingManager
 
         $dateInterval = new DateInterval('PT'.$interval.'M');
         $leadTime = new DateInterval('PT'.$lead.'M');
-        $dateTimes = $this->getSchedule()->forDate($date)->timeslot($dateInterval, $leadTime);
 
-        return $dateTimes;
+        return $this->getSchedule()->generateTimeslot($date, $dateInterval, $leadTime);
     }
 
     /**
