@@ -32,6 +32,8 @@ class Booking extends BaseComponent
     protected $dateFormat;
 
     protected $timeFormat;
+    
+    protected $locations;
 
     public $pickerStep;
 
@@ -143,7 +145,7 @@ class Booking extends BaseComponent
 
     public function onRun()
     {
-        if ($redirect = $this->checkLocationParam())
+        if ($redirect = $this->checkLocationsForReservation())
             return $redirect;
         
         $this->addJs('~/app/system/assets/ui/js/vendor/moment.min.js', 'moment-js');
@@ -178,6 +180,25 @@ class Booking extends BaseComponent
     public function getFormAction()
     {
         return $this->controller->pageUrl($this->property('bookingPage'));
+    }
+    
+    public function checkLocationsForReservation()
+    {
+        $this->locations = Locations_model::isEnabled()
+        ->get()
+        ->filter(function($location){
+            var_dump($location->getOption('offer_reservation'));
+            return $location->getOption('offer_reservation') == 1;
+        })
+        ->pluck('location_name', 'location_id');
+               
+        if (!$this->locations)
+            return \Redirect::to($this->pageUrl($this->property('locationNotFoundPage')));
+    }
+    
+    public function getLocations()
+    {
+        return $this->locations;
     }
 
     public function getGuestSizeOptions($noOfGuests = null)
@@ -224,7 +245,7 @@ class Booking extends BaseComponent
         $interval = $this->location->getReservationInterval();
         $dateTimes = $this->manager->makeTimeSlots($selectedDate, $interval);
         foreach ($dateTimes as $date) {
-            $dateTime = $selectedDate->copy()->setTimeFromTimeString($date->format());
+            $dateTime = $selectedDate->copy()->setTimeFromTimeString($date->format('H:i'));
             $result[] = (object)[
                 'rawTime' => $dateTime->format('H:i'),
                 'time' => $dateTime->isoFormat($this->property('bookingTimeFormat')),
@@ -311,19 +332,6 @@ class Booking extends BaseComponent
     //
     //
     //
-
-    protected function checkLocationParam()
-    {
-        $param = $this->param('location', 'local');
-        if (is_single_location() AND $param === $this->property('defaultLocationParam', 'local'))
-            return;
-
-        if ($this->location = Location::getBySlug($param))
-            return;
-
-        return \Redirect::to($this->pageUrl($this->property('locationNotFoundPage')));
-    }
-
     protected function getLocation()
     {
         if (!is_numeric($locationId = input('location')))
@@ -332,7 +340,8 @@ class Booking extends BaseComponent
         if (!is_null($this->location))
             return $this->location;
 
-        $this->location = Location::getById($locationId);
+        $this->location = Location::getById($locationId) ?? Location::getById(params('default_location_id'));
+
         $this->location->parseOptionsValue();
 
         return $this->location;
