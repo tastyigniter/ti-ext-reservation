@@ -11,8 +11,8 @@ Go to **Restaurants > Locations > Edit Location**, under the **Orders & Reservat
 ### Components
 | Name     | Page variable                | Description                                      |
 | -------- | ---------------------------- | ------------------------------------------------ |
-| Booking | `<?= component('booking') ?>` | Display the booking form              |
-| Reservations | `<?= component('reservations') ?>` | Displays a list of reservations on the page               |
+| Booking | `@component('booking')` | Display the booking form              |
+| Reservations | `@component('reservations')` | Displays a list of reservations on the page               |
 
 ### Booking Component
 
@@ -21,6 +21,7 @@ Go to **Restaurants > Locations > Edit Location**, under the **Orders & Reservat
 | Property                 | Description              | Example Value | Default Value |
 | ------------------------ | ------------------------ | ------------- | ------------- |
 | mode      | Enable or disable booking     |       TRUE           |        TRUE   |
+| datePickerNoOfDays      | The number of days to list for the date picker    |       30           |      30   |
 | maxGuestSize      | The maximum guest size        |       20           |      20   |
 | timePickerInterval        | The interval to use for the time picker       |       30           |      30   |
 | timeSlotsInterval     | The interval to use for the time slots        |       15           |      15   |
@@ -37,14 +38,14 @@ Go to **Restaurants > Locations > Edit Location**, under the **Orders & Reservat
 
 | Variable                  | Description                                                  |
 | ------------------------- | ------------------------------------------------------------ |
-| $bookingDateFormat | Date format                                                |
-| $bookingTimeFormat | Time format                                               |
-| $bookingDateTimeFormat | Date time format                                                |
-| $bookingLocation | Instance of the current location model                                              |
-| $showLocationThumb | Display location thumbnail                                                |
-| $locationThumbWidth | Location thumbnail width                                                |
-| $locationThumbHeight | Location thumbnail height                                               |
-| $customer | Instance of the logged user model                                                |
+| `{{ $bookingDateFormat }}` | Date format                                                |
+| `{{ $bookingTimeFormat }}` | Time format                                               |
+| `{{ $bookingDateTimeFormat }}` | Date time format                                                |
+| `{{ $bookingLocation }}` | Instance of the current location model                                              |
+| `{{ $showLocationThumb }}` | Display location thumbnail                                                |
+| `{{ $locationThumbWidth }}` | Location thumbnail width                                                |
+| `{{ $locationThumbHeight }}` | Location thumbnail height                                               |
+| `{{ $customer }}` | Instance of the logged user model                                                |
 
 **Example:**
 
@@ -56,7 +57,7 @@ permalink: /reservation
 '[booking]': { }
 ---
 ...
-<?= component('booking'); ?>
+@component('booking')
 ...
 ```
 
