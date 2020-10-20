@@ -8,13 +8,30 @@
 <input type="hidden" name="picker_step" value="2">
 <input type="hidden" name="location" value="<?= $__SELF__->location->getKey(); ?>">
 
-<div class="form-row align-items-center">
+<div class="form-row align-items-center progress-indicator-container">
     <div class="col-md-9 pr-md-4">
         <div data-control="datepicker" data-date="<?= $__SELF__->getSelectedDate()->format('Y-m-d') ?>"></div>
         <input type="hidden" name="date" value="<?= $__SELF__->getSelectedDate()->format('Y-m-d') ?>"/>
     </div>
     <div class="col-md-3" id="ti-datepicker-options">
         <div class="form-group pt-4">
+            <label for="locationSelect">
+                <?= lang('igniter.reservation::default.label_location'); ?>
+            </label>
+            <select
+                name="location"
+                id="locationSelect"
+                class="form-control"
+            >
+                <?php foreach ($__SELF__->getLocations() as $key => $value) { ?>
+                    <option
+                        value="<?= $key; ?>"
+                        <?= set_select('location', $key); ?>
+                    ><?= e($value); ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="form-group">
             <label for="noOfGuests">
                 <?= lang('igniter.reservation::default.label_guest_num'); ?>
             </label>
