@@ -32,7 +32,7 @@ class Booking extends BaseComponent
     protected $dateFormat;
 
     protected $timeFormat;
-    
+
     protected $locations;
 
     public $pickerStep;
@@ -147,7 +147,7 @@ class Booking extends BaseComponent
     {
         if ($redirect = $this->checkLocationsForReservation())
             return $redirect;
-        
+
         $this->addJs('~/app/system/assets/ui/js/vendor/moment.min.js', 'moment-js');
         $this->addCss('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
         $this->addJs('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
@@ -181,7 +181,7 @@ class Booking extends BaseComponent
     {
         return $this->controller->pageUrl($this->property('bookingPage'));
     }
-    
+
     public function checkLocationsForReservation()
     {
         $this->locations = Locations_model::isEnabled()
@@ -190,11 +190,11 @@ class Booking extends BaseComponent
             return $location->getOption('offer_reservation') == 1;
         })
         ->pluck('location_name', 'location_id');
-               
+
         if (!$this->locations)
             return \Redirect::to($this->pageUrl($this->property('locationNotFoundPage')));
     }
-    
+
     public function getLocations()
     {
         return $this->locations;
@@ -216,7 +216,7 @@ class Booking extends BaseComponent
 
         return array_get($options, $noOfGuests);
     }
-    
+
     public function getDisabledDaysOfWeek()
     {
         // get a 7 day schedule
@@ -227,14 +227,14 @@ class Booking extends BaseComponent
 	         if ($day->isEmpty())
 	             $disabled[] = (int)date("w", strtotime($index));
         }
-	    
+
         return $disabled;
     }
-    
+
     public function getDisabledDates()
     {
         // future proofing - ability to disable specific days
-        return [];	    
+        return [];
     }
 
     public function getTimeSlots()
@@ -309,7 +309,7 @@ class Booking extends BaseComponent
     public function onComplete()
     {
         $data = input();
-        
+
         if (!$this->validatePasses($data, $this->createRules('booking')))
             return Redirect::back()->withInput();
         try {
@@ -322,7 +322,7 @@ class Booking extends BaseComponent
 
             return Redirect::to($this->controller->pageUrl($redirect, ['hash' => $reservation->hash]));
         }
-        catch (Exception $ex) {            
+        catch (Exception $ex) {
             flash()->warning($ex->getMessage());
             return Redirect::back()->withInput();
         }
@@ -378,7 +378,7 @@ class Booking extends BaseComponent
 
         if ($dateTime->lt(Carbon::now()))
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
-                                  
+
         if (!$this->manager->makeTimeSlots($dateTime, $this->location->getReservationInterval())->count())
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 

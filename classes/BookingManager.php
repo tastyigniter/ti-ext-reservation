@@ -143,9 +143,9 @@ class BookingManager
         $reserved = Reservations_model::findReservedTables(
             $this->location, $dateTime
         );
-        
+
         $tables = $tables->diff($reserved)->sortBy('max_capacity');
-        
+
         return $this->filterBookableTables($tables, $noOfGuests);
     }
 
@@ -181,8 +181,8 @@ class BookingManager
             $result->push($table);
             if ($previousCapacity >= $noOfGuests)
                 break;
-        } 
-        
+        }
+
         return $result;
     }
 
