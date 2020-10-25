@@ -33,8 +33,6 @@ class Booking extends BaseComponent
 
     protected $timeFormat;
 
-    protected $locations;
-
     public $pickerStep;
 
     public function defineProperties()
@@ -163,9 +161,6 @@ class Booking extends BaseComponent
 
     public function onRun()
     {
-        if ($redirect = $this->checkLocationsForReservation())
-            return $redirect;
-
         $this->addJs('~/app/system/assets/ui/js/vendor/moment.min.js', 'moment-js');
         $this->addCss('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
         $this->addJs('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
@@ -201,22 +196,9 @@ class Booking extends BaseComponent
         return $this->controller->pageUrl($this->property('bookingPage'));
     }
 
-    public function checkLocationsForReservation()
-    {
-        $this->locations = Locations_model::isEnabled()
-            ->get()
-            ->filter(function ($location) {
-                return $location->getOption('offer_reservation') == 1;
-            })
-            ->pluck('location_name', 'location_id');
-
-        if (!$this->locations)
-            return \Redirect::to($this->pageUrl($this->property('locationNotFoundPage')));
-    }
-
     public function getLocations()
     {
-        return $this->locations;
+        return Locations_model::isEnabled()->dropdown('location_name');
     }
 
     public function getGuestSizeOptions($noOfGuests = null)
