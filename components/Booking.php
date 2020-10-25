@@ -204,11 +204,11 @@ class Booking extends BaseComponent
     public function checkLocationsForReservation()
     {
         $this->locations = Locations_model::isEnabled()
-        ->get()
-        ->filter(function($location){
-            return $location->getOption('offer_reservation') == 1;
-        })
-        ->pluck('location_name', 'location_id');
+            ->get()
+            ->filter(function ($location) {
+                return $location->getOption('offer_reservation') == 1;
+            })
+            ->pluck('location_name', 'location_id');
 
         if (!$this->locations)
             return \Redirect::to($this->pageUrl($this->property('locationNotFoundPage')));
@@ -259,9 +259,9 @@ class Booking extends BaseComponent
         $schedule = $this->manager->getSchedule(7);
 
         $disabled = [];
-        foreach ($schedule->getPeriods() as $index=>$day) {
-	         if ($day->isEmpty())
-	             $disabled[] = (int)date("w", strtotime($index));
+        foreach ($schedule->getPeriods() as $index => $day) {
+            if ($day->isEmpty())
+                $disabled[] = (int)date("w", strtotime($index));
         }
 
         return $disabled;
@@ -360,6 +360,7 @@ class Booking extends BaseComponent
         }
         catch (Exception $ex) {
             flash()->warning($ex->getMessage());
+
             return Redirect::back()->withInput();
         }
     }
@@ -369,15 +370,13 @@ class Booking extends BaseComponent
     //
     protected function getLocation()
     {
-        if (!is_numeric($locationId = input('location')))
-            $locationId = params('default_location_id');
-
         if (!is_null($this->location))
             return $this->location;
 
-        $this->location = Location::getById($locationId) ?? Location::getById(params('default_location_id'));
+        if (!is_numeric($locationId = input('location')))
+            $locationId = Location::current() ? Location::getId() : params('default_location_id');
 
-        $this->location->parseOptionsValue();
+        $this->location = Location::getById($locationId);
 
         return $this->location;
     }

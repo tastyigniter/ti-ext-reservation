@@ -61,8 +61,7 @@
     }
 
     Booking.prototype.onSelectGuestPicker = function(event) {
-        var lockerValue = $(event.target).val();
-        this.$guestPickerValue = lockerValue;
+        this.$guestPickerValue = $(event.target).val();
         this.onHtmlUpdate();
     }
 
