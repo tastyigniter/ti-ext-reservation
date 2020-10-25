@@ -44,6 +44,7 @@ class Booking extends BaseComponent
                 'label' => 'Enable or disable booking',
                 'type' => 'switch',
                 'default' => TRUE,
+                'validationRule' => 'required|boolean',
             ],
             'minGuestSize' => [
                 'label' => 'The minimum guest size',
@@ -54,45 +55,54 @@ class Booking extends BaseComponent
                 'label' => 'The maximum guest size',
                 'type' => 'number',
                 'default' => 20,
+                'validationRule' => 'required|integer',
             ],
             'datePickerNoOfDays' => [
                 'label' => 'The number of days to list for the date picker',
                 'type' => 'number',
                 'default' => 30,
+                'validationRule' => 'required|integer',
             ],
             'timePickerInterval' => [
                 'label' => 'The interval to use for the time picker',
                 'type' => 'number',
                 'default' => 30,
+                'validationRule' => 'required|integer',
             ],
             'timeSlotsInterval' => [
                 'label' => 'The interval to use for the time slots',
                 'type' => 'number',
                 'default' => 15,
+                'validationRule' => 'required|integer',
             ],
             'bookingDateFormat' => [
                 'label' => 'Date format to use for the date picker',
                 'type' => 'text',
                 'default' => 'MMM DD, YYYY',
+                'validationRule' => 'required|string',
             ],
             'bookingTimeFormat' => [
                 'label' => 'Time format to use for the time dropdown',
                 'type' => 'text',
                 'default' => 'hh:mm a',
+                'validationRule' => 'required|string',
             ],
             'bookingDateTimeFormat' => [
                 'label' => 'Date time format to use for displaying reservation date & time',
                 'type' => 'text',
                 'default' => 'dddd, MMMM D, YYYY \a\t hh:mm a',
+                'validationRule' => 'required|string',
             ],
             'showLocationThumb' => [
                 'label' => 'Show Location Image Thumbnail',
                 'type' => 'switch',
+                'validationRule' => 'required|boolean',
             ],
             'locationThumbWidth' => [
                 'label' => 'Height',
                 'type' => 'number',
                 'default' => 95,
+                'validationRule' => 'required|integer',
                 'trigger' => [
                     'action' => 'show',
                     'field' => 'showLocationThumb',
@@ -103,6 +113,7 @@ class Booking extends BaseComponent
                 'label' => 'Width',
                 'type' => 'number',
                 'default' => 80,
+                'validationRule' => 'required|integer',
                 'trigger' => [
                     'action' => 'show',
                     'field' => 'showLocationThumb',
@@ -114,12 +125,14 @@ class Booking extends BaseComponent
                 'type' => 'select',
                 'default' => 'reservation/reservation',
                 'options' => [static::class, 'getThemePageOptions'],
+                'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
             'successPage' => [
                 'label' => 'Page to redirect to when checkout is successful',
                 'type' => 'select',
                 'default' => 'reservation/success',
                 'options' => [static::class, 'getThemePageOptions'],
+                'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
             'defaultLocationParam' => [
                 'label' => 'The default location route parameter (used internally when no location is selected)',
