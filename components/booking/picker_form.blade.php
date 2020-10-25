@@ -7,72 +7,72 @@
 <input type="hidden" name="location" value="{{ $__SELF__->location->getKey() }}">
 
 <div class="form-row align-items-center progress-indicator-container">
-    <div class="col-md-9 pr-md-4">
-        <div data-control="datepicker" data-date="{{ $__SELF__->getSelectedDate()->format('Y-m-d') }}"></div>
-        <input type="hidden" name="date" value="{{ $__SELF__->getSelectedDate()->format('Y-m-d') }}"/>
-    </div>
-    <div class="col-md-3" id="ti-datepicker-options">
-        <div class="form-group pt-4">
-            <label for="locationSelect">
-                <?= lang('igniter.reservation::default.label_location'); ?>
-            </label>
-            <select
-                name="location"
-                id="locationSelect"
-                class="form-control"
-            >
-                <?php foreach ($__SELF__->getLocations() as $key => $value) { ?>
-                <option
-                    value="<?= $key; ?>"
-                <?= set_select('location', $key); ?>
-                ><?= e($value); ?></option>
-                <?php } ?>
-            </select>
+    @if (!$useCalendarView)
+        <div class="col-md-9 pr-md-4">
+            <div
+                data-control="datepicker"
+                data-date="{{ $__SELF__->getSelectedDate()->format('Y-m-d') }}"
+            ></div>
+            <input type="hidden" name="date" value="{{ $__SELF__->getSelectedDate()->format('Y-m-d') }}"/>
         </div>
-        <div class="form-group">
-            <label for="noOfGuests">
-                @lang('igniter.reservation::default.label_guest_num')
-            </label>
-            <select
-                name="guest"
-                id="noOfGuests"
-                class="form-control"
-            >
-                @foreach ($__SELF__->getGuestSizeOptions() as $key => $value)
-                    <option
-                        value="{{ $key }}"
-                        {!! set_select('guest', $key) !!}
-                    >{{ $value }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="time">
-                @lang('igniter.reservation::default.label_time')
-            </label>
-            <select
-                name="time"
-                id="time"
-                class="form-control"
-            >
-                @foreach ($timeOptions as $key => $value)
-                    <option
-                        value="{{ $value->rawTime }}"
-                        {!! set_select('time', $value->rawTime) !!}
-                        {!! $value->fullyBooked ? 'disabled="disabled"' : '' !!}
-                    >{{ $value->time }}</option>
-                @endforeach
-            </select>
-        </div>
-        @if (count($timeOptions))
-            <div class="form-group">
-                <button
-                    type="submit"
-                    class="btn btn-primary btn-block"
-                >@lang('igniter.reservation::default.button_find_table')</button>
+        <div class="col-md-3" id="ti-datepicker-options">
+            <div class="form-group pt-4">
+                <label for="locationSelect">@lang('igniter.reservation::default.label_location')</label>
+                @partial('@input_location')
             </div>
-        @endif
-    </div>
+            <div class="form-group">
+                <label for="noOfGuests">@lang('igniter.reservation::default.label_guest_num')</label>
+                @partial('@input_guest')
+            </div>
+            <div class="form-group">
+                <label for="time">@lang('igniter.reservation::default.label_time')</label>
+                @partial('@input_time')
+            </div>
+            @if (count($timeOptions))
+                <div class="form-group">
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-block"
+                    >@lang('igniter.reservation::default.button_find_table')</button>
+                </div>
+            @endif
+        </div>
+    @else
+        <div class="col-sm-3 mb-3">
+            <label
+                class="sr-only"
+                for="locationSelect"
+            >@lang('igniter.reservation::default.label_location')</label>
+            @partial('@input_location')
+        </div>
+        <div class="col-sm-2 mb-3">
+            <label
+                class="sr-only"
+                for="noOfGuests"
+            >@lang('igniter.reservation::default.label_guest_num')</label>
+            @partial('@input_guest')
+        </div>
+        <div class="col-sm-3 mb-3">
+            <label
+                class="sr-only"
+                for="date"
+            >@lang('igniter.reservation::default.label_date')</label>
+            @partial('@input_date')
+        </div>
+        <div class="col-sm-2 mb-3">
+            <label
+                class="sr-only"
+                for="time"
+            >@lang('igniter.reservation::default.label_time')</label>
+            @partial('@input_time')
+        </div>
+        <div class="col-sm-2 mb-3">
+            <button
+                type="submit"
+                class="btn btn-primary btn-block"
+            ><?= lang('igniter.reservation::default.button_find_table'); ?></button>
+        </div>
+    @endif
 </div>
 <div class="form-row">
     <div class="col">

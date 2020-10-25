@@ -46,6 +46,11 @@ class Booking extends BaseComponent
                 'default' => TRUE,
                 'validationRule' => 'required|boolean',
             ],
+            'useCalendarView' => [
+                'label' => 'Enable to display a calendar view for date selection',
+                'type' => 'switch',
+                'default' => FALSE,
+            ],
             'minGuestSize' => [
                 'label' => 'The minimum guest size',
                 'type' => 'number',
@@ -178,6 +183,7 @@ class Booking extends BaseComponent
         $this->page['bookingDateFormat'] = $this->dateFormat = $this->property('bookingDateFormat');
         $this->page['bookingTimeFormat'] = $this->timeFormat = $this->property('bookingTimeFormat');
         $this->page['bookingDateTimeFormat'] = $this->property('bookingDateTimeFormat');
+        $this->page['useCalendarView'] = (bool)$this->property('useCalendarView', FALSE);
 
         $this->page['reservation'] = $this->getReservation();
         $this->page['bookingLocation'] = $this->getLocation();
@@ -228,6 +234,23 @@ class Booking extends BaseComponent
             return $options;
 
         return array_get($options, $noOfGuests);
+    }
+
+    public function getDatePickerOptions()
+    {
+        $options = [];
+
+        $noOfDays = $this->property('datePickerNoOfDays');
+
+        $start = Carbon::now()->startOfDay();
+        $end = Carbon::now()->addDays($noOfDays);
+        $schedule = $this->manager->getSchedule($noOfDays);
+        for ($date = $start; $date->lte($end); $date->addDay()) {
+            if (count($schedule->forDate($date)))
+                $options[] = $date->copy();
+        }
+
+        return $options;
     }
 
     public function getDisabledDaysOfWeek()
