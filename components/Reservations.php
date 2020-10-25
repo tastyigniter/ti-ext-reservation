@@ -5,39 +5,45 @@ namespace Igniter\Reservation\Components;
 use Admin\Models\Reservations_model;
 use Auth;
 use Igniter\Reservation\Classes\BookingManager;
+use Main\Traits\UsesPage;
 
 class Reservations extends \System\Classes\BaseComponent
 {
+    use UsesPage;
+
     public function defineProperties()
     {
         return [
-            'pageNumber' => [
-                'label' => 'Page Number',
-                'type' => 'string',
-            ],
             'itemsPerPage' => [
                 'label' => 'Items Per Page',
                 'type' => 'number',
                 'default' => 20,
+                'validationRule' => 'required|integer',
             ],
             'sortOrder' => [
                 'label' => 'Sort order',
-                'type' => 'string',
+                'type' => 'text',
+                'default' => 'date_added desc',
+                'validationRule' => 'required|string',
             ],
             'reservationDateTimeFormat' => [
                 'label' => 'Date time format to use for displaying reservation date & time',
                 'type' => 'text',
                 'default' => 'DD MMM \a\t HH:mm',
+                'validationRule' => 'required|string',
             ],
             'reservationsPage' => [
                 'label' => 'Account Reservations Page',
-                'type' => 'string',
+                'type' => 'select',
                 'default' => 'account/reservations',
+                'options' => [static::class, 'getThemePageOptions'],
+                'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
             'hashParamName' => [
                 'label' => 'The parameter name used for the reservation hash code',
                 'type' => 'text',
                 'default' => 'hash',
+                'validationRule' => 'required|string',
             ],
         ];
     }
