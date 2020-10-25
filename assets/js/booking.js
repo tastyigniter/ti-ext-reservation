@@ -23,14 +23,11 @@
 
         if (this.$locationPicker = this.$el.find('[name="location"]'))
             this.initLocationPicker();
-
     }
 
     Booking.prototype.initDatePicker = function () {
-        this.$datePickerValue = this.options.datepickerStartdate;
-        this.$datePicker.datepicker({
-	        daysOfWeekDisabled: this.options.datepickerDisableddaysofweek,
-	        datesDisabled: this.options.datepickerDisableddates,
+        this.$datePickerValue = this.$datePicker.data('startDate');
+        this.$datePicker.datepicker($.extend({
             format: 'yyyy-mm-dd',
             icons: {
                 time: "fa fa-clock-o",
@@ -38,9 +35,8 @@
                 up: "fa fa-arrow-up",
                 down: "fa fa-arrow-down"
             },
-            startDate: this.options.datepickerStartdate,
             todayHighlight: true,
-        });
+        }, this.$datePicker.data()));
 
         this.$dataLocker = this.$datePicker.next('input');
         this.$datePicker.on('changeDate', $.proxy(this.onSelectDatePicker, this))

@@ -1,8 +1,5 @@
 <div
     data-control="booking"
-    data-datepicker-startdate="{{ isset($nextOpen) ? $nextOpen->format('Y-m-d') : null }}"
-    data-datepicker-disableddaysofweek='@json($disabledDaysOfWeek ?? [])'
-    data-datepicker-disableddates='@json($disabledDates ?? [])'
 >
     @if ($__SELF__->pickerStep == 'info')
         @partial('@info')
