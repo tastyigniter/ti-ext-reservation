@@ -83,7 +83,7 @@ class BookingManager
     {
         Event::fire('igniter.reservation.beforeSaveReservation', [$reservation, $data]);
 
-        $reservation->customer_id = $this->customer ? $this->customer->getKey() : null;;
+        $reservation->customer_id = $this->customer ? $this->customer->getKey() : null;
         $reservation->location_id = $this->location ? $this->location->getKey() : null;
 
         $reservation->guest_num = array_get($data, 'guest');
@@ -126,7 +126,7 @@ class BookingManager
         return $this->getAvailableTables($noOfGuests)->isNotEmpty();
     }
 
-    public function isFullyBookedOn(\Carbon\Carbon $dateTime, $noOfGuests)
+    public function isFullyBookedOn(\DateTime $dateTime, $noOfGuests)
     {
         return $this->getBookableTables($dateTime, $noOfGuests)->isEmpty();
     }
@@ -136,7 +136,7 @@ class BookingManager
      * @param int $noOfGuests
      * @return \Illuminate\Support\Collection|null
      */
-    public function getBookableTables(\Carbon\Carbon $dateTime, $noOfGuests)
+    public function getBookableTables(\DateTime $dateTime, $noOfGuests)
     {
         $tables = $this->getAvailableTables($noOfGuests);
 

@@ -243,7 +243,7 @@ class Booking extends BaseComponent
         $disabled = [];
         foreach ($schedule->getPeriods() as $index => $day) {
             if ($day->isEmpty())
-                $disabled[] = (int)date("w", strtotime($index));
+                $disabled[] = (int)date('w', strtotime($index));
         }
 
         return $disabled;
