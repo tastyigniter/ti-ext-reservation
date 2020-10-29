@@ -77,7 +77,7 @@ class Extension extends \System\Classes\BaseExtension
             if (Status_history_model::alreadyExists($object, $statusId))
                 return;
 
-            Event::fire('igniter.reservation.beforeAddReservationStatus', [$model, $object, $statusId, $previousStatus], TRUE);
+            Event::fire('igniter.reservation.beforeAddStatus', [$model, $object, $statusId, $previousStatus], TRUE);
         });
 
         Event::listen('admin.statusHistory.added', function ($model) {
