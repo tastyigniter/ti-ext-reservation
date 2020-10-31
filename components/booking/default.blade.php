@@ -5,7 +5,11 @@
         @partial('@info')
 
         @partial('@booking_form')
-
+        
+    @elseif ($__SELF__->pickerStep == 'timeslot')
+    
+        @partial('@timeslot')
+        
     @else
         <h1 class="h3">@lang('igniter.reservation::default.text_heading')</h1>
 

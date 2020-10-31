@@ -7,7 +7,7 @@
 <input type="hidden" name="location" value="{{ $__SELF__->location->getKey() }}">
 
 <div class="form-row align-items-center progress-indicator-container">
-    @if (!$useCalendarView)
+    @if ($useCalendarView)
         <div class="col-md-9 pr-md-4">
             <div
                 data-control="datepicker"

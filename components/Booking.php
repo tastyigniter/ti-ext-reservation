@@ -259,18 +259,38 @@ class Booking extends BaseComponent
     {
         $result = [];
         $selectedDate = $this->getSelectedDate();
+        $selectedTime = $this->getSelectedDateTime();
         $interval = $this->location->getReservationInterval();
         $dateTimes = $this->manager->makeTimeSlots($selectedDate, $interval);
+        $index = 0;
         foreach ($dateTimes as $date) {
             $dateTime = $selectedDate->copy()->setTimeFromTimeString($date->format('H:i'));
             $result[] = (object)[
+                'index' => $index++,
+                'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
                 'rawTime' => $dateTime->format('H:i'),
                 'time' => $dateTime->isoFormat($this->property('bookingTimeFormat')),
                 'fullyBooked' => $this->manager->isFullyBookedOn($dateTime, input('guest', $this->property('minGuestSize'))),
             ];
         }
 
-        return $result;
+        return collect($result);
+    }
+    
+    public function getReducedTimeSlots()
+    {
+        $timeslots = $this->getTimeslots();
+        $selectedIndex = $timeslots->first(function($slot, $key){
+            return $slot->isSelected;
+        });
+        
+        $from = $selectedIndex->index - 2;
+        
+        if ($from < 0)
+            $from = 0;
+        
+        $timeslots = $timeslots->slice($from, 5);
+        return $timeslots;        
     }
 
     /**
@@ -321,7 +341,7 @@ class Booking extends BaseComponent
         if (!$this->validatePasses($data, $this->createRules('picker')))
             return;
 
-        $this->pickerStep = 'info';
+        $this->pickerStep = array_get($data, 'sdateTime') ? 'info' : 'timeslot';
     }
 
     public function onComplete()
