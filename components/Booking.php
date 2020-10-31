@@ -280,7 +280,7 @@ class Booking extends BaseComponent
     public function getReducedTimeSlots()
     {
         $timeslots = $this->getTimeslots();
-        $selectedIndex = $timeslots->first(function($slot, $key) {
+        $selectedIndex = $timeslots->first(function ($slot, $key) {
             return $slot->isSelected;
         });
 
@@ -290,6 +290,7 @@ class Booking extends BaseComponent
             $from = 0;
 
         $timeslots = $timeslots->slice($from, 5);
+
         return $timeslots;
     }
 
