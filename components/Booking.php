@@ -198,7 +198,12 @@ class Booking extends BaseComponent
 
     public function getLocations()
     {
-        return Locations_model::isEnabled()->dropdown('location_name');
+        return Locations_model::isEnabled()
+            ->get()
+            ->filter(function($location){
+                return $location->getOption('offer_reservation') == 1;
+            })
+            ->pluck('location_name', 'location_id');
     }
 
     public function getGuestSizeOptions($noOfGuests = null)
