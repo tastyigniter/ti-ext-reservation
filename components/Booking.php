@@ -200,7 +200,7 @@ class Booking extends BaseComponent
     {
         return Locations_model::isEnabled()
             ->get()
-            ->filter(function($location){
+            ->filter(function ($location) {
                 return $location->getOption('offer_reservation') == 1;
             })
             ->pluck('location_name', 'location_id');
