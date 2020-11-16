@@ -105,7 +105,7 @@ class Booking extends BaseComponent
                 'label' => 'Height',
                 'type' => 'number',
                 'default' => 95,
-                'validationRule' => 'required|integer',
+                'validationRule' => 'integer',
                 'trigger' => [
                     'action' => 'show',
                     'field' => 'showLocationThumb',
@@ -116,7 +116,7 @@ class Booking extends BaseComponent
                 'label' => 'Width',
                 'type' => 'number',
                 'default' => 80,
-                'validationRule' => 'required|integer',
+                'validationRule' => 'integer',
                 'trigger' => [
                     'action' => 'show',
                     'field' => 'showLocationThumb',

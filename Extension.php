@@ -49,7 +49,7 @@ class Extension extends \System\Classes\BaseExtension
         return [
             'events' => [
                 'igniter.reservation.confirmed' => \Igniter\Reservation\AutomationRules\Events\NewReservation::class,
-                'igniter.reservation.beforeAddReservationStatus' => \Igniter\Reservation\AutomationRules\Events\NewReservationStatus::class,
+                'igniter.reservation.statusAdded' => \Igniter\Reservation\AutomationRules\Events\NewReservationStatus::class,
                 'igniter.reservation.assigned' => \Igniter\Reservation\AutomationRules\Events\ReservationAssigned::class,
             ],
             'actions' => [],
@@ -77,7 +77,14 @@ class Extension extends \System\Classes\BaseExtension
             if (Status_history_model::alreadyExists($object, $statusId))
                 return;
 
-            Event::fire('igniter.reservation.beforeAddReservationStatus', [$model, $object, $statusId, $previousStatus], TRUE);
+            Event::fire('igniter.reservation.beforeAddStatus', [$model, $object, $statusId, $previousStatus], TRUE);
+        });
+
+        Event::listen('admin.statusHistory.added', function ($model) {
+            if (!$model instanceof Reservations_model)
+                return;
+
+            Event::fire('igniter.reservation.statusAdded', [$model], TRUE);
         });
 
         Event::listen('admin.assignable.assigned', function ($model) {

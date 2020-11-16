@@ -10,6 +10,7 @@
     
         @partial('@timeslot')
         
+        <h1 class="h3">@lang('igniter.reservation::default.text_time_heading')</h1>
     @else
         <h1 class="h3">@lang('igniter.reservation::default.text_heading')</h1>
 
