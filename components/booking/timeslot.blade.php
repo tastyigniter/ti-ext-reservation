@@ -19,7 +19,7 @@
             type="{{ !$slot->fullyBooked ? 'submit' : 'button' }}"
             name="sdateTime"
             value="{{ $selectedDate->format('Y-m-d').' '.$slot->rawTime }}"
-            class="timeslot btn {{ $slot->isSelected ? ' btn-primary' : 'btn-secondary' }} d-block d-sm-inline-block{{ $slot->fullyBooked ? ' disabled' : '' }}"
+            class="timeslot btn btn-primary d-block d-sm-inline-block{{ $slot->fullyBooked ? ' disabled' : '' }}"
         >{{ $slot->time }}</button>
     @endforeach
 @else

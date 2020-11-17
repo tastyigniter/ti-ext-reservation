@@ -41,7 +41,7 @@ class Booking extends BaseComponent
             'useCalendarView' => [
                 'label' => 'Enable to display a calendar view for date selection',
                 'type' => 'switch',
-                'default' => FALSE,
+                'default' => TRUE,
             ],
             'minGuestSize' => [
                 'label' => 'The minimum guest size',
@@ -236,8 +236,10 @@ class Booking extends BaseComponent
 
     public function getDisabledDaysOfWeek()
     {
+        $noOfDays = $this->property('datePickerNoOfDays');
+
         // get a 7 day schedule
-        $schedule = $this->manager->getSchedule(7);
+        $schedule = $this->manager->getSchedule($noOfDays);
 
         $disabled = [];
         foreach ($schedule->getPeriods() as $index => $day) {
@@ -370,6 +372,7 @@ class Booking extends BaseComponent
     //
     //
     //
+
     protected function getLocation()
     {
         if (!is_null($this->location))
