@@ -38,12 +38,6 @@ class Booking extends BaseComponent
     public function defineProperties()
     {
         return [
-            'mode' => [
-                'label' => 'Enable or disable booking',
-                'type' => 'switch',
-                'default' => TRUE,
-                'validationRule' => 'required|boolean',
-            ],
             'useCalendarView' => [
                 'label' => 'Enable to display a calendar view for date selection',
                 'type' => 'switch',
@@ -412,12 +406,12 @@ class Booking extends BaseComponent
 
     protected function processValidateAfter($validator, $dateTime)
     {
-        if (!(bool)$this->property('mode', TRUE)) {
+        if (!$location = $this->getLocation())
+            return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_location'));
+
+        if (!(bool)$location->getOption('offer_reservation')) {
             return $validator->errors()->add('location', lang('igniter.reservation::default.alert_reservation_disabled'));
         }
-
-        if (!$this->getLocation())
-            return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_location'));
 
         if ($dateTime->lt(Carbon::now()))
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
