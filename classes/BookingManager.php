@@ -99,7 +99,7 @@ class BookingManager
         $reservation->duration = $this->location->getReservationLeadTime();
         $reservation->save();
 
-        $tables = $this->getBookableTables($dateTime, $reservation->guest_num);
+        $tables = $this->getNextBookableTable($dateTime, $reservation->guest_num);
         $reservation->addReservationTables($tables->pluck('table_id')->all());
 
         $status = Statuses_model::find(setting('default_reservation_status'));
@@ -121,14 +121,9 @@ class BookingManager
         return $this->location->newWorkingSchedule('opening', $days);
     }
 
-    public function hasAvailableTables($noOfGuests)
-    {
-        return $this->getAvailableTables($noOfGuests)->isNotEmpty();
-    }
-
     public function isFullyBookedOn(\DateTime $dateTime, $noOfGuests)
     {
-        return $this->getBookableTables($dateTime, $noOfGuests)->isEmpty();
+        return $this->getNextBookableTable($dateTime, $noOfGuests)->isEmpty();
     }
 
     /**
@@ -136,7 +131,7 @@ class BookingManager
      * @param int $noOfGuests
      * @return \Illuminate\Support\Collection|null
      */
-    public function getBookableTables(\DateTime $dateTime, $noOfGuests)
+    public function getNextBookableTable(\DateTime $dateTime, $noOfGuests)
     {
         $tables = $this->getAvailableTables($noOfGuests);
 
@@ -144,9 +139,9 @@ class BookingManager
             $this->location, $dateTime
         );
 
-        $tables = $tables->diff($reserved)->sortBy('max_capacity');
+        $tables = $tables->diff($reserved)->sortBy('priority');
 
-        return $this->filterBookableTables($tables, $noOfGuests);
+        return $this->filterNextBookableTable($tables, $noOfGuests);
     }
 
     /**
@@ -158,25 +153,28 @@ class BookingManager
         if (!is_null($this->availableTables))
             return $this->availableTables;
 
-        if ($this->location->has('tables')) {
-            $query = $this->location->tables();
-            $query->isEnabled()->whereBetweenCapacity($noOfGuests);
-            $tables = $query->get();
-        }
-        else {
-            $query = Tables_model::isEnabled();
-            $query->whereBetweenCapacity($noOfGuests);
-            $tables = $query->get();
-        }
+        $query = Tables_model::isEnabled()
+            ->whereHasLocation($this->location->getKey())
+            ->whereBetweenCapacity($noOfGuests);
+        $tables = $query->get();
 
         return $this->availableTables = $tables;
     }
 
-    protected function filterBookableTables($tables, int $noOfGuests)
+    protected function filterNextBookableTable($tables, int $noOfGuests)
     {
         $result = collect();
         $previousCapacity = 0;
         foreach ($tables as $table) {
+            if (!$table->is_joinable)
+            {
+                if ($table->min_capacity >= $noOfGuests && $table->max_capacity <= $noOfGuests)
+                {
+                    $result->push($table);
+                    break;
+                }
+                continue;
+            }
             $previousCapacity += $table->max_capacity;
             $result->push($table);
             if ($previousCapacity >= $noOfGuests)

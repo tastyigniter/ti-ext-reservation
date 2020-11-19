@@ -285,6 +285,9 @@ class Booking extends BaseComponent
             return $slot->isSelected;
         });
 
+        if (!$selectedIndex)
+            return [];
+
         $from = $selectedIndex->index - 2;
 
         if ($from < 0)
@@ -422,7 +425,7 @@ class Booking extends BaseComponent
         if (!$this->manager->makeTimeSlots($dateTime, $this->location->getReservationInterval())->count())
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
-        if (!$this->manager->hasAvailableTables(input('guest')))
+        if (!$this->manager->isFullyBookedOn($dateTime, input('guest')))
             return $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
 
         $this->pickerStep = 'timeslot';
