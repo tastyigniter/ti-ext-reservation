@@ -3,3 +3,14 @@
 	text-align: center;
 	white-space: nowrap;
 }
+
+.datepicker-inline {
+	width: auto;
+}
+
+.datepicker-inline table {
+	width: 100%;
+}
+.datepicker-inline table .day {
+	padding: 12px;
+}

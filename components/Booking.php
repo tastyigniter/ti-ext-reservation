@@ -6,13 +6,10 @@ use Admin\Models\Locations_model;
 use Admin\Traits\ValidatesForm;
 use Auth;
 use Carbon\Carbon;
-use DateInterval;
-use DatePeriod;
 use Exception;
 use Igniter\Reservation\Classes\BookingManager;
 use Location;
 use Redirect;
-use Request;
 use System\Classes\BaseComponent;
 
 class Booking extends BaseComponent
@@ -41,11 +38,15 @@ class Booking extends BaseComponent
     public function defineProperties()
     {
         return [
-            'mode' => [
-                'label' => 'Enable or disable booking',
+            'useCalendarView' => [
+                'label' => 'Enable to display a calendar view for date selection',
                 'type' => 'switch',
                 'default' => TRUE,
-                'validationRule' => 'required|boolean',
+            ],
+            'minGuestSize' => [
+                'label' => 'The minimum guest size',
+                'type' => 'number',
+                'default' => 2,
             ],
             'maxGuestSize' => [
                 'label' => 'The maximum guest size',
@@ -130,6 +131,17 @@ class Booking extends BaseComponent
                 'options' => [static::class, 'getThemePageOptions'],
                 'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
+            'defaultLocationParam' => [
+                'label' => 'The default location route parameter (used internally when no location is selected)',
+                'type' => 'text',
+                'default' => 'local',
+            ],
+            'locationNotFoundPage' => [
+                'label' => 'Page to redirect to when no location is found',
+                'type' => 'select',
+                'options' => [static::class, 'getThemePageOptions'],
+                'default' => 'home',
+            ],
         ];
     }
 
@@ -143,6 +155,11 @@ class Booking extends BaseComponent
 
     public function onRun()
     {
+        $this->addJs('~/app/system/assets/ui/js/vendor/moment.min.js', 'moment-js');
+        $this->addCss('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
+        $this->addJs('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
+        $this->addCss('~/app/admin/formwidgets/datepicker/assets/css/datepicker.css', 'datepicker-css');
+        //$this->addJs('~/app/admin/formwidgets/datepicker/assets/js/datepicker.js', 'datepicker-js');
         $this->addCss('css/booking.css', 'booking-css');
         $this->addJs('js/booking.js', 'booking-js');
 
@@ -155,6 +172,7 @@ class Booking extends BaseComponent
         $this->page['bookingDateFormat'] = $this->dateFormat = $this->property('bookingDateFormat');
         $this->page['bookingTimeFormat'] = $this->timeFormat = $this->property('bookingTimeFormat');
         $this->page['bookingDateTimeFormat'] = $this->property('bookingDateTimeFormat');
+        $this->page['useCalendarView'] = (bool)$this->property('useCalendarView', FALSE);
 
         $this->page['reservation'] = $this->getReservation();
         $this->page['bookingLocation'] = $this->getLocation();
@@ -174,14 +192,20 @@ class Booking extends BaseComponent
 
     public function getLocations()
     {
-        return Locations_model::isEnabled()->dropdown('location_name');
+        return Locations_model::isEnabled()
+            ->get()
+            ->filter(function ($location) {
+                return $location->getOption('offer_reservation') == 1;
+            })
+            ->pluck('location_name', 'location_id');
     }
 
     public function getGuestSizeOptions($noOfGuests = null)
     {
         $options = [];
+        $minGuestSize = $this->property('minGuestSize');
         $maxGuestSize = $this->property('maxGuestSize');
-        for ($i = 1; $i <= $maxGuestSize; $i++) {
+        for ($i = $minGuestSize; $i <= $maxGuestSize; $i++) {
             $options[$i] = "{$i} ".(($i > 1)
                     ? lang('igniter.reservation::default.text_people')
                     : lang('igniter.reservation::default.text_person'));
@@ -198,48 +222,80 @@ class Booking extends BaseComponent
         $options = [];
 
         $noOfDays = $this->property('datePickerNoOfDays');
+
         $start = Carbon::now()->startOfDay();
         $end = Carbon::now()->addDays($noOfDays);
+        $schedule = $this->manager->getSchedule($noOfDays);
         for ($date = $start; $date->lte($end); $date->addDay()) {
-            $options[] = $date->copy();
+            if (count($schedule->forDate($date)))
+                $options[] = $date->copy();
         }
 
         return $options;
     }
 
-    public function getTimePickerOptions()
+    public function getDisabledDaysOfWeek()
     {
-        $options = [];
-        $startTime = Carbon::createFromTime(00, 00, 00);
-        $startTime->addMinutes(30);
-        $endTime = Carbon::createFromTime(23, 59, 59);
-        $interval = new DateInterval("PT{$this->property('timePickerInterval')}M");
-        $dateTimes = new DatePeriod($startTime, $interval, $endTime);
-        foreach ($dateTimes as $dateTime) {
-            $options[$dateTime->format('H:i')] = Carbon::parse($dateTime)->isoFormat($this->timeFormat);
+        $noOfDays = $this->property('datePickerNoOfDays');
+
+        // get a 7 day schedule
+        $schedule = $this->manager->getSchedule($noOfDays);
+
+        $disabled = [];
+        foreach ($schedule->getPeriods() as $index => $day) {
+            if ($day->isEmpty())
+                $disabled[] = (int)date('w', strtotime($index));
         }
 
-        return $options;
+        return $disabled;
+    }
+
+    public function getDisabledDates()
+    {
+        // future proofing - ability to disable specific days
+        return [];
     }
 
     public function getTimeSlots()
     {
         $result = [];
-        $selectedDate = Carbon::createFromFormat('Y-m-d H:i', input('date').' '.input('time'));
-        $interval = $this->property('timeSlotsInterval', $this->location->getReservationInterval());
+        $selectedDate = $this->getSelectedDate();
+        $selectedTime = $this->getSelectedDateTime();
+        $interval = $this->location->getReservationInterval();
         $dateTimes = $this->manager->makeTimeSlots($selectedDate, $interval);
-        $query = Request::query();
+        $index = 0;
         foreach ($dateTimes as $date) {
-            $query['sdateTime'] = $date->format('Y-m-d H:i');
+            $dateTime = $selectedDate->copy()->setTimeFromTimeString($date->format('H:i'));
             $result[] = (object)[
-                'rawTime' => $date->format('Y-m-d H:i'),
-                'time' => Carbon::parse($date)->isoFormat($this->timeFormat),
-                'fullyBooked' => $this->manager->isFullyBookedOn($date, input('guest')),
-                'actionUrl' => Request::url().'?'.http_build_query($query),
+                'index' => $index++,
+                'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
+                'rawTime' => $dateTime->format('H:i'),
+                'time' => $dateTime->isoFormat($this->property('bookingTimeFormat')),
+                'fullyBooked' => $this->manager->isFullyBookedOn($dateTime, input('guest', $this->property('minGuestSize'))),
             ];
         }
 
-        return $result;
+        return collect($result);
+    }
+
+    public function getReducedTimeSlots()
+    {
+        $timeslots = $this->getTimeslots();
+        $selectedIndex = $timeslots->first(function ($slot, $key) {
+            return $slot->isSelected;
+        });
+
+        if (!$selectedIndex)
+            return [];
+
+        $from = $selectedIndex->index - 2;
+
+        if ($from < 0)
+            $from = 0;
+
+        $timeslots = $timeslots->slice($from, 5);
+
+        return $timeslots;
     }
 
     /**
@@ -262,13 +318,24 @@ class Booking extends BaseComponent
 
     public function processPickerForm()
     {
+        $pickerStep = get('picker_step', 1);
+
+        $this->pickerStep = 'dateselect';
+
+        $this->page['nextOpen'] = Carbon::parse($this->manager->getSchedule()->getOpenTime());
+        $this->page['timeOptions'] = $this->getTimeSlots();
+        $this->page['disabledDaysOfWeek'] = $this->getDisabledDaysOfWeek();
+        $this->page['disabledDates'] = $this->getDisabledDates();
+
+        // location selection made, show date selection
+        if ($pickerStep == 1) {
+            return;
+        }
+
         $dateTime = $this->getSelectedDateTime();
         $this->page['selectedDate'] = $dateTime;
         $this->page['longDateTime'] = $dateTime->isoFormat($this->property('bookingDateTimeFormat'));
         $this->page['guestSize'] = input('guest', 2);
-
-        if (!get('picker_form'))
-            return;
 
         $data = get();
 
@@ -288,7 +355,6 @@ class Booking extends BaseComponent
 
         if (!$this->validatePasses($data, $this->createRules('booking')))
             return Redirect::back()->withInput();
-
         try {
             $reservation = $this->getReservation();
 
@@ -312,13 +378,15 @@ class Booking extends BaseComponent
 
     protected function getLocation()
     {
-        if (!is_numeric($locationId = input('location')))
-            return null;
-
         if (!is_null($this->location))
             return $this->location;
 
-        return $this->location = Location::getById($locationId);
+        if (!is_numeric($locationId = input('location')))
+            $locationId = Location::current() ? Location::getId() : params('default_location_id');
+
+        $this->location = Location::getById($locationId);
+
+        return $this->location;
     }
 
     protected function createRules($form)
@@ -330,7 +398,6 @@ class Booking extends BaseComponent
                     ['guest', 'lang:igniter.reservation::default.label_guest_num', 'required|integer'],
                     ['date', 'lang:igniter.reservation::default.label_date', 'required|date_format:Y-m-d'],
                     ['time', 'lang:igniter.reservation::default.label_time', 'required|date_format:H:i'],
-                    ['sdateTime', 'lang:igniter.reservation::default.label_time', 'sometimes|date_format:Y-m-d H:i'],
                 ];
             case 'booking':
                 return [
@@ -345,28 +412,23 @@ class Booking extends BaseComponent
 
     protected function processValidateAfter($validator, $dateTime)
     {
-        if (!(bool)$this->property('mode', TRUE)) {
+        if (!$location = $this->getLocation())
+            return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_location'));
+
+        if (!(bool)$location->getOption('offer_reservation')) {
             return $validator->errors()->add('location', lang('igniter.reservation::default.alert_reservation_disabled'));
         }
-
-        if (!$this->getLocation())
-            return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_location'));
 
         if ($dateTime->lt(Carbon::now()))
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
 
-        if (!$this->manager->getSchedule()->isOpenAt($dateTime))
+        if (!$this->manager->makeTimeSlots($dateTime, $this->location->getReservationInterval())->count())
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
-        if (!$this->manager->hasAvailableTables(input('guest')))
+        if ($this->manager->isFullyBookedOn($dateTime, input('guest')))
             return $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
 
         $this->pickerStep = 'timeslot';
-
-        if (strlen(input('sdateTime')) AND $this->manager->isFullyBookedOn($dateTime, input('guest')))
-            return $validator->errors()->add('sdateTime', lang('igniter.reservation::default.alert_fully_booked'));
-
-        $this->pickerStep = 'info';
     }
 
     //
@@ -376,10 +438,22 @@ class Booking extends BaseComponent
     /**
      * @return \Carbon\Carbon
      */
+    public function getSelectedDate()
+    {
+        $date = strlen(input('date'))
+            ? Carbon::createFromFormat('Y-m-d', input('date'))
+            : Carbon::tomorrow();
+
+        return $date;
+    }
+
+    /**
+     * @return \Carbon\Carbon
+     */
     protected function getSelectedDateTime()
     {
         $startDate = strlen(input('date'))
-            ? Carbon::createFromFormat('Y-m-d H:i', input('date').' '.input('time'))
+            ? Carbon::createFromFormat('Y-m-d H:i', input('date').' '.(input('time') ?? '00:01'))
             : Carbon::tomorrow();
 
         $dateTime = ($sdateTime = input('sdateTime'))

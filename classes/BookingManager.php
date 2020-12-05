@@ -8,7 +8,6 @@ use Admin\Models\Tables_model;
 use Auth;
 use Carbon\Carbon;
 use DateInterval;
-use DatePeriod;
 use Event;
 use Igniter\Flame\Traits\Singleton;
 
@@ -60,22 +59,20 @@ class BookingManager
 
     /**
      * @param \Carbon\Carbon $date
-     * @param $interval
-     * @return array|\DatePeriod|\DateTime[]
+     * @param int $interval
+     * @param int $lead
+     * @return array|\Illuminate\Support\Collection
      * @throws \Exception
      */
-    public function makeTimeSlots(Carbon $date, $interval)
+    public function makeTimeSlots(Carbon $date, $interval, $lead = 0)
     {
         if (!$this->location)
             return [];
 
-        $start = $date->copy()->subMinutes($interval * 2);
-        $end = $date->copy()->addMinutes($interval * 3);
-
         $dateInterval = new DateInterval('PT'.$interval.'M');
-        $dateTimes = new DatePeriod($start, $dateInterval, $end);
+        $leadTime = new DateInterval('PT'.$lead.'M');
 
-        return $dateTimes;
+        return $this->getSchedule()->generateTimeslot($date, $dateInterval, $leadTime);
     }
 
     /**
@@ -96,13 +93,13 @@ class BookingManager
         $reservation->telephone = array_get($data, 'telephone', $reservation->telephone);
         $reservation->comment = array_get($data, 'comment');
 
-        $dateTime = Carbon::createFromFormat('Y-m-d H:i', array_get($data, 'sdateTime'));
+        $dateTime = Carbon::createFromFormat('Y-m-d H:i', array_get($data, 'date').' '.array_get($data, 'time'));
         $reservation->reserve_date = $dateTime->format('Y-m-d');
         $reservation->reserve_time = $dateTime->format('H:i:s');
         $reservation->duration = $this->location->getReservationLeadTime();
         $reservation->save();
 
-        $tables = $this->getBookableTables($dateTime, $reservation->guest_num);
+        $tables = $this->getNextBookableTable($dateTime, $reservation->guest_num);
         $reservation->addReservationTables($tables->pluck('table_id')->all());
 
         $status = Statuses_model::find(setting('default_reservation_status'));
@@ -119,19 +116,14 @@ class BookingManager
      * @param $dateTime
      * @return \Igniter\Flame\Location\WorkingSchedule
      */
-    public function getSchedule()
+    public function getSchedule($days = null)
     {
-        return $this->location->newWorkingSchedule('opening');
-    }
-
-    public function hasAvailableTables($noOfGuests)
-    {
-        return $this->getAvailableTables($noOfGuests)->isNotEmpty();
+        return $this->location->newWorkingSchedule('opening', $days);
     }
 
     public function isFullyBookedOn(\DateTime $dateTime, $noOfGuests)
     {
-        return $this->getBookableTables($dateTime, $noOfGuests)->isEmpty();
+        return $this->getNextBookableTable($dateTime, $noOfGuests)->isEmpty();
     }
 
     /**
@@ -139,7 +131,7 @@ class BookingManager
      * @param int $noOfGuests
      * @return \Illuminate\Support\Collection|null
      */
-    public function getBookableTables(\DateTime $dateTime, $noOfGuests)
+    public function getNextBookableTable(\DateTime $dateTime, $noOfGuests)
     {
         $tables = $this->getAvailableTables($noOfGuests);
 
@@ -147,9 +139,9 @@ class BookingManager
             $this->location, $dateTime
         );
 
-        $tables = $tables->diff($reserved)->sortBy('max_capacity');
+        $tables = $tables->diff($reserved)->sortBy('priority');
 
-        return $this->filterBookableTables($tables, $noOfGuests);
+        return $this->filterNextBookableTable($tables, $noOfGuests);
     }
 
     /**
@@ -161,29 +153,31 @@ class BookingManager
         if (!is_null($this->availableTables))
             return $this->availableTables;
 
-        if ($this->location->has('tables')) {
-            $query = $this->location->tables();
-            $query->isEnabled()->whereBetweenCapacity($noOfGuests);
-            $tables = $query->get();
-        }
-        else {
-            $query = Tables_model::isEnabled();
-            $query->whereBetweenCapacity($noOfGuests);
-            $tables = $query->get();
-        }
+        $query = Tables_model::isEnabled()
+            ->whereHasLocation($this->location->getKey())
+            ->whereBetweenCapacity($noOfGuests);
+        $tables = $query->get();
 
         return $this->availableTables = $tables;
     }
 
-    protected function filterBookableTables($tables, int $noOfGuests)
+    protected function filterNextBookableTable($tables, int $noOfGuests)
     {
         $result = collect();
         $previousCapacity = 0;
         foreach ($tables as $table) {
-            $previousCapacity += $table->max_capacity;
-            $result->push($table);
-            if ($previousCapacity >= $noOfGuests)
-                break;
+            if ($table->is_joinable) {
+                $previousCapacity += $table->max_capacity;
+                $result->push($table);
+                if ($previousCapacity >= $noOfGuests)
+                    break;
+            }
+            else {
+                if ($table->min_capacity <= $noOfGuests && $table->max_capacity >= $noOfGuests) {
+                    $result->push($table);
+                    break;
+                }
+            }
         }
 
         return $result;

@@ -1,4 +1,6 @@
-<div data-control="booking">
+<div
+    data-control="booking"
+>
     @if ($__SELF__->pickerStep == 'info')
         @partial('@info')
 
