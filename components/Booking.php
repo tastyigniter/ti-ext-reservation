@@ -425,7 +425,7 @@ class Booking extends BaseComponent
         if (!$this->manager->makeTimeSlots($dateTime, $this->location->getReservationInterval())->count())
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
-        if (!$this->manager->isFullyBookedOn($dateTime, input('guest')))
+        if ($this->manager->isFullyBookedOn($dateTime, input('guest')))
             return $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
 
         $this->pickerStep = 'timeslot';
