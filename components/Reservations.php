@@ -26,12 +26,6 @@ class Reservations extends \System\Classes\BaseComponent
                 'default' => 'date_added desc',
                 'validationRule' => 'required|string',
             ],
-            'reservationDateTimeFormat' => [
-                'label' => 'Date time format to use for displaying reservation date & time',
-                'type' => 'text',
-                'default' => 'DD MMM \a\t HH:mm',
-                'validationRule' => 'required|string',
-            ],
             'reservationsPage' => [
                 'label' => 'Account Reservations Page',
                 'type' => 'select',
@@ -53,7 +47,7 @@ class Reservations extends \System\Classes\BaseComponent
         $this->page['reservationsPage'] = $this->property('reservationsPage');
         $this->page['showReviews'] = setting('allow_reviews') == 1;
         $this->page['customerReservations'] = $this->loadReservations();
-        $this->page['reservationDateTimeFormat'] = $this->property('reservationDateTimeFormat');
+        $this->page['reservationDateTimeFormat'] = convert_php_to_moment_js_format(lang('system::lang.date_time_format_long'));
 
         $this->page['customerReservation'] = $this->getReservation();
     }
