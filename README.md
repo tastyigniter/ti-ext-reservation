@@ -25,9 +25,6 @@ Go to **Restaurants > Locations > Edit Location**, under the **Orders & Reservat
 | maxGuestSize      | The maximum guest size        |       20           |      20   |
 | timePickerInterval        | The interval to use for the time picker       |       30           |      30   |
 | timeSlotsInterval     | The interval to use for the time slots        |       15           |      15   |
-| bookingDateFormat        | Date format to use for the date picker.      |       MMM ddd, YYYY           |       MMM ddd, YYYY   |
-| bookingTimeFormat        | Time format to use for the time dropdown      |       hh:mm a           |      hh:mm a   |
-| bookingDateTimeFormat        | Date time format to use for the book summary      |       dddd, MMMM D, YYYY \a\t hh:mm a           |      dddd, MMMM D, YYYY \a\t hh:mm a   |
 | showLocationThumb     | Show Location Image Thumbnail     |       FALSE           |      FALSE   |
 | locationThumbWidth        | Location thumb Height        |        95           |      95    |
 | locationThumbHeight       | Location thumb Width     |        80           |      80    |
