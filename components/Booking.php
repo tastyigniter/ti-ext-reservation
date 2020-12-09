@@ -151,9 +151,9 @@ class Booking extends BaseComponent
     protected function prepareVars()
     {
         $this->page['pickerStep'] = $this->pickerStep;
-        $this->page['bookingDateFormat'] = $this->dateFormat = convert_php_to_moment_js_format(lang('system::lang.date_format_long'));
-        $this->page['bookingTimeFormat'] = $this->timeFormat = convert_php_to_moment_js_format(lang('system::lang.time_format_long'));
-        $this->page['bookingDateTimeFormat'] = convert_php_to_moment_js_format(lang('system::lang.date_time_format_long'));
+        $this->page['bookingDateFormat'] = $this->dateFormat = lang('main::lang.date_format_long');
+        $this->page['bookingTimeFormat'] = $this->timeFormat = lang('main::lang.time_format_long');
+        $this->page['bookingDateTimeFormat'] = lang('main::lang.date_time_format_long');
         $this->page['useCalendarView'] = (bool)$this->property('useCalendarView', FALSE);
 
         $this->page['reservation'] = $this->getReservation();
