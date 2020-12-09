@@ -72,24 +72,6 @@ class Booking extends BaseComponent
                 'default' => 15,
                 'validationRule' => 'required|integer',
             ],
-            'bookingDateFormat' => [
-                'label' => 'Date format to use for the date picker',
-                'type' => 'text',
-                'default' => 'MMM DD, YYYY',
-                'validationRule' => 'required|string',
-            ],
-            'bookingTimeFormat' => [
-                'label' => 'Time format to use for the time dropdown',
-                'type' => 'text',
-                'default' => 'hh:mm a',
-                'validationRule' => 'required|string',
-            ],
-            'bookingDateTimeFormat' => [
-                'label' => 'Date time format to use for displaying reservation date & time',
-                'type' => 'text',
-                'default' => 'dddd, MMMM D, YYYY \a\t hh:mm a',
-                'validationRule' => 'required|string',
-            ],
             'showLocationThumb' => [
                 'label' => 'Show Location Image Thumbnail',
                 'type' => 'switch',
@@ -169,9 +151,9 @@ class Booking extends BaseComponent
     protected function prepareVars()
     {
         $this->page['pickerStep'] = $this->pickerStep;
-        $this->page['bookingDateFormat'] = $this->dateFormat = $this->property('bookingDateFormat');
-        $this->page['bookingTimeFormat'] = $this->timeFormat = $this->property('bookingTimeFormat');
-        $this->page['bookingDateTimeFormat'] = $this->property('bookingDateTimeFormat');
+        $this->page['bookingDateFormat'] = $this->dateFormat = lang('system::lang.moment.date_format');
+        $this->page['bookingTimeFormat'] = $this->timeFormat = lang('system::lang.moment.time_format');
+        $this->page['bookingDateTimeFormat'] = lang('system::lang.moment.date_time_format_long');
         $this->page['useCalendarView'] = (bool)$this->property('useCalendarView', FALSE);
 
         $this->page['reservation'] = $this->getReservation();
@@ -270,7 +252,7 @@ class Booking extends BaseComponent
                 'index' => $index++,
                 'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
                 'rawTime' => $dateTime->format('H:i'),
-                'time' => $dateTime->isoFormat($this->property('bookingTimeFormat')),
+                'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
                 'fullyBooked' => $this->manager->isFullyBookedOn($dateTime, input('guest', $this->property('minGuestSize'))),
             ];
         }
@@ -334,7 +316,7 @@ class Booking extends BaseComponent
 
         $dateTime = $this->getSelectedDateTime();
         $this->page['selectedDate'] = $dateTime;
-        $this->page['longDateTime'] = $dateTime->isoFormat($this->property('bookingDateTimeFormat'));
+        $this->page['longDateTime'] = $dateTime->isoFormat(lang('system::lang.moment.date_time_format_long'));
         $this->page['guestSize'] = input('guest', 2);
 
         $data = get();
