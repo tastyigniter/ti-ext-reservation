@@ -151,9 +151,9 @@ class Booking extends BaseComponent
     protected function prepareVars()
     {
         $this->page['pickerStep'] = $this->pickerStep;
-        $this->page['bookingDateFormat'] = $this->dateFormat = lang('main::lang.date_format_long');
-        $this->page['bookingTimeFormat'] = $this->timeFormat = lang('main::lang.time_format_long');
-        $this->page['bookingDateTimeFormat'] = lang('main::lang.date_time_format_long');
+        $this->page['bookingDateFormat'] = $this->dateFormat = lang('system::lang.moment.date_format');
+        $this->page['bookingTimeFormat'] = $this->timeFormat = lang('system::lang.moment.time_format');
+        $this->page['bookingDateTimeFormat'] = lang('system::lang.moment.date_time_format_long');
         $this->page['useCalendarView'] = (bool)$this->property('useCalendarView', FALSE);
 
         $this->page['reservation'] = $this->getReservation();
@@ -252,7 +252,7 @@ class Booking extends BaseComponent
                 'index' => $index++,
                 'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
                 'rawTime' => $dateTime->format('H:i'),
-                'time' => $dateTime->isoFormat($this->property('bookingTimeFormat')),
+                'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
                 'fullyBooked' => $this->manager->isFullyBookedOn($dateTime, input('guest', $this->property('minGuestSize'))),
             ];
         }
@@ -316,7 +316,7 @@ class Booking extends BaseComponent
 
         $dateTime = $this->getSelectedDateTime();
         $this->page['selectedDate'] = $dateTime;
-        $this->page['longDateTime'] = $dateTime->isoFormat($this->property('bookingDateTimeFormat'));
+        $this->page['longDateTime'] = $dateTime->isoFormat(lang('system::lang.moment.date_time_format_long'));
         $this->page['guestSize'] = input('guest', 2);
 
         $data = get();

@@ -47,7 +47,7 @@ class Reservations extends \System\Classes\BaseComponent
         $this->page['reservationsPage'] = $this->property('reservationsPage');
         $this->page['showReviews'] = setting('allow_reviews') == 1;
         $this->page['customerReservations'] = $this->loadReservations();
-        $this->page['reservationDateTimeFormat'] = lang('main::lang.date_time_format_long');
+        $this->page['reservationDateTimeFormat'] = lang('system::lang.moment.date_time_format_short');
 
         $this->page['customerReservation'] = $this->getReservation();
     }
