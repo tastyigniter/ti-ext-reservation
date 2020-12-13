@@ -78,6 +78,8 @@ class BookingManager
     /**
      * @param $reservation
      * @param $data
+     *
+     * @return \Admin\Models\Reservations_model
      */
     public function saveReservation($reservation, $data)
     {
@@ -97,15 +99,20 @@ class BookingManager
         $reservation->reserve_date = $dateTime->format('Y-m-d');
         $reservation->reserve_time = $dateTime->format('H:i:s');
         $reservation->duration = $this->location->getReservationLeadTime();
-        $reservation->save();
 
-        $tables = $this->getNextBookableTable($dateTime, $reservation->guest_num);
-        $reservation->addReservationTables($tables->pluck('table_id')->all());
+        if ((bool)$this->location->getOption('auto_allocate_table', 1)) {
+            $tables = $this->getNextBookableTable($dateTime, $reservation->guest_num);
+            $reservation->tables = $tables->pluck('table_id')->all();
+        }
+
+        $reservation->save();
 
         $status = Statuses_model::find(setting('default_reservation_status'));
         $reservation->addStatusHistory($status, ['notify' => FALSE]);
 
         Event::fire('igniter.reservation.confirmed', [$reservation]);
+
+        return $reservation;
     }
 
     //
