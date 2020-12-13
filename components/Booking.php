@@ -113,17 +113,6 @@ class Booking extends BaseComponent
                 'options' => [static::class, 'getThemePageOptions'],
                 'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
-            'defaultLocationParam' => [
-                'label' => 'The default location route parameter (used internally when no location is selected)',
-                'type' => 'text',
-                'default' => 'local',
-            ],
-            'locationNotFoundPage' => [
-                'label' => 'Page to redirect to when no location is found',
-                'type' => 'select',
-                'options' => [static::class, 'getThemePageOptions'],
-                'default' => 'home',
-            ],
         ];
     }
 
