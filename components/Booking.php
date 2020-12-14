@@ -235,15 +235,19 @@ class Booking extends BaseComponent
         $interval = $this->location->getReservationInterval();
         $dateTimes = $this->manager->makeTimeSlots($selectedDate, $interval);
         $index = 0;
+        $nowPlusLeadTime = Carbon::now()->addMinutes($this->location->getReservationLeadTime());
         foreach ($dateTimes as $date) {
             $dateTime = $selectedDate->copy()->setTimeFromTimeString($date->format('H:i'));
-            $result[] = (object)[
-                'index' => $index++,
-                'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
-                'rawTime' => $dateTime->format('H:i'),
-                'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
-                'fullyBooked' => $this->manager->isFullyBookedOn($dateTime, input('guest', $this->property('minGuestSize'))),
-            ];
+            if ($dateTime >= $nowPlusLeadTime)
+            {
+                $result[] = (object)[
+                    'index' => $index++,
+                    'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
+                    'rawTime' => $dateTime->format('H:i'),
+                    'time' => $dateTime->isoFormat('HH:mm'),
+                    'fullyBooked' => $this->manager->isFullyBookedOn($dateTime, input('guest', $this->property('minGuestSize'))),
+                ];
+            }
         }
 
         return collect($result);
