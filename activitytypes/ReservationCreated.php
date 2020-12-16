@@ -22,7 +22,7 @@ class ReservationCreated implements ActivityInterface
     public static function log($reservation)
     {
         $recipients = Staffs_model::isEnabled()
-            ->whereHasLocation($order->location->getKey())
+            ->whereHasLocation($reservation->location->getKey())
             ->get()
             ->map(function ($staff) {
                 return $staff->user;
