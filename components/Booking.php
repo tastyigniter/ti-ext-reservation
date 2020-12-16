@@ -238,13 +238,12 @@ class Booking extends BaseComponent
         $nowPlusLeadTime = Carbon::now()->addMinutes($this->location->getReservationLeadTime());
         foreach ($dateTimes as $date) {
             $dateTime = $selectedDate->copy()->setTimeFromTimeString($date->format('H:i'));
-            if ($dateTime >= $nowPlusLeadTime)
-            {
+            if ($dateTime >= $nowPlusLeadTime) {
                 $result[] = (object)[
                     'index' => $index++,
                     'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
                     'rawTime' => $dateTime->format('H:i'),
-                    'time' => $dateTime->isoFormat('HH:mm'),
+                    'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
                     'fullyBooked' => $this->manager->isFullyBookedOn($dateTime, input('guest', $this->property('minGuestSize'))),
                 ];
             }
