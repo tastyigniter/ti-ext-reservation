@@ -14,6 +14,7 @@
                 data-control="datepicker"
                 data-date="{{ $__SELF__->getSelectedDate()->format('Y-m-d') }}"
                 data-start-date="{{ isset($nextOpen) ? $nextOpen->format('Y-m-d') : null }}"
+                data-number-of-days="{{ $datePickerNoOfDays }}"
                 data-days-of-week-disabled='@json($disabledDaysOfWeek ?? [])'
                 data-dates-disabled='@json($disabledDates ?? [])'
                 data-format="yyyy-mm-dd"

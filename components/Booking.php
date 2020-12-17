@@ -144,6 +144,7 @@ class Booking extends BaseComponent
         $this->page['bookingTimeFormat'] = $this->timeFormat = lang('system::lang.moment.time_format');
         $this->page['bookingDateTimeFormat'] = lang('system::lang.moment.date_time_format_long');
         $this->page['useCalendarView'] = (bool)$this->property('useCalendarView', FALSE);
+        $this->page['datePickerNoOfDays'] = $this->property('datePickerNoOfDays', 30);
 
         $this->page['reservation'] = $this->getReservation();
         $this->page['bookingLocation'] = $this->getLocation();
