@@ -19,12 +19,11 @@ class NewReservationStatus extends BaseEvent
     public static function makeParamsFromEvent(array $args, $eventName = null)
     {
         $params = [];
-        $status = array_get($args, 0);
-        $reservation = array_get($args, 1);
+        $reservation = array_get($args, 0);
+        $status = array_get($args, 1);
         if ($reservation instanceof Reservations_model)
             $params = $reservation->mailGetData();
 
-        $status->save();
         $params['reservation'] = $reservation;
         $params['status'] = $status;
 

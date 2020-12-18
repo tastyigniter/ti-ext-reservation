@@ -80,18 +80,18 @@ class Extension extends \System\Classes\BaseExtension
             Event::fire('igniter.reservation.beforeAddStatus', [$model, $object, $statusId, $previousStatus], TRUE);
         });
 
-        Event::listen('admin.statusHistory.added', function ($model) {
+        Event::listen('admin.statusHistory.added', function ($model, $statusHistory) {
             if (!$model instanceof Reservations_model)
                 return;
 
-            Event::fire('igniter.reservation.statusAdded', [$model], TRUE);
+            Event::fire('igniter.reservation.statusAdded', [$model, $statusHistory], TRUE);
         });
 
-        Event::listen('admin.assignable.assigned', function ($model) {
+        Event::listen('admin.assignable.assigned', function ($model, $assignableLog) {
             if (!$model instanceof Reservations_model)
                 return;
 
-            Event::fire('igniter.reservation.assigned', [$model], TRUE);
+            Event::fire('igniter.reservation.assigned', [$model, $assignableLog], TRUE);
         });
     }
 }
