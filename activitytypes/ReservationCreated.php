@@ -21,9 +21,12 @@ class ReservationCreated implements ActivityInterface
 
     public static function log($reservation)
     {
-        $recipients = Staffs_model::isEnabled()->get()->map(function ($model) {
-            return $model->user;
-        })->all();
+        $recipients = Staffs_model::isEnabled()
+            ->whereHasLocation($reservation->location->getKey())
+            ->get()
+            ->map(function ($staff) {
+                return $staff->user;
+            })->all();
 
         activity()->pushLog(new static('reservationCreated', $reservation), $recipients);
     }
