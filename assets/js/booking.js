@@ -18,9 +18,6 @@
 	    if (this.$datePicker = this.$el.find('[data-control="datepicker"]'))
             this.initDatePicker();
 
-	    if (this.$guestPicker = this.$el.find('[name="guest"]'))
-            this.initGuestPicker();
-
         if (this.$locationPicker = this.$el.find('[name="location"]'))
             this.initLocationPicker();
     }
@@ -43,11 +40,6 @@
         this.$datePicker.on('changeDate', $.proxy(this.onSelectDatePicker, this))
     }
 
-    Booking.prototype.initGuestPicker = function () {
-        this.$el.delegate('[name="guest"]', 'change', $.proxy(this.onSelectGuestPicker, this));
-        this.$guestPickerValue = this.$el.find('[name="guest"]').val();
-	}
-
     Booking.prototype.initLocationPicker = function () {
         this.$el.delegate('[name="location"]', 'change', $.proxy(this.onSelectLocationPicker, this));
         this.$locationPickerValue = this.$el.find('[name="location"]').val();
@@ -58,11 +50,6 @@
         var lockerValue = pickerDate.format('YYYY-MM-DD')
         this.$datePickerValue = lockerValue;
         this.$dataLocker.val(lockerValue);
-        this.onHtmlUpdate();
-    }
-
-    Booking.prototype.onSelectGuestPicker = function(event) {
-        this.$guestPickerValue = $(event.target).val();
         this.onHtmlUpdate();
     }
 
