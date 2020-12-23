@@ -233,21 +233,18 @@ class Booking extends BaseComponent
         $result = [];
         $selectedDate = $this->getSelectedDate();
         $selectedTime = $this->getSelectedDateTime();
-        $interval = $this->location->getReservationInterval();
-        $dateTimes = $this->manager->makeTimeSlots($selectedDate, $interval);
+
         $index = 0;
-        $nowPlusLeadTime = Carbon::now()->addMinutes($this->location->getReservationLeadTime());
-        foreach ($dateTimes as $date) {
-            $dateTime = $selectedDate->copy()->setTimeFromTimeString($date->format('H:i'));
-            if ($dateTime >= $nowPlusLeadTime) {
-                $result[] = (object)[
-                    'index' => $index++,
-                    'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
-                    'rawTime' => $dateTime->format('H:i'),
-                    'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
-                    'fullyBooked' => $this->manager->isFullyBookedOn($dateTime, input('guest', $this->property('minGuestSize'))),
-                ];
-            }
+        $dateTimes = $this->manager->makeTimeSlots($selectedDate);
+        foreach ($dateTimes as $dateTime) {
+            $selectedDateTime = $selectedDate->copy()->setTimeFromTimeString($dateTime->format('H:i'));
+            $result[] = (object)[
+                'index' => $index++,
+                'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
+                'rawTime' => $dateTime->format('H:i'),
+                'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
+                'fullyBooked' => $this->manager->isFullyBookedOn($selectedDateTime, input('guest', $this->property('minGuestSize'))),
+            ];
         }
 
         return collect($result);
@@ -398,7 +395,7 @@ class Booking extends BaseComponent
         if ($dateTime->lt(Carbon::now()))
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
 
-        if (!$this->manager->makeTimeSlots($dateTime, $this->location->getReservationInterval())->count())
+        if (!$this->manager->getSchedule()->isOpenAt($dateTime))
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
         $autoAllocateTable = (bool)$this->location->getOption('auto_allocate_table', 1);
@@ -417,7 +414,7 @@ class Booking extends BaseComponent
     {
         $date = strlen(input('date'))
             ? Carbon::createFromFormat('Y-m-d', input('date'))
-            : Carbon::tomorrow();
+            : array_first($this->getDatePickerOptions());
 
         return $date;
     }

@@ -64,15 +64,27 @@ class BookingManager
      * @return array|\Illuminate\Support\Collection
      * @throws \Exception
      */
-    public function makeTimeSlots(Carbon $date, $interval, $lead = 0)
+    public function makeTimeSlots(Carbon $date, $interval = null, $lead = null)
     {
         if (!$this->location)
             return [];
 
+        $interval = !is_null($interval)
+            ? $interval : $this->location->getReservationInterval();
+
+        $lead = !is_null($lead)
+            ? $lead : $this->location->getReservationLeadTime();
+
         $dateInterval = new DateInterval('PT'.$interval.'M');
         $leadTime = new DateInterval('PT'.$lead.'M');
 
-        return $this->getSchedule()->generateTimeslot($date, $dateInterval, $leadTime);
+        return $this->getSchedule()
+            ->generateTimeslot($date, $dateInterval, $leadTime)
+            ->filter(function ($dateTime, $timestamp) use ($date, $lead) {
+                return $date->copy()
+                    ->setTimeFromTimeString($dateTime->format('H:i'))
+                    ->gte(Carbon::now()->addMinutes($lead));
+            });
     }
 
     /**
