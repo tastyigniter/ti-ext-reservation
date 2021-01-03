@@ -144,6 +144,7 @@ class Booking extends BaseComponent
         $this->page['bookingTimeFormat'] = $this->timeFormat = lang('system::lang.moment.time_format');
         $this->page['bookingDateTimeFormat'] = lang('system::lang.moment.date_time_format_long');
         $this->page['useCalendarView'] = (bool)$this->property('useCalendarView', FALSE);
+        $this->page['datePickerNoOfDays'] = $this->property('datePickerNoOfDays', 30);
 
         $this->page['reservation'] = $this->getReservation();
         $this->page['bookingLocation'] = $this->getLocation();
@@ -232,17 +233,17 @@ class Booking extends BaseComponent
         $result = [];
         $selectedDate = $this->getSelectedDate();
         $selectedTime = $this->getSelectedDateTime();
-        $interval = $this->location->getReservationInterval();
-        $dateTimes = $this->manager->makeTimeSlots($selectedDate, $interval);
+
         $index = 0;
-        foreach ($dateTimes as $date) {
-            $dateTime = $selectedDate->copy()->setTimeFromTimeString($date->format('H:i'));
+        $dateTimes = $this->manager->makeTimeSlots($selectedDate);
+        foreach ($dateTimes as $dateTime) {
+            $selectedDateTime = $selectedDate->copy()->setTimeFromTimeString($dateTime->format('H:i'));
             $result[] = (object)[
                 'index' => $index++,
                 'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
                 'rawTime' => $dateTime->format('H:i'),
                 'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
-                'fullyBooked' => $this->manager->isFullyBookedOn($dateTime, input('guest', $this->property('minGuestSize'))),
+                'fullyBooked' => $this->manager->isFullyBookedOn($selectedDateTime, input('guest', $this->property('minGuestSize'))),
             ];
         }
 
@@ -394,14 +395,12 @@ class Booking extends BaseComponent
         if ($dateTime->lt(Carbon::now()))
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
 
-        if (!$this->manager->makeTimeSlots($dateTime, $this->location->getReservationInterval())->count())
+        if (!$this->manager->getSchedule()->isOpenAt($dateTime))
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
         $autoAllocateTable = (bool)$this->location->getOption('auto_allocate_table', 1);
-        if (strlen(input('sdateTime')) AND $autoAllocateTable AND $this->manager->isFullyBookedOn($dateTime, input('guest')))
+        if ($autoAllocateTable AND $this->manager->isFullyBookedOn($dateTime, input('guest')))
             return $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
-
-        $this->pickerStep = 'timeslot';
     }
 
     //
@@ -415,7 +414,7 @@ class Booking extends BaseComponent
     {
         $date = strlen(input('date'))
             ? Carbon::createFromFormat('Y-m-d', input('date'))
-            : Carbon::tomorrow();
+            : array_first($this->getDatePickerOptions());
 
         return $date;
     }

@@ -78,6 +78,7 @@
 <button
     type="submit"
     class="btn btn-primary btn-block btn-lg"
+    data-attach-loading="disabled"
 >@lang('igniter.reservation::default.button_reservation')</button>
 
 {!! form_close() !!}

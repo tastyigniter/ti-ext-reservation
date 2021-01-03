@@ -18,8 +18,7 @@
 	    if (this.$datePicker = this.$el.find('[data-control="datepicker"]'))
             this.initDatePicker();
 
-	    if (this.$guestPicker = this.$el.find('[name="guest"]'))
-            this.initGuestPicker();
+        this.$el.on('change', 'select[name="date"]', $.proxy(this.onSelectDate, this));
 
         if (this.$locationPicker = this.$el.find('[name="location"]'))
             this.initLocationPicker();
@@ -36,19 +35,15 @@
                 down: "fa fa-arrow-down"
             },
             todayHighlight: true,
+            endDate: moment().add(this.$datePicker.data('numberOfDays'), 'days').format('YYYY-MM-DD'),
         }, this.$datePicker.data()));
 
         this.$dataLocker = this.$datePicker.next('input');
         this.$datePicker.on('changeDate', $.proxy(this.onSelectDatePicker, this))
     }
 
-    Booking.prototype.initGuestPicker = function () {
-        this.$el.delegate('[name="guest"]', 'change', $.proxy(this.onSelectGuestPicker, this));
-        this.$guestPickerValue = this.$el.find('[name="guest"]').val();
-	}
-
     Booking.prototype.initLocationPicker = function () {
-        this.$el.delegate('[name="location"]', 'change', $.proxy(this.onSelectLocationPicker, this));
+        this.$el.on('change', '[name="location"]', $.proxy(this.onSelectLocationPicker, this));
         this.$locationPickerValue = this.$el.find('[name="location"]').val();
     }
 
@@ -60,9 +55,9 @@
         this.onHtmlUpdate();
     }
 
-    Booking.prototype.onSelectGuestPicker = function(event) {
-        this.$guestPickerValue = $(event.target).val();
-        this.onHtmlUpdate();
+    Booking.prototype.onSelectDate = function (event) {
+        location.href = location.pathname + '?date=' + event.target.value;
+        return;
     }
 
     Booking.prototype.onSelectLocationPicker = function(event) {
