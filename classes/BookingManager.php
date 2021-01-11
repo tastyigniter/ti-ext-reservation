@@ -152,7 +152,7 @@ class BookingManager
      */
     public function getNextBookableTable(\DateTime $dateTime, $noOfGuests)
     {
-        $tables = $this->getAvailableTables($noOfGuests);
+        $tables = $this->getAvailableTables();
 
         $reserved = Reservations_model::findReservedTables(
             $this->location, $dateTime
@@ -164,17 +164,15 @@ class BookingManager
     }
 
     /**
-     * @param int $noOfGuests
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    protected function getAvailableTables($noOfGuests)
+    protected function getAvailableTables()
     {
         if (!is_null($this->availableTables))
             return $this->availableTables;
 
         $query = Tables_model::isEnabled()
-            ->whereHasLocation($this->location->getKey())
-            ->whereBetweenCapacity($noOfGuests);
+            ->whereHasLocation($this->location->getKey());
         $tables = $query->get();
 
         return $this->availableTables = $tables;
@@ -187,9 +185,10 @@ class BookingManager
         foreach ($tables as $table) {
             if ($table->is_joinable) {
                 $previousCapacity += $table->max_capacity;
-                $result->push($table);
-                if ($previousCapacity >= $noOfGuests)
+                if ($previousCapacity >= $noOfGuests) {
+                    $result->push($table);
                     break;
+                }
             }
             else {
                 if ($table->min_capacity <= $noOfGuests && $table->max_capacity >= $noOfGuests) {
