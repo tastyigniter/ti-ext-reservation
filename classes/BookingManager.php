@@ -185,14 +185,13 @@ class BookingManager
         foreach ($tables as $table) {
             if ($table->is_joinable) {
                 $previousCapacity += $table->max_capacity;
-                if ($previousCapacity >= $noOfGuests) {
-                    $result->push($table);
+                $result->push($table);
+                if ($previousCapacity >= $noOfGuests)
                     break;
-                }
             }
             else {
                 if ($table->min_capacity <= $noOfGuests && $table->max_capacity >= $noOfGuests) {
-                    $result->push($table);
+                    $result = collect($table);
                     break;
                 }
             }
