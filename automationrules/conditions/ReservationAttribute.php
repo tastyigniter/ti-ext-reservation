@@ -37,6 +37,9 @@ class ReservationAttribute extends BaseModelAttributesCondition
             'guest_num' => [
                 'label' => 'Number of guests',
             ],
+            'hours_since' => [
+                'label' => 'Hours since reservation',
+            ],
         ];
     }
 
@@ -50,6 +53,8 @@ class ReservationAttribute extends BaseModelAttributesCondition
         if (!$reservation = array_get($params, 'reservation')) {
             throw new ApplicationException('Error evaluating the reservation attribute condition: the reservation object is not found in the condition parameters.');
         }
+
+        $reservation->hours_since = Carbon::parse($reservation->reserve_date.' '.$reservation->reserve_time)->diffInHours(Carbon::now());
 
         return $this->evalIsTrue($reservation);
     }
