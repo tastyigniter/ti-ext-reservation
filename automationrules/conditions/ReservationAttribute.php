@@ -3,6 +3,7 @@
 namespace Igniter\Reservation\AutomationRules\Conditions;
 
 use ApplicationException;
+use Carbon\Carbon;
 use Igniter\Automation\Classes\BaseModelAttributesCondition;
 
 class ReservationAttribute extends BaseModelAttributesCondition
@@ -37,7 +38,33 @@ class ReservationAttribute extends BaseModelAttributesCondition
             'guest_num' => [
                 'label' => 'Number of guests',
             ],
+            'hours_since' => [
+                'label' => 'Hours since reservation time',
+            ],
+            'hours_util' => [
+                'label' => 'Hours util reservation time',
+            ],
         ];
+    }
+
+    public function getHoursSinceAttribute($value, $reservation)
+    {
+        $currentDateTime = Carbon::now();
+        $reservationDateTime = Carbon::parse($reservation->reserve_date.' '.$reservation->reserve_time);
+
+        return $reservationDateTime->isAfter($currentDateTime)
+            ? $reservationDateTime->diffInRealHours($currentDateTime)
+            : 0;
+    }
+
+    public function getHoursUntilAttribute($value, $reservation)
+    {
+        $currentDateTime = Carbon::now();
+        $reservationDateTime = Carbon::parse($reservation->reserve_date.' '.$reservation->reserve_time);
+
+        return $reservationDateTime->isBefore($currentDateTime)
+            ? $currentDateTime->diffInRealHours($reservationDateTime)
+            : 0;
     }
 
     /**
