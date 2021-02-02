@@ -3,6 +3,7 @@
 namespace Igniter\Reservation\AutomationRules\Conditions;
 
 use ApplicationException;
+use Carbon\Carbon;
 use Igniter\Automation\Classes\BaseModelAttributesCondition;
 
 class ReservationAttribute extends BaseModelAttributesCondition
@@ -38,9 +39,32 @@ class ReservationAttribute extends BaseModelAttributesCondition
                 'label' => 'Number of guests',
             ],
             'hours_since' => [
-                'label' => 'Hours since reservation',
+                'label' => 'Hours since reservation time',
+            ],
+            'hours_util' => [
+                'label' => 'Hours util reservation time',
             ],
         ];
+    }
+
+    public function getHoursSinceAttribute($value, $reservation)
+    {
+        $currentDateTime = Carbon::now();
+        $reservationDateTime = Carbon::parse($reservation->reserve_date.' '.$reservation->reserve_time);
+
+        return $reservationDateTime->isAfter($currentDateTime)
+            ? $reservationDateTime->diffInRealHours($currentDateTime)
+            : 0;
+    }
+
+    public function getHoursUntilAttribute($value, $reservation)
+    {
+        $currentDateTime = Carbon::now();
+        $reservationDateTime = Carbon::parse($reservation->reserve_date.' '.$reservation->reserve_time);
+
+        return $reservationDateTime->isBefore($currentDateTime)
+            ? $currentDateTime->diffInRealHours($reservationDateTime)
+            : 0;
     }
 
     /**
@@ -53,8 +77,6 @@ class ReservationAttribute extends BaseModelAttributesCondition
         if (!$reservation = array_get($params, 'reservation')) {
             throw new ApplicationException('Error evaluating the reservation attribute condition: the reservation object is not found in the condition parameters.');
         }
-
-        $reservation->hours_since = Carbon::parse($reservation->reserve_date.' '.$reservation->reserve_time)->diffInHours(Carbon::now());
 
         return $this->evalIsTrue($reservation);
     }
