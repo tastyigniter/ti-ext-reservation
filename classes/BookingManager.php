@@ -110,7 +110,7 @@ class BookingManager
         $dateTime = Carbon::createFromFormat('Y-m-d H:i', array_get($data, 'date').' '.array_get($data, 'time'));
         $reservation->reserve_date = $dateTime->format('Y-m-d');
         $reservation->reserve_time = $dateTime->format('H:i:s');
-        $reservation->duration = $this->location->getReservationLeadTime();
+        $reservation->duration = $this->location->getReservationStayTime();
 
         if ((bool)$this->location->getOption('auto_allocate_table', 1)) {
             $tables = $this->getNextBookableTable($dateTime, $reservation->guest_num);
