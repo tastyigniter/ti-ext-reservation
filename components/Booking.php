@@ -129,6 +129,9 @@ class Booking extends BaseComponent
         $this->addJs('~/app/system/assets/ui/js/vendor/moment.min.js', 'moment-js');
         $this->addCss('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
         $this->addJs('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
+        if (setting('default_language') != 'en')
+            $this->addJs('vendor/datepicker/bootstrap-datepicker/locales/bootstrap-datepicker.'.strtolower(str_replace('_', '-', setting('default_language'))).'.min.js', 'bootstrap-datepicker-js');
+
         $this->addCss('~/app/admin/formwidgets/datepicker/assets/css/datepicker.css', 'datepicker-css');
         //$this->addJs('~/app/admin/formwidgets/datepicker/assets/js/datepicker.js', 'datepicker-js');
         $this->addCss('css/booking.css', 'booking-css');

@@ -18,6 +18,7 @@
                 data-days-of-week-disabled='@json($disabledDaysOfWeek ?? [])'
                 data-dates-disabled='@json($disabledDates ?? [])'
                 data-format="yyyy-mm-dd"
+                data-language={{ setting('default_language') }}
             ></div>
             <input type="hidden" name="date" value="{{ $__SELF__->getSelectedDate()->format('Y-m-d') }}"/>
         </div>
