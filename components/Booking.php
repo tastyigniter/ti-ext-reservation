@@ -419,7 +419,7 @@ class Booking extends BaseComponent
             ? Carbon::createFromFormat('Y-m-d', input('date'))
             : array_first($this->getDatePickerOptions());
 
-        return $date;
+        return $date ?? Carbon::now();
     }
 
     /**
