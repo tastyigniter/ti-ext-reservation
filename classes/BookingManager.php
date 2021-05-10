@@ -190,12 +190,13 @@ class BookingManager
                     break;
             }
             else {
-                if ($table->min_capacity <= $noOfGuests && $table->max_capacity >= $noOfGuests) {
-                    $result = collect($table);
-                    break;
-                }
+                if ($table->min_capacity <= $noOfGuests && $table->max_capacity >= $noOfGuests)
+                    return collect($table);
             }
         }
+
+        if ($previousCapacity < $noOfGuests)
+            return collect([]);
 
         return $result;
     }
