@@ -358,9 +358,11 @@ class Booking extends BaseComponent
             return $this->location;
 
         if (!is_numeric($locationId = input('location')))
-            $locationId = Location::current() ? Location::getId() : params('default_location_id');
+            $locationId = params('default_location_id');
 
-        $this->location = Location::getById($locationId);
+        $this->location = ($locationId != Location::getId())
+            ? Location::getById($locationId)
+            : Location::current();
 
         return $this->location;
     }
