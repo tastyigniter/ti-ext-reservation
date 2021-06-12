@@ -173,6 +173,7 @@ class BookingManager
 
         $query = Tables_model::isEnabled()
             ->whereHasLocation($this->location->getKey());
+
         $tables = $query->get();
 
         return $this->availableTables = $tables;
@@ -181,20 +182,20 @@ class BookingManager
     protected function filterNextBookableTable($tables, int $noOfGuests)
     {
         $result = collect();
-        $previousCapacity = 0;
+        $unseatedGuests = $noOfGuests;
         foreach ($tables as $table) {
             if ($table->min_capacity <= $noOfGuests && $table->max_capacity >= $noOfGuests)
                 return collect($table);
 
-            if ($table->is_joinable) {
-                $previousCapacity += $table->max_capacity;
+            if ($table->is_joinable && $unseatedGuests >= $table->min_capacity) {
                 $result->push($table);
-                if ($previousCapacity >= $noOfGuests)
+                $unseatedGuests -= $table->max_capacity;
+                if ($unseatedGuests >= 0)
                     break;
             }
         }
 
-        return $previousCapacity < $noOfGuests ? collect() : $result;
+        return $unseatedGuests ? collect() : $result;
     }
 
     protected function getRequiredAttributes()
