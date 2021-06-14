@@ -185,17 +185,17 @@ class BookingManager
         $unseatedGuests = $noOfGuests;
         foreach ($tables as $table) {
             if ($table->min_capacity <= $noOfGuests && $table->max_capacity >= $noOfGuests)
-                return collect($table);
+                return collect([$table]);
 
             if ($table->is_joinable && $unseatedGuests >= $table->min_capacity) {
                 $result->push($table);
                 $unseatedGuests -= $table->max_capacity;
-                if ($unseatedGuests >= 0)
+                if ($unseatedGuests <= 0)
                     break;
             }
         }
 
-        return $unseatedGuests ? collect() : $result;
+        return $unseatedGuests > 0 ? collect() : $result;
     }
 
     protected function getRequiredAttributes()

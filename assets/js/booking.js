@@ -61,7 +61,9 @@
     }
 
     Booking.prototype.onSelectLocationPicker = function(event) {
-        location.href = location.pathname + '?location=' + event.target.value;
+        location.href = location.pathname + '?location=' + event.target.value
+            + '&date=' + this.$datePickerValue + '&guest=' + this.$guestPickerValue;
+
         return;
     }
 
@@ -70,10 +72,12 @@
         $indicatorContainer.prepend('<div class="progress-indicator"></div>')
         $indicatorContainer.addClass('is-loading')
 
-		jQuery.ajax(location.pathname + '?location=' + this.$locationPickerValue + '&date=' + this.$datePickerValue + '&guest=' + this.$guestPickerValue, {
-	         dataType: 'html'
-	    })
-	    .done($.proxy(this.onHtmlResponse, this));
+        this.$guestPickerValue = this.$el.find('[name="guest"]').val();
+
+        jQuery.ajax(location.pathname + '?location=' + this.$locationPickerValue + '&date=' + this.$datePickerValue + '&guest=' + this.$guestPickerValue, {
+                dataType: 'html'
+            })
+            .done($.proxy(this.onHtmlResponse, this));
     }
 
     Booking.prototype.onHtmlResponse = function(html) {
