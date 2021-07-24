@@ -5,11 +5,11 @@ namespace Igniter\Reservation\Classes;
 use Admin\Models\Reservations_model;
 use Admin\Models\Statuses_model;
 use Admin\Models\Tables_model;
-use Auth;
 use Carbon\Carbon;
 use DateInterval;
-use Event;
 use Igniter\Flame\Traits\Singleton;
+use Illuminate\Support\Facades\Event;
+use Main\Facades\Auth;
 
 class BookingManager
 {

@@ -2,8 +2,8 @@
 
 namespace Igniter\Reservation\AutomationRules\Conditions;
 
-use ApplicationException;
 use Igniter\Automation\Classes\BaseModelAttributesCondition;
+use Igniter\Flame\Exception\ApplicationException;
 
 class ReservationStatusAttribute extends BaseModelAttributesCondition
 {

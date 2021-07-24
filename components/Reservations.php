@@ -3,8 +3,8 @@
 namespace Igniter\Reservation\Components;
 
 use Admin\Models\Reservations_model;
-use Auth;
 use Igniter\Reservation\Classes\BookingManager;
+use Main\Facades\Auth;
 use Main\Traits\UsesPage;
 
 class Reservations extends \System\Classes\BaseComponent

@@ -4,7 +4,7 @@ namespace Igniter\Reservation;
 
 use Admin\Models\Reservations_model;
 use Admin\Models\Status_history_model;
-use Event;
+use Illuminate\Support\Facades\Event;
 
 class Extension extends \System\Classes\BaseExtension
 {

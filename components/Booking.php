@@ -4,12 +4,12 @@ namespace Igniter\Reservation\Components;
 
 use Admin\Models\Locations_model;
 use Admin\Traits\ValidatesForm;
-use Auth;
 use Carbon\Carbon;
 use Exception;
+use Igniter\Local\Facades\Location;
 use Igniter\Reservation\Classes\BookingManager;
-use Location;
-use Redirect;
+use Illuminate\Support\Facades\Redirect;
+use Main\Facades\Auth;
 use System\Classes\BaseComponent;
 
 class Booking extends BaseComponent

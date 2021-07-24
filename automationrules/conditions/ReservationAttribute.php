@@ -2,9 +2,9 @@
 
 namespace Igniter\Reservation\AutomationRules\Conditions;
 
-use ApplicationException;
 use Carbon\Carbon;
 use Igniter\Automation\Classes\BaseModelAttributesCondition;
+use Igniter\Flame\Exception\ApplicationException;
 
 class ReservationAttribute extends BaseModelAttributesCondition
 {
