@@ -6,7 +6,7 @@
     @foreach ($__SELF__->getLocations() as $key => $value)
         <option
             value="{{ $key }}"
-            {!! $key == $bookingLocation->getKey() ? 'selected="selected"' : '' !!}
+            {!! $key == $bookingLocation->permalink_slug ? 'selected="selected"' : '' !!}
         >{{ $value }}</option>
     @endforeach
 </select>

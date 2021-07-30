@@ -171,7 +171,7 @@ class Booking extends BaseComponent
             ->filter(function ($location) {
                 return $location->getOption('offer_reservation') == 1;
             })
-            ->pluck('location_name', 'location_id');
+            ->pluck('location_name', 'permalink_slug');
     }
 
     public function getGuestSizeOptions($noOfGuests = null)
@@ -356,12 +356,10 @@ class Booking extends BaseComponent
         if (!is_null($this->location))
             return $this->location;
 
-        if (!is_numeric($locationId = input('location')))
-            $locationId = params('default_location_id');
+        $this->location = Location::getBySlug($this->param('location'));
 
-        $this->location = ($locationId != Location::getId())
-            ? Location::getById($locationId)
-            : Location::current();
+        if (!$this->location)
+            $this->location = Location::current();
 
         return $this->location;
     }
