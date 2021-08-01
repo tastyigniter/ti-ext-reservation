@@ -363,6 +363,9 @@ class Booking extends BaseComponent
             ? Location::getById($locationId)
             : Location::current();
 
+        if (!$this->location->location_status)
+            $this->location = null;
+
         return $this->location;
     }
 
