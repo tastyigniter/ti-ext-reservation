@@ -113,6 +113,13 @@ class Booking extends BaseComponent
                 'options' => [static::class, 'getThemePageOptions'],
                 'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
+            'localNotFoundPage' => [
+                'label' => 'Page to redirect to when location does not exist',
+                'type' => 'select',
+                'options' => [static::class, 'getThemePageOptions'],
+                'default' => 'home',
+                'validationRule' => 'regex:/^[a-z0-9\-_\/]+$/i',
+            ],
         ];
     }
 
@@ -126,6 +133,9 @@ class Booking extends BaseComponent
 
     public function onRun()
     {
+        if ($redirect = $this->checkLocationParam())
+            return $redirect;
+
         $this->addJs('~/app/system/assets/ui/js/vendor/moment.min.js', 'moment-js');
         $this->addCss('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
         $this->addJs('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
@@ -435,5 +445,14 @@ class Booking extends BaseComponent
             : $startDate;
 
         return $dateTime;
+    }
+
+    protected function checkLocationParam()
+    {
+        $param = $this->param('location');
+        if ($param AND Locations_model::whereSlug($param)->exists())
+            return;
+
+        return Redirect::to($this->controller->pageUrl($this->property('localNotFoundPage')));
     }
 }
