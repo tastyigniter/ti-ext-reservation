@@ -61,8 +61,8 @@
     }
 
     Booking.prototype.onSelectLocationPicker = function(event) {
-        location.href = location.pathname + '?location=' + event.target.value
-            + '&date=' + this.$datePickerValue + '&guest=' + this.$guestPickerValue;
+        var path = $(event.currentTarget).find('option:selected').data('url');
+        location.href = path + '?date=' + this.$datePickerValue + '&guest=' + this.$guestPickerValue;
 
         return;
     }
@@ -74,7 +74,7 @@
 
         this.$guestPickerValue = this.$el.find('[name="guest"]').val();
 
-        jQuery.ajax(location.pathname + '?location=' + this.$locationPickerValue + '&date=' + this.$datePickerValue + '&guest=' + this.$guestPickerValue, {
+        jQuery.ajax(location.pathname + '?&date=' + this.$datePickerValue + '&guest=' + this.$guestPickerValue, {
                 dataType: 'html'
             })
             .done($.proxy(this.onHtmlResponse, this));

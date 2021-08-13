@@ -113,6 +113,13 @@ class Booking extends BaseComponent
                 'options' => [static::class, 'getThemePageOptions'],
                 'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
+            'localNotFoundPage' => [
+                'label' => 'Page to redirect to when location does not exist',
+                'type' => 'select',
+                'options' => [static::class, 'getThemePageOptions'],
+                'default' => 'home',
+                'validationRule' => 'regex:/^[a-z0-9\-_\/]+$/i',
+            ],
         ];
     }
 
@@ -126,6 +133,9 @@ class Booking extends BaseComponent
 
     public function onRun()
     {
+        if ($redirect = $this->checkLocationParam())
+            return $redirect;
+
         $this->addJs('~/app/system/assets/ui/js/vendor/moment.min.js', 'moment-js');
         $this->addCss('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
         $this->addJs('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
@@ -161,7 +171,9 @@ class Booking extends BaseComponent
 
     public function getFormAction()
     {
-        return $this->controller->pageUrl($this->property('bookingPage'));
+        return $this->controller->pageUrl($this->property('bookingPage'), [
+            'location' => $this->getLocation()->permalink_slug,
+        ]);
     }
 
     public function getLocations()
@@ -169,9 +181,9 @@ class Booking extends BaseComponent
         return Locations_model::isEnabled()
             ->get()
             ->filter(function ($location) {
-                return $location->getOption('offer_reservation') == 1;
+                return $location->getOption('offer_reservation', 1) == 1;
             })
-            ->pluck('location_name', 'location_id');
+            ->pluck('location_name', 'permalink_slug');
     }
 
     public function getGuestSizeOptions($noOfGuests = null)
@@ -356,12 +368,7 @@ class Booking extends BaseComponent
         if (!is_null($this->location))
             return $this->location;
 
-        if (!is_numeric($locationId = input('location')))
-            $locationId = params('default_location_id');
-
-        $this->location = ($locationId != Location::getId())
-            ? Location::getById($locationId)
-            : Location::current();
+        $this->location = Location::current();
 
         if (!$this->location->location_status)
             $this->location = null;
@@ -374,7 +381,7 @@ class Booking extends BaseComponent
         switch ($form) {
             case 'picker':
                 return [
-                    ['location', 'lang:igniter.reservation::default.label_location', 'required|integer'],
+                    ['location', 'lang:igniter.reservation::default.label_location', 'required|string'],
                     ['guest', 'lang:igniter.reservation::default.label_guest_num', 'required|integer'],
                     ['date', 'lang:igniter.reservation::default.label_date', 'required|date_format:Y-m-d'],
                     ['time', 'lang:igniter.reservation::default.label_time', 'required|date_format:H:i'],
@@ -395,7 +402,7 @@ class Booking extends BaseComponent
         if (!$location = $this->getLocation())
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_location'));
 
-        if (!(bool)$location->getOption('offer_reservation')) {
+        if (!(bool)$location->getOption('offer_reservation', 1)) {
             return $validator->errors()->add('location', lang('igniter.reservation::default.alert_reservation_disabled'));
         }
 
@@ -440,5 +447,14 @@ class Booking extends BaseComponent
             : $startDate;
 
         return $dateTime;
+    }
+
+    protected function checkLocationParam()
+    {
+        $param = $this->param('location');
+        if ($param AND Locations_model::whereSlug($param)->exists())
+            return;
+
+        return Redirect::to($this->controller->pageUrl($this->property('localNotFoundPage')));
     }
 }
