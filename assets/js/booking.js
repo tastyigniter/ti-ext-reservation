@@ -61,12 +61,8 @@
     }
 
     Booking.prototype.onSelectLocationPicker = function(event) {
-        var path = location.pathname.split('/');
-        for (var i=0;i<path.length;i++)
-            if (path[i] == 'reservation' && i > 0)
-                path[i-1] = event.target.value;
-
-        location.href = path.join('/') + '?&date=' + this.$datePickerValue + '&guest=' + this.$guestPickerValue;
+        var path = $(event.currentTarget).find('option:selected').data('url');
+        location.href = path + '?date=' + this.$datePickerValue + '&guest=' + this.$guestPickerValue;
 
         return;
     }
