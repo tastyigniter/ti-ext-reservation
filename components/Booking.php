@@ -171,7 +171,9 @@ class Booking extends BaseComponent
 
     public function getFormAction()
     {
-        return $this->controller->pageUrl($this->property('bookingPage'));
+        return $this->controller->pageUrl($this->property('bookingPage'), [
+            'location' => $this->getLocation()->permalink_slug,
+        ]);
     }
 
     public function getLocations()
@@ -179,7 +181,7 @@ class Booking extends BaseComponent
         return Locations_model::isEnabled()
             ->get()
             ->filter(function ($location) {
-                return $location->getOption('offer_reservation') == 1;
+                return $location->getOption('offer_reservation', 1) == 1;
             })
             ->pluck('location_name', 'permalink_slug');
     }
@@ -366,10 +368,7 @@ class Booking extends BaseComponent
         if (!is_null($this->location))
             return $this->location;
 
-        $this->location = Location::getBySlug($this->param('location'));
-
-        if (!$this->location)
-            $this->location = Location::current();
+        $this->location = Location::current();
 
         return $this->location;
     }
@@ -379,7 +378,7 @@ class Booking extends BaseComponent
         switch ($form) {
             case 'picker':
                 return [
-                    ['location', 'lang:igniter.reservation::default.label_location', 'required|integer'],
+                    ['location', 'lang:igniter.reservation::default.label_location', 'required|string'],
                     ['guest', 'lang:igniter.reservation::default.label_guest_num', 'required|integer'],
                     ['date', 'lang:igniter.reservation::default.label_date', 'required|date_format:Y-m-d'],
                     ['time', 'lang:igniter.reservation::default.label_time', 'required|date_format:H:i'],
@@ -400,7 +399,7 @@ class Booking extends BaseComponent
         if (!$location = $this->getLocation())
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_location'));
 
-        if (!(bool)$location->getOption('offer_reservation')) {
+        if (!(bool)$location->getOption('offer_reservation', 1)) {
             return $validator->errors()->add('location', lang('igniter.reservation::default.alert_reservation_disabled'));
         }
 
