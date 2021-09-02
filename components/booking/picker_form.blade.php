@@ -23,10 +23,6 @@
             <input type="hidden" name="date" value="{{ $__SELF__->getSelectedDate()->format('Y-m-d') }}"/>
         </div>
         <div class="col-md-3" id="ti-datepicker-options">
-            <div class="form-group pt-4">
-                <label for="locationSelect">@lang('igniter.reservation::default.label_location')</label>
-                @partial('@input_location')
-            </div>
             <div class="form-group">
                 <label for="noOfGuests">@lang('igniter.reservation::default.label_guest_num')</label>
                 @partial('@input_guest')
@@ -45,13 +41,6 @@
             @endif
         </div>
     @else
-        <div class="col-sm-3 mb-3">
-            <label
-                class="sr-only"
-                for="locationSelect"
-            >@lang('igniter.reservation::default.label_location')</label>
-            @partial('@input_location')
-        </div>
         <div class="col-sm-2 mb-3">
             <label
                 class="sr-only"
