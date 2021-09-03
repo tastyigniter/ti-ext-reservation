@@ -29,7 +29,7 @@ class Reservations extends \System\Classes\BaseComponent
             'reservationsPage' => [
                 'label' => 'Account Reservations Page',
                 'type' => 'select',
-                'default' => 'account/reservations',
+                'default' => 'account'.DIRECTORY_SEPARATOR.'reservations',
                 'options' => [static::class, 'getThemePageOptions'],
                 'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],

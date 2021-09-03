@@ -102,14 +102,14 @@ class Booking extends BaseComponent
             'bookingPage' => [
                 'label' => 'Booking Page',
                 'type' => 'select',
-                'default' => 'reservation/reservation',
+                'default' => 'reservation'.DIRECTORY_SEPARATOR.'reservation',
                 'options' => [static::class, 'getThemePageOptions'],
                 'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
             'successPage' => [
                 'label' => 'Page to redirect to when checkout is successful',
                 'type' => 'select',
-                'default' => 'reservation/success',
+                'default' => 'reservation'.DIRECTORY_SEPARATOR.'success',
                 'options' => [static::class, 'getThemePageOptions'],
                 'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
