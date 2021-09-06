@@ -35,7 +35,6 @@
                 down: "fa fa-arrow-down"
             },
             todayHighlight: true,
-            endDate: moment().add(this.$datePicker.data('numberOfDays'), 'days').format('YYYY-MM-DD'),
         }, this.$datePicker.data()));
 
         this.$dataLocker = this.$datePicker.next('input');

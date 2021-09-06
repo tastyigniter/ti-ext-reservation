@@ -137,6 +137,9 @@ class BookingManager
      */
     public function getSchedule($days = null)
     {
+        if (is_null($days))
+            $days = (int)$this->location->getOption('max_reservation_advance_time', 30);
+
         return $this->location->newWorkingSchedule('opening', $days);
     }
 

@@ -48,6 +48,7 @@ return [
 
     'error_invalid_location' => 'Selected location is invalid.',
     'error_invalid_date' => 'Date must be after today, you can only make future reservations!',
+    'error_invalid_datetime' => 'Selected reservation date time is invalid',
     'error_invalid_time' => 'Time must be between restaurant opening time!',
 
     'alert_reservation_disabled' => 'Table reservation has been disabled, please contact administrator.',

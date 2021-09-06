@@ -12,9 +12,8 @@
         <div class="col-md-9 pr-md-4">
             <div
                 data-control="datepicker"
-                data-date="{{ $__SELF__->getSelectedDate()->format('Y-m-d') }}"
-                data-start-date="{{ isset($nextOpen) ? $nextOpen->format('Y-m-d') : null }}"
-                data-number-of-days="{{ $datePickerNoOfDays }}"
+                data-start-date="{{ $__SELF__->getStartDate()->format('Y-m-d') }}"
+                data-end-date="{{ $__SELF__->getEndDate()->format('Y-m-d') }}"
                 data-days-of-week-disabled='@json($disabledDaysOfWeek ?? [])'
                 data-dates-disabled='@json($disabledDates ?? [])'
                 data-format="yyyy-mm-dd"

@@ -35,6 +35,10 @@ class Booking extends BaseComponent
 
     public $pickerStep;
 
+    public $startDate;
+
+    public $endDate;
+
     public function defineProperties()
     {
         return [
@@ -205,13 +209,13 @@ class Booking extends BaseComponent
 
     public function getDatePickerOptions()
     {
-        $options = [];
+        $start = $this->getStartDate()->copy();
+        $end = $this->getEndDate()->copy();
 
+        $options = [];
+        $schedule = $this->manager->getSchedule();
         $noOfDays = $this->property('datePickerNoOfDays');
 
-        $start = Carbon::now()->startOfDay();
-        $end = Carbon::now()->addDays($noOfDays);
-        $schedule = $this->manager->getSchedule($noOfDays);
         for ($date = $start; $date->lte($end); $date->addDay()) {
             if (count($schedule->forDate($date)))
                 $options[] = $date->copy();
@@ -225,7 +229,7 @@ class Booking extends BaseComponent
         $noOfDays = $this->property('datePickerNoOfDays');
 
         // get a 7 day schedule
-        $schedule = $this->manager->getSchedule($noOfDays);
+        $schedule = $this->manager->getSchedule();
 
         $disabled = [];
         foreach ($schedule->getPeriods() as $index => $day) {
@@ -325,8 +329,8 @@ class Booking extends BaseComponent
 
         $data = get();
 
-        $this->validateAfter(function ($validator) use ($dateTime) {
-            $this->processValidateAfter($validator, $dateTime);
+        $this->validateAfter(function ($validator) {
+            $this->processValidateAfter($validator);
         });
 
         if (!$this->validatePasses($data, $this->createRules('picker')))
@@ -397,7 +401,7 @@ class Booking extends BaseComponent
         }
     }
 
-    protected function processValidateAfter($validator, $dateTime)
+    protected function processValidateAfter($validator)
     {
         if (!$location = $this->getLocation())
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_location'));
@@ -406,10 +410,14 @@ class Booking extends BaseComponent
             return $validator->errors()->add('location', lang('igniter.reservation::default.alert_reservation_disabled'));
         }
 
+        $dateTime = $this->getSelectedDateTime();
         if ($dateTime->lt(Carbon::now()))
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
 
-        if (!$this->manager->getSchedule()->isOpenAt($dateTime))
+        if (!$dateTime->isBetween($this->getStartDate(), $this->getEndDate()))
+            return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_datetime'));
+
+        if ($this->getTimeSlots()->where('rawTime', $dateTime->format('H:i'))->isEmpty())
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
         $autoAllocateTable = (bool)$this->location->getOption('auto_allocate_table', 1);
@@ -421,6 +429,26 @@ class Booking extends BaseComponent
     // Helpers
     //
 
+    public function getStartDate()
+    {
+        if (!is_null($this->startDate))
+            return $this->startDate;
+
+        return $this->startDate = now()->addDays(
+            (int)$this->getLocation()->getOption('min_reservation_advance_time', 2)
+        )->startOfDay();
+    }
+
+    public function getEndDate()
+    {
+        if (!is_null($this->endDate))
+            return $this->endDate;
+
+        return $this->endDate = now()->addDays(
+            (int)$this->getLocation()->getOption('max_reservation_advance_time', 15)
+        )->endOfDay();
+    }
+
     /**
      * @return \Carbon\Carbon
      */
@@ -430,7 +458,7 @@ class Booking extends BaseComponent
             ? Carbon::createFromFormat('Y-m-d', input('date'))
             : array_first($this->getDatePickerOptions());
 
-        return $date ?? Carbon::now();
+        return $date ?? $this->getStartDate()->copy();
     }
 
     /**
