@@ -4,7 +4,7 @@ namespace Igniter\Reservation;
 
 use Admin\Models\Reservations_model;
 use Admin\Models\Status_history_model;
-use Igniter\Reservation\Listeners\MaxReservationPerTimeslotReached;
+use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
 use Illuminate\Support\Facades\Event;
 
 class Extension extends \System\Classes\BaseExtension
@@ -63,7 +63,7 @@ class Extension extends \System\Classes\BaseExtension
 
     protected function bindReservationEvent()
     {
-        Event::subscribe(MaxReservationPerTimeslotReached::class);
+        Event::subscribe(MaxGuestSizePerTimeslotReached::class);
 
         Event::listen('igniter.reservation.confirmed', function (Reservations_model $model) {
             ActivityTypes\ReservationCreated::log($model);
