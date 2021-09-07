@@ -27,6 +27,8 @@ class BookingManager
 
     protected $availableTables;
 
+    protected $fullyBookedCache = [];
+
     public function initialize()
     {
         $this->customer = Auth::customer();
@@ -145,7 +147,12 @@ class BookingManager
 
     public function isFullyBookedOn(\DateTime $dateTime, $noOfGuests)
     {
-        return $this->getNextBookableTable($dateTime, $noOfGuests)->isEmpty();
+        $index = $dateTime->timestamp.'-'.$noOfGuests;
+
+        if (array_key_exists($index, $this->fullyBookedCache))
+            return $this->fullyBookedCache[$index];
+
+        return $this->fullyBookedCache[$index] = $this->getNextBookableTable($dateTime, $noOfGuests)->isEmpty();
     }
 
     /**
