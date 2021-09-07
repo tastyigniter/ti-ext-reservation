@@ -20,10 +20,9 @@ Go to **Restaurants > Locations > Edit Location**, under the **Orders & Reservat
 
 | Property                 | Description              | Example Value | Default Value |
 | ------------------------ | ------------------------ | ------------- | ------------- |
-| mode      | Enable or disable booking     |       TRUE           |        TRUE   |
-| datePickerNoOfDays      | The number of days to list for the date picker    |       30           |      30   |
+| useCalender      | Use the calender view     |       TRUE/FALSE           |        TRUE   |
+| minGuestSize      | The minimum guest size        |       20           |      20   |
 | maxGuestSize      | The maximum guest size        |       20           |      20   |
-| timePickerInterval        | The interval to use for the time picker       |       30           |      30   |
 | timeSlotsInterval     | The interval to use for the time slots        |       15           |      15   |
 | showLocationThumb     | Show Location Image Thumbnail     |       FALSE           |      FALSE   |
 | locationThumbWidth        | Location thumb Height        |        95           |      95    |

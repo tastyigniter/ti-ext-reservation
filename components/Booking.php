@@ -58,18 +58,6 @@ class Booking extends BaseComponent
                 'default' => 20,
                 'validationRule' => 'required|integer',
             ],
-            'datePickerNoOfDays' => [
-                'label' => 'The number of days to list for the date picker',
-                'type' => 'number',
-                'default' => 30,
-                'validationRule' => 'required|integer',
-            ],
-            'timePickerInterval' => [
-                'label' => 'The interval to use for the time picker',
-                'type' => 'number',
-                'default' => 30,
-                'validationRule' => 'required|integer',
-            ],
             'timeSlotsInterval' => [
                 'label' => 'The interval to use for the time slots',
                 'type' => 'number',
@@ -160,7 +148,6 @@ class Booking extends BaseComponent
         $this->page['bookingTimeFormat'] = $this->timeFormat = lang('system::lang.moment.time_format');
         $this->page['bookingDateTimeFormat'] = lang('system::lang.moment.date_time_format_long');
         $this->page['useCalendarView'] = (bool)$this->property('useCalendarView', FALSE);
-        $this->page['datePickerNoOfDays'] = $this->property('datePickerNoOfDays', 30);
 
         $this->page['reservation'] = $this->getReservation();
         $this->page['bookingLocation'] = $this->getLocation();
@@ -214,8 +201,6 @@ class Booking extends BaseComponent
 
         $options = [];
         $schedule = $this->manager->getSchedule();
-        $noOfDays = $this->property('datePickerNoOfDays');
-
         for ($date = $start; $date->lte($end); $date->addDay()) {
             if (count($schedule->forDate($date)))
                 $options[] = $date->copy();
@@ -226,8 +211,6 @@ class Booking extends BaseComponent
 
     public function getDisabledDaysOfWeek()
     {
-        $noOfDays = $this->property('datePickerNoOfDays');
-
         // get a 7 day schedule
         $schedule = $this->manager->getSchedule();
 
@@ -283,9 +266,7 @@ class Booking extends BaseComponent
         if ($from < 0)
             $from = 0;
 
-        $timeslots = $timeslots->slice($from, 5);
-
-        return $timeslots;
+        return $timeslots->slice($from, 5);
     }
 
     /**
