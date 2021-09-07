@@ -71,7 +71,6 @@
 </div>
 <div class="form-row">
     <div class="col">
-        {!! form_error('location', '<span class="help-block text-danger">', '</span>') !!}
         {!! form_error('guest', '<span class="help-block text-danger">', '</span>') !!}
         {!! form_error('date', '<span class="help-block text-danger">', '</span>') !!}
         {!! form_error('time', '<span class="help-block text-danger">', '</span>') !!}

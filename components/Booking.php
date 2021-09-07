@@ -385,7 +385,6 @@ class Booking extends BaseComponent
         switch ($form) {
             case 'picker':
                 return [
-                    ['location', 'lang:igniter.reservation::default.label_location', 'required|string'],
                     ['guest', 'lang:igniter.reservation::default.label_guest_num', 'required|integer'],
                     ['date', 'lang:igniter.reservation::default.label_date', 'required|date_format:Y-m-d'],
                     ['time', 'lang:igniter.reservation::default.label_time', 'required|date_format:H:i'],
