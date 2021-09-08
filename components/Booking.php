@@ -225,8 +225,16 @@ class Booking extends BaseComponent
 
     public function getDisabledDates()
     {
-        // future proofing - ability to disable specific days
-        return [];
+        $result = [];
+        $startDate = $this->getStartDate()->copy();
+        $endDate = $this->getEndDate()->copy();
+        $schedule = $this->manager->getSchedule();
+        for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+            if (!count($schedule->forDate($date)))
+                $result[] = $date->toDateString();
+        }
+
+        return $result;
     }
 
     public function getTimeSlots()
@@ -415,7 +423,7 @@ class Booking extends BaseComponent
             return $this->startDate;
 
         return $this->startDate = now()->addDays(
-            (int)$this->getLocation()->getOption('min_reservation_advance_time', 2)
+            $this->getLocation()->getMinReservationAdvanceTime()
         )->startOfDay();
     }
 
@@ -425,7 +433,7 @@ class Booking extends BaseComponent
             return $this->endDate;
 
         return $this->endDate = now()->addDays(
-            (int)$this->getLocation()->getOption('max_reservation_advance_time', 15)
+            $this->getLocation()->getMaxReservationAdvanceTime()
         )->endOfDay();
     }
 
@@ -434,11 +442,9 @@ class Booking extends BaseComponent
      */
     public function getSelectedDate()
     {
-        $date = strlen(input('date'))
+        return strlen(input('date'))
             ? Carbon::createFromFormat('Y-m-d', input('date'))
-            : array_first($this->getDatePickerOptions());
-
-        return $date ?? $this->getStartDate()->copy();
+            : $this->getStartDate()->copy();
     }
 
     /**
