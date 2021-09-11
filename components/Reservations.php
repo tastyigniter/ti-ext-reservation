@@ -23,7 +23,7 @@ class Reservations extends \System\Classes\BaseComponent
             'sortOrder' => [
                 'label' => 'Sort order',
                 'type' => 'text',
-                'default' => 'date_added desc',
+                'default' => 'created_at desc',
                 'validationRule' => 'required|string',
             ],
             'reservationsPage' => [
@@ -68,7 +68,7 @@ class Reservations extends \System\Classes\BaseComponent
         return Reservations_model::with(['location', 'status', 'related_table'])->listFrontEnd([
             'page' => $this->param('page'),
             'pageLimit' => $this->property('itemsPerPage'),
-            'sort' => $this->property('sortOrder', 'date_added desc'),
+            'sort' => $this->property('sortOrder', 'created_at desc'),
             'customer' => $customer,
         ]);
     }
