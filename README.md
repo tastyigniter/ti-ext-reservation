@@ -1,96 +1,28 @@
-This extension to the TastyIgniter built-in reservation management provides a simple booking form to accept table reservations.
+### Introduction
 
-### Admin Panel
-In the admin user interface you can:
-- Define time interval (time slot)
-- Define stay time (reservation length)
-- Manage your tables (units & capacity)
+This extension to the TastyIgniter built-in reservation management provides a simple booking form to accept table
+reservations.
 
-Go to **Restaurants > Locations > Edit Location**, under the **Orders & Reservations** tab 
+### Documentation
 
-### Components
-| Name     | Page variable                | Description                                      |
-| -------- | ---------------------------- | ------------------------------------------------ |
-| Booking | `@component('booking')` | Display the booking form              |
-| Reservations | `@component('reservations')` | Displays a list of reservations on the page               |
+Documentation for TastyIgniter Reservation extension can be found on
+the [TastyIgniter website](https://tastyigniter.com/docs/extensions/reservation).
 
-### Booking Component
+### Contributing
 
-**Properties**
+Thank you for considering contributing! The contribution guide can be found in
+the [TastyIgniter documentation](https://tastyigniter.com/docs/contribution-guide).
 
-| Property                 | Description              | Example Value | Default Value |
-| ------------------------ | ------------------------ | ------------- | ------------- |
-| useCalender      | Use the calender view     |       TRUE/FALSE           |        TRUE   |
-| minGuestSize      | The minimum guest size        |       20           |      20   |
-| maxGuestSize      | The maximum guest size        |       20           |      20   |
-| timeSlotsInterval     | The interval to use for the time slots        |       15           |      15   |
-| showLocationThumb     | Show Location Image Thumbnail     |       FALSE           |      FALSE   |
-| locationThumbWidth        | Location thumb Height        |        95           |      95    |
-| locationThumbHeight       | Location thumb Width     |        80           |      80    |
-| bookingPage       | Booking page name      |      reservation/reservation           |     reservation/reservation  |
-| successPage       | Page name to redirect to when checkout is successful       |      reservation/success           |     reservation/success  |
+### Code of Conduct
 
-**Variables available in templates**
+In order to ensure that the [TastyIgniter community](https://forum.tastyigniter.com) is welcoming to all, please review
+and abide by the [Code of Conduct](https://tastyigniter.com/docs/code-of-conduct).
 
-| Variable                  | Description                                                  |
-| ------------------------- | ------------------------------------------------------------ |
-| `{{ $bookingDateFormat }}` | Date format                                                |
-| `{{ $bookingTimeFormat }}` | Time format                                               |
-| `{{ $bookingDateTimeFormat }}` | Date time format                                                |
-| `{{ $bookingLocation }}` | Instance of the current location model                                              |
-| `{{ $showLocationThumb }}` | Display location thumbnail                                                |
-| `{{ $locationThumbWidth }}` | Location thumbnail width                                                |
-| `{{ $locationThumbHeight }}` | Location thumbnail height                                               |
-| `{{ $customer }}` | Instance of the logged user model                                                |
+### Security Vulnerabilities
 
-**Example:**
-
-```
----
-title: 'Reservation'
-permalink: /reservation
-
-'[booking]': { }
----
-...
-@component('booking')
-...
-```
-
-
-### Automations
-
-## Events
-- New Reservation Event
-- Reservation Status Update Event
-- Reservation Assigned Event
-
-## Conditions
-- Reservation Attributes
-- Reservation Status Attributes
-
-### Notifications
-
-- Reservation confirmation notification
-- Reservation status update notification
-- Reservation assigned notification
-
-### Events
-
-The Booking Manager used with this extension will fire some global events that can be useful for interacting with other extensions.
-
-| Event | Description | Parameters |
-| ----- | ----------- | ---------- |
-| `igniter.reservation.beforeSaveReservation` |    When a reservation is being created.    |           |
-| `igniter.reservation.confirmed` |      When a reservation has been placed.       |      The `CartItem` instance     |
-
-**Example of hooking an event**
-
-```
-Event::listen('igniter.reservation.confirmed', function($cartItem) {
-    // ...
-});
-```
+Please review [our security policy](https://github.com/tastyigniter/ti-ext-reservation/security/policy) on how to report
+security vulnerabilities.
 
 ### License
-[The MIT License (MIT)](https://tastyigniter.com/licence/)
+
+TastyIgniter Reservation extension is open-sourced software licensed under the [MIT license](LICENSE).
