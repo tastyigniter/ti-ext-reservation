@@ -4,39 +4,49 @@ namespace Igniter\Reservation\Listeners;
 
 use Admin\Models\Reservations_model;
 use Carbon\Carbon;
+use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Location\Models\AbstractLocation;
-use Igniter\Flame\Traits\EventEmitter;
 use Igniter\Local\Facades\Location as LocationFacade;
 use Illuminate\Contracts\Events\Dispatcher;
 
 class MaxGuestSizePerTimeslotReached
 {
-    use EventEmitter;
-
     protected static $reservationsCache = [];
 
     public function subscribe(Dispatcher $dispatcher)
     {
         $dispatcher->listen('igniter.workingSchedule.timeslotValid', __CLASS__.'@timeslotValid');
+
+        $dispatcher->listen('igniter.reservation.beforeSaveReservation', __CLASS__.'@beforeSaveReservation');
     }
 
     public function timeslotValid($workingSchedule, $timeslot)
     {
-        $locationModel = LocationFacade::current();
-
-        if (!(bool)$locationModel->getOption('limit_reservations'))
-            return;
-
         // Skip if the working schedule is not for opening
         if ($workingSchedule->getType() != AbstractLocation::OPENING)
+            return;
+
+        if ($this->execute($timeslot))
+            return FALSE;
+    }
+
+    public function beforeSaveReservation($reservation)
+    {
+        if ($this->execute($reservation->reservation_datetime))
+            throw new ApplicationException(lang('igniter.reservation::default.alert_fully_booked'));
+    }
+
+    protected function execute($timeslot)
+    {
+        $locationModel = LocationFacade::current();
+        if (!(bool)$locationModel->getOption('limit_reservations'))
             return;
 
         $totalGuestNumOnThisDay = $this->getGuestNum($timeslot);
         if (!$totalGuestNumOnThisDay)
             return;
 
-        if ($totalGuestNumOnThisDay >= (int)$locationModel->getOption('limit_guests_count', 20))
-            return FALSE;
+        return $totalGuestNumOnThisDay >= (int)$locationModel->getOption('limit_guests_count', 20);
     }
 
     protected function getGuestNum($timeslot)
