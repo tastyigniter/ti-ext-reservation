@@ -30,13 +30,14 @@ class MaxGuestSizePerTimeslotReached
             return FALSE;
     }
 
-    public function beforeSaveReservation($reservation)
+    public function beforeSaveReservation($reservation, $data)
     {
-        if ($this->execute($reservation->reservation_datetime))
+        $dateTime = Carbon::createFromFormat('Y-m-d H:i', array_get($data, 'date').' '.array_get($data, 'time'));
+        if ($this->execute($dateTime, array_get($data, 'guest')))
             throw new ApplicationException(lang('igniter.reservation::default.alert_fully_booked'));
     }
 
-    protected function execute($timeslot)
+    protected function execute($timeslot, $guestNum = 0)
     {
         $locationModel = LocationFacade::current();
         if (!(bool)$locationModel->getOption('limit_reservations'))
@@ -46,7 +47,7 @@ class MaxGuestSizePerTimeslotReached
         if (!$totalGuestNumOnThisDay)
             return;
 
-        return $totalGuestNumOnThisDay >= (int)$locationModel->getOption('limit_guests_count', 20);
+        return ($totalGuestNumOnThisDay + $guestNum) >= (int)$locationModel->getOption('limit_guests_count', 20);
     }
 
     protected function getGuestNum($timeslot)
