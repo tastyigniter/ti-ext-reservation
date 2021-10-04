@@ -213,10 +213,11 @@ class BookingManager
         $customer = Auth::getUser();
 
         return [
-            'first_name' => $customer ? $customer->first_name : null,
-            'last_name' => $customer ? $customer->last_name : null,
-            'email' => $customer ? $customer->email : null,
-            'telephone' => $customer ? $customer->telephone : null,
+            'customer_id' => $customer->customer_id ?? null,
+            'first_name' => $customer->first_name ?? null,
+            'last_name' => $customer->last_name ?? null,
+            'email' => $customer->email ?? null,
+            'telephone' => $customer->telephone ?? null,
         ];
     }
 }
