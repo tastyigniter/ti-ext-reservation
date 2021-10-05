@@ -41,8 +41,8 @@ class ReservationAttribute extends BaseModelAttributesCondition
             'hours_since' => [
                 'label' => 'Hours since reservation time',
             ],
-            'hours_util' => [
-                'label' => 'Hours util reservation time',
+            'hours_until' => [
+                'label' => 'Hours until reservation time',
             ],
         ];
     }
@@ -50,7 +50,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
     public function getHoursSinceAttribute($value, $reservation)
     {
         $currentDateTime = Carbon::now();
-        $reservationDateTime = Carbon::parse($reservation->reserve_date.' '.$reservation->reserve_time);
+        $reservationDateTime = $reservation->reservation_datetime;
 
         return $reservationDateTime->isAfter($currentDateTime)
             ? $reservationDateTime->diffInRealHours($currentDateTime)
@@ -60,7 +60,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
     public function getHoursUntilAttribute($value, $reservation)
     {
         $currentDateTime = Carbon::now();
-        $reservationDateTime = Carbon::parse($reservation->reserve_date.' '.$reservation->reserve_time);
+        $reservationDateTime = $reservation->reservation_datetime;
 
         return $reservationDateTime->isBefore($currentDateTime)
             ? $currentDateTime->diffInRealHours($reservationDateTime)
