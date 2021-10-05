@@ -52,7 +52,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
         $currentDateTime = Carbon::now();
         $reservationDateTime = $reservation->reservation_datetime;
 
-        return $reservationDateTime->isAfter($currentDateTime)
+        return $currentDateTime->isAfter($reservationDateTime)
             ? $reservationDateTime->diffInRealHours($currentDateTime)
             : 0;
     }
@@ -62,7 +62,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
         $currentDateTime = Carbon::now();
         $reservationDateTime = $reservation->reservation_datetime;
 
-        return $reservationDateTime->isBefore($currentDateTime)
+        return $currentDateTime->isBefore($reservationDateTime)
             ? $currentDateTime->diffInRealHours($reservationDateTime)
             : 0;
     }
