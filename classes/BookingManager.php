@@ -152,7 +152,11 @@ class BookingManager
         if (array_key_exists($index, $this->fullyBookedCache))
             return $this->fullyBookedCache[$index];
 
-        return $this->fullyBookedCache[$index] = $this->getNextBookableTable($dateTime, $noOfGuests)->isEmpty();
+        $isFullyBooked = Event::fire('igniter.reservation.isFullyBookedOn', [$dateTime, $noOfGuests], TRUE);
+        if (!is_bool($isFullyBooked))
+            $isFullyBooked = $this->getNextBookableTable($dateTime, $noOfGuests)->isEmpty();
+
+        return $this->fullyBookedCache[$index] = $isFullyBooked;
     }
 
     /**
