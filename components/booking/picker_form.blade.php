@@ -6,7 +6,6 @@
 <input type="hidden" name="picker_step" value="2">
 <input type="hidden" name="location" value="{{ optional($__SELF__->location)->getKey() }}">
 
-<input type="hidden" name="picker_form" value="1">
 <div class="form-row align-items-center progress-indicator-container">
     @if ($useCalendarView)
         <div class="col-md-9 pr-md-4">

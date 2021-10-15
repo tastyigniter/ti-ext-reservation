@@ -5,6 +5,12 @@
             <td>{{ $customerReservation->reservation_id }}</td>
         </tr>
         <tr>
+            <td><b>@lang('igniter.reservation::default.reservations.column_status'):</b></td>
+            <td>
+                <span style="color:{{$customerReservation->status_color}};">{{ $customerReservation->status_name }}</span>
+            </td>
+        </tr>
+        <tr>
             <td><b>@lang('igniter.reservation::default.reservations.column_date'):</b></td>
             <td>
                 {{ $customerReservation->reserve_date->setTimeFromTimeString($customerReservation->reserve_time)->isoFormat($reservationDateTimeFormat) }}
@@ -12,7 +18,7 @@
         </tr>
         <tr>
             <td><b>@lang('igniter.reservation::default.reservations.column_table'):</b></td>
-            <td>{{ $customerReservation->related_table ? $customerReservation->related_table->table_name : null }}</td>
+            <td>{{ implode(', ', $customerReservation->tables->pluck('table_name')->all()) }}</td>
         </tr>
         <tr>
             <td><b>@lang('igniter.reservation::default.reservations.column_guest'):</b></td>
@@ -43,3 +49,14 @@
         </tr>
     </table>
 </div>
+@if ($__SELF__->showCancelButton())
+    <hr>
+    <div class="mt-3 text-center">
+        <button
+            class="btn btn-light text-danger"
+            data-request="{{ $__SELF__.'::onCancel' }}"
+            data-request-data="reservationId: {{ $customerReservation->reservation_id }}"
+            data-attach-loading
+        >@lang('igniter.reservation::default.reservations.button_cancel')</button>
+    </div>
+@endif

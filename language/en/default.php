@@ -77,7 +77,11 @@ return [
         'column_comment' => 'Comment',
 
         'button_reserve' => 'Make Reservation',
+        'button_cancel' => 'Cancel Reservation',
         'button_back' => 'Back',
         'btn_view' => 'View',
+
+        'alert_cancel_success' => 'Reservation successfully canceled.',
+        'alert_cancel_failed' => 'Unable to cancel reservation, please contact us.',
     ],
 ];
