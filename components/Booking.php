@@ -242,6 +242,8 @@ class Booking extends BaseComponent
         $result = [];
         $selectedDate = $this->getSelectedDate();
         $selectedTime = $this->getSelectedDateTime();
+        $autoAllocateTable = (bool)$this->location->getOption('auto_allocate_table', 1);
+        $guestSize = input('guest', $this->property('minGuestSize'));
 
         $index = 0;
         $dateTimes = $this->manager->makeTimeSlots($selectedDate);
@@ -252,7 +254,8 @@ class Booking extends BaseComponent
                 'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
                 'rawTime' => $dateTime->format('H:i'),
                 'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
-                'fullyBooked' => $this->manager->isFullyBookedOn($selectedDateTime, input('guest', $this->property('minGuestSize'))),
+                'fullyBooked' => $autoAllocateTable
+                    ? $this->manager->isFullyBookedOn($selectedDateTime, $guestSize) : FALSE,
             ];
         }
 
