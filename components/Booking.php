@@ -250,7 +250,6 @@ class Booking extends BaseComponent
         foreach ($dateTimes as $dateTime) {
             $selectedDateTime = $selectedDate->copy()->setTimeFromTimeString($dateTime->format('H:i'));
             $result[] = (object)[
-                'index' => $index++,
                 'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
                 'rawTime' => $dateTime->format('H:i'),
                 'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
@@ -264,20 +263,20 @@ class Booking extends BaseComponent
 
     public function getReducedTimeSlots()
     {
-        $timeslots = $this->getTimeslots();
-        $selectedIndex = $timeslots->first(function ($slot, $key) {
+        $timeslots = $this->getTimeslots()->filter(function ($slot) {
+            return !$slot->fullyBooked;
+        })->values();
+
+        $selectedIndex = $timeslots->search(function ($slot, $key) {
             return $slot->isSelected;
         });
 
-        if (!$selectedIndex)
-            return [];
+        $noOfSlots = 6;
 
-        $from = $selectedIndex->index - 2;
-
-        if ($from < 0)
+        if (($from = ($selectedIndex ?: 0) - ((int)($noOfSlots / 2) - 1)) < 0)
             $from = 0;
 
-        return $timeslots->slice($from, 5);
+        return $timeslots->slice($from, $noOfSlots - 1);
     }
 
     /**

@@ -4,6 +4,7 @@
     class="form-control"
 >
     @foreach ($timeOptions as $key => $value)
+        @continue($value->fullyBooked)
         <option
             value="{{ $value->rawTime }}"
             {!! set_select('time', $value->rawTime) !!}
