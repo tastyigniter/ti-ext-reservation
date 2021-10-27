@@ -40,10 +40,11 @@ class MaxGuestSizePerTimeslotReached
         if (array_has(self::$reservationsCache, $date))
             return self::$reservationsCache[$date];
 
-        $startTime = Carbon::parse($timeslot);
+        $startTime = Carbon::parse($timeslot)->subMinutes(2);
         $endTime = Carbon::parse($timeslot)->addMinutes(2);
 
         $guestNum = Reservations_model::where('location_id', LocationFacade::getId())
+            ->where('status_id', '!=', setting('canceled_reservation_status'))
             ->whereBetweenReservationDateTime($startTime->toDateTimeString(), $endTime->toDateTimeString())
             ->sum('guest_num');
 
