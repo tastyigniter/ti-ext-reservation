@@ -1,5 +1,5 @@
 @if ($customerReservation)
-    @if ($showReviews AND !empty($reviewable))
+    @if ($showReviews && !empty($reviewable))
         <div class="mb-3">
             @partial('localReview::form')
         </div>
