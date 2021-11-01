@@ -46,7 +46,7 @@ class Reservations extends \System\Classes\BaseComponent
 
     public function showCancelButton($reservation = null)
     {
-        if (is_null($reservation) AND !$reservation = $this->getReservation())
+        if (is_null($reservation) && !$reservation = $this->getReservation())
             return FALSE;
 
         if (!$timeout = $reservation->location->getReservationCancellationTimeout())

@@ -411,7 +411,7 @@ class Booking extends BaseComponent
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
         $autoAllocateTable = (bool)$this->location->getOption('auto_allocate_table', 1);
-        if ($autoAllocateTable AND $this->manager->isFullyBookedOn($dateTime, input('guest')))
+        if ($autoAllocateTable && $this->manager->isFullyBookedOn($dateTime, input('guest')))
             return $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
     }
 
@@ -468,7 +468,7 @@ class Booking extends BaseComponent
     protected function checkLocationParam()
     {
         $param = $this->param('location');
-        if ($param AND Locations_model::whereSlug($param)->exists())
+        if ($param && Locations_model::whereSlug($param)->exists())
             return;
 
         return Redirect::to($this->controller->pageUrl($this->property('localNotFoundPage')));
