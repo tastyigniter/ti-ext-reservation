@@ -49,13 +49,13 @@ class Reservations extends \System\Classes\BaseComponent
         if (is_null($reservation) && !$reservation = $this->getReservation())
             return FALSE;
 
+        if ($reservation->hasStatus(setting('canceled_reservation_status')))
+            return FALSE;
+
         if (!$timeout = $reservation->location->getReservationCancellationTimeout())
             return FALSE;
 
         if (!$reservation->reservation_datetime->isFuture())
-            return FALSE;
-
-        if ($reservation->hasStatus(setting('canceled_reservation_status')))
             return FALSE;
 
         return $reservation->reservation_datetime->diffInRealMinutes() > $timeout;
