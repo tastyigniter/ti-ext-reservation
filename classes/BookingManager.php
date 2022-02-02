@@ -102,7 +102,7 @@ class BookingManager
         $reservation->customer_id = $this->customer ? $this->customer->getKey() : null;
         $reservation->location_id = $this->location ? $this->location->getKey() : null;
 
-        $reservation->guest_num = array_get($data, 'guest');
+        $reservation->guest_num = (int)array_get($data, 'guest', 1);
         $reservation->first_name = array_get($data, 'first_name', $reservation->first_name);
         $reservation->last_name = array_get($data, 'last_name', $reservation->last_name);
         $reservation->email = array_get($data, 'email', $reservation->email);

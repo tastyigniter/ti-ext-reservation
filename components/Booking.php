@@ -411,7 +411,7 @@ class Booking extends BaseComponent
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
 
         $autoAllocateTable = (bool)$this->location->getOption('auto_allocate_table', 1);
-        if ($autoAllocateTable && $this->manager->isFullyBookedOn($dateTime, input('guest')))
+        if ($autoAllocateTable && $this->manager->isFullyBookedOn($dateTime, (int)input('guest', 1)))
             return $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
     }
 
