@@ -69,6 +69,12 @@ class Booking extends BaseComponent
                 'type' => 'switch',
                 'validationRule' => 'required|boolean',
             ],
+            'telephoneIsRequired' => [
+                'label' => 'Whether the telephone field should be required',
+                'type' => 'switch',
+                'default' => TRUE,
+                'validationRule' => 'required|boolean',
+            ],
             'locationThumbWidth' => [
                 'label' => 'Height',
                 'type' => 'number',
@@ -381,11 +387,15 @@ class Booking extends BaseComponent
                     ['time', 'lang:igniter.reservation::default.label_time', 'required|date_format:H:i'],
                 ];
             case 'booking':
+                $telephoneRule = 'regex:/^([0-9\s\-\+\(\)]*)$/i';
+                if ($this->property('telephoneIsRequired', TRUE))
+                    $telephoneRule = 'required|'.$telephoneRule;
+
                 return [
                     ['first_name', 'lang:igniter.reservation::default.label_first_name', 'required|between:1,48'],
                     ['last_name', 'lang:igniter.reservation::default.label_last_name', 'required|between:1,48'],
                     ['email', 'lang:igniter.reservation::default.label_email', 'required|email:filter|max:96'],
-                    ['telephone', 'lang:igniter.reservation::default.label_telephone', 'required'],
+                    ['telephone', 'lang:igniter.reservation::default.label_telephone', $telephoneRule],
                     ['comment', 'lang:igniter.reservation::default.label_comment', 'max:520'],
                 ];
         }
