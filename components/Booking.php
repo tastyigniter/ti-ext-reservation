@@ -47,6 +47,11 @@ class Booking extends BaseComponent
                 'type' => 'switch',
                 'default' => TRUE,
             ],
+            'weekStartOn' => [
+                'label' => 'Day of the week start the calendar. 0 (Sunday) to 6 (Saturday).',
+                'type' => 'number',
+                'default' => 0,
+            ],
             'minGuestSize' => [
                 'label' => 'The minimum guest size',
                 'type' => 'number',
@@ -313,6 +318,7 @@ class Booking extends BaseComponent
         $this->page['timeOptions'] = $this->getTimeSlots();
         $this->page['disabledDaysOfWeek'] = $this->getDisabledDaysOfWeek();
         $this->page['disabledDates'] = $this->getDisabledDates();
+        $this->page['weekStartOn'] = $this->property('weekStartOn', 0);
 
         // location selection made, show date selection
         if ($pickerStep == 1) {

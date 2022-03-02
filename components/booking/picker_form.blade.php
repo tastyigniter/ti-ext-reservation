@@ -15,6 +15,7 @@
                 data-end-date="{{ $__SELF__->getEndDate()->format('Y-m-d') }}"
                 data-days-of-week-disabled='@json($disabledDaysOfWeek ?? [])'
                 data-dates-disabled='@json($disabledDates ?? [])'
+                data-week-start="{{ $weekStartOn }}"
                 data-format="yyyy-mm-dd"
                 data-language={{ setting('default_language') }}
             ></div>
