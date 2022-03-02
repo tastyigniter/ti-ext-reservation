@@ -222,16 +222,7 @@ class Booking extends BaseComponent
 
     public function getDisabledDaysOfWeek()
     {
-        // get a 7 day schedule
-        $schedule = $this->manager->getSchedule();
-
-        $disabled = [];
-        foreach ($schedule->getPeriods() as $index => $day) {
-            if ($day->isEmpty())
-                $disabled[] = (int)date('w', strtotime($index));
-        }
-
-        return $disabled;
+        return [];
     }
 
     public function getDisabledDates()
