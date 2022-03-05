@@ -74,8 +74,9 @@ class BookingManager
         $interval = !is_null($interval)
             ? $interval : $this->location->getReservationInterval();
 
-        $lead = !is_null($lead)
-            ? $lead : $this->location->getReservationLeadTime();
+        $lead = !is_null($lead) ? $lead : $this->location->getReservationLeadTime();
+        if ($this->location->getOption('reservation_include_start_time', 1))
+            $lead = 0;
 
         $dateInterval = new DateInterval('PT'.$interval.'M');
         $leadTime = new DateInterval('PT'.$lead.'M');
