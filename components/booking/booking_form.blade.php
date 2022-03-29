@@ -45,6 +45,7 @@
                 class="form-control"
                 placeholder="@lang('igniter.reservation::default.label_email')"
                 value="{{ set_value('email', $reservation->email) }}"
+                {!! $customer ? 'disabled' : '' !!}
             />
             {!! form_error('email', '<span class="text-danger">', '</span>') !!}
         </div>

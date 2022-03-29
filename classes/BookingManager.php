@@ -106,7 +106,7 @@ class BookingManager
         $reservation->guest_num = (int)array_get($data, 'guest', 1);
         $reservation->first_name = array_get($data, 'first_name', $reservation->first_name);
         $reservation->last_name = array_get($data, 'last_name', $reservation->last_name);
-        $reservation->email = array_get($data, 'email', $reservation->email);
+        $reservation->email = $this->customer->email ?? array_get($data, 'email', $reservation->email);
         $reservation->telephone = array_get($data, 'telephone', $reservation->telephone);
         $reservation->comment = array_get($data, 'comment');
 
