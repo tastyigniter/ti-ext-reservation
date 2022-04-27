@@ -1,7 +1,7 @@
 <select
     name="guest"
     id="noOfGuests"
-    class="form-control"
+    class="form-select"
 >
     @foreach ($__SELF__->getGuestSizeOptions() as $key => $value)
         <option

@@ -1,7 +1,7 @@
 <select
     name="time"
     id="time"
-    class="form-control"
+    class="form-select"
 >
     @foreach ($timeOptions as $key => $value)
         @continue($value->fullyBooked)

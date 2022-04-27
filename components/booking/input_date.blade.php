@@ -1,7 +1,7 @@
 <select
     name="date"
     id="date"
-    class="form-control"
+    class="form-select"
 >
     @foreach ($__SELF__->getDatePickerOptions() as $date)
         <option
