@@ -4,6 +4,7 @@ return [
     'text_tab_general' => 'General',
     'text_component_title' => 'Booking Component',
     'text_component_desc' => 'Displays the booking form',
+    'text_tab_reservation' => 'Reservation options',
 
     'text_heading' => 'Reserve A Table',
     'text_success_heading' => 'Reservation Confirmation',
@@ -37,6 +38,25 @@ return [
     'label_confirm_email' => 'Confirm Email Address',
     'label_telephone' => 'Telephone',
     'label_comment' => 'Special Requests',
+
+    'label_offer_reservation' => 'Offer Reservations',
+    'label_reservation_time_interval' => 'Reservation Time Interval',
+    'label_reservation_stay_time' => 'Reservation Stay Time',
+    'label_min_reservation_advance_time' => 'Min. Advance Reservation Time',
+    'label_max_reservation_advance_time' => 'Max. Advance Reservation Time',
+    'label_reservation_include_start_time' => 'Include Start Time in Reservation Timeslots',
+    'label_auto_allocate_table' => 'Automatically Allocate Tables',
+    'label_reservation_cancellation_timeout' => 'Reservation Cancellation Timeout',
+    'label_limit_guests' => 'Limit Reservation Guests Count',
+    'label_limit_guests_count' => 'Maximum Guests Per Interval',
+
+    'help_reservation_include_start_time' => 'Disabling will start the reservation timeslots from the scheduled open time plus stay time.',
+    'help_reservation_time_interval' => 'Set the number of minutes between each reservation time',
+    'help_reservation_stay_time' => 'Set in minutes the average time a guest will stay at a table',
+    'help_min_reservation_advance_time' => 'Set in days the minimum time before reservation that a guest can book a table',
+    'help_max_reservation_advance_time' => 'Set in days the maximum time before reservation that a guest can book a table',
+    'help_reservation_cancellation_timeout' => 'Set when a customer can no longer cancel a booking. Number of minutes before booking time. Leave as 0, to disable customer booking cancellation.',
+    'help_limit_guests_count' => 'Set the number of guests that can be booked between each time slot.',
 
     'button_find_table' => 'Find Table',
     'button_select_time' => 'Select Time',
