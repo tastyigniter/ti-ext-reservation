@@ -123,7 +123,7 @@ class BookingManager
         $reservation->save();
 
         $status = Statuses_model::find(setting('default_reservation_status'));
-        $reservation->addStatusHistory($status, ['notify' => FALSE]);
+        $reservation->addStatusHistory($status, ['notify' => false]);
 
         Event::fire('igniter.reservation.confirmed', [$reservation]);
 
@@ -153,7 +153,7 @@ class BookingManager
         if (array_key_exists($index, $this->fullyBookedCache))
             return $this->fullyBookedCache[$index];
 
-        $isFullyBooked = Event::fire('igniter.reservation.isFullyBookedOn', [$dateTime, $noOfGuests], TRUE);
+        $isFullyBooked = Event::fire('igniter.reservation.isFullyBookedOn', [$dateTime, $noOfGuests], true);
         if (!is_bool($isFullyBooked))
             $isFullyBooked = $this->getNextBookableTable($dateTime, $noOfGuests)->isEmpty();
 

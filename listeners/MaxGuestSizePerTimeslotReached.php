@@ -30,7 +30,7 @@ class MaxGuestSizePerTimeslotReached
             return;
 
         if (($totalGuestNumOnThisDay + $guestNum) > $limitCount)
-            return TRUE;
+            return true;
     }
 
     protected function getGuestNum($timeslot)

@@ -82,21 +82,21 @@ class Extension extends \System\Classes\BaseExtension
             if (Status_history_model::alreadyExists($object, $statusId))
                 return;
 
-            Event::fire('igniter.reservation.beforeAddStatus', [$model, $object, $statusId, $previousStatus], TRUE);
+            Event::fire('igniter.reservation.beforeAddStatus', [$model, $object, $statusId, $previousStatus], true);
         });
 
         Event::listen('admin.statusHistory.added', function ($model, $statusHistory) {
             if (!$model instanceof Reservations_model)
                 return;
 
-            Event::fire('igniter.reservation.statusAdded', [$model, $statusHistory], TRUE);
+            Event::fire('igniter.reservation.statusAdded', [$model, $statusHistory], true);
         });
 
         Event::listen('admin.assignable.assigned', function ($model, $assignableLog) {
             if (!$model instanceof Reservations_model)
                 return;
 
-            Event::fire('igniter.reservation.assigned', [$model, $assignableLog], TRUE);
+            Event::fire('igniter.reservation.assigned', [$model, $assignableLog], true);
         });
     }
 
