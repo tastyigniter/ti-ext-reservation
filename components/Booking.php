@@ -45,7 +45,7 @@ class Booking extends BaseComponent
             'useCalendarView' => [
                 'label' => 'Enable to display a calendar view for date selection',
                 'type' => 'switch',
-                'default' => TRUE,
+                'default' => true,
             ],
             'weekStartOn' => [
                 'label' => 'Day of the week start the calendar. 0 (Sunday) to 6 (Saturday).',
@@ -77,7 +77,7 @@ class Booking extends BaseComponent
             'telephoneIsRequired' => [
                 'label' => 'Whether the telephone field should be required',
                 'type' => 'switch',
-                'default' => TRUE,
+                'default' => true,
                 'validationRule' => 'required|boolean',
             ],
             'locationThumbWidth' => [
@@ -158,7 +158,7 @@ class Booking extends BaseComponent
         $this->page['bookingDateFormat'] = $this->dateFormat = lang('system::lang.moment.date_format');
         $this->page['bookingTimeFormat'] = $this->timeFormat = lang('system::lang.moment.time_format');
         $this->page['bookingDateTimeFormat'] = lang('system::lang.moment.date_time_format_long');
-        $this->page['useCalendarView'] = (bool)$this->property('useCalendarView', FALSE);
+        $this->page['useCalendarView'] = (bool)$this->property('useCalendarView', false);
 
         $this->page['reservation'] = $this->getReservation();
         $this->page['bookingLocation'] = $this->getLocation();
@@ -256,7 +256,7 @@ class Booking extends BaseComponent
                 'rawTime' => $dateTime->format('H:i'),
                 'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
                 'fullyBooked' => $autoAllocateTable
-                    ? $this->manager->isFullyBookedOn($selectedDateTime, $guestSize) : FALSE,
+                    ? $this->manager->isFullyBookedOn($selectedDateTime, $guestSize) : false,
             ];
         }
 
@@ -385,7 +385,7 @@ class Booking extends BaseComponent
                 ];
             case 'booking':
                 $telephoneRule = 'regex:/^([0-9\s\-\+\(\)]*)$/i';
-                if ($this->property('telephoneIsRequired', TRUE))
+                if ($this->property('telephoneIsRequired', true))
                     $telephoneRule = 'required|'.$telephoneRule;
 
                 return [
