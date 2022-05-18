@@ -2,13 +2,13 @@
 
 namespace Igniter\Reservation;
 
-use Admin\Models\Reservations_model;
-use Admin\Models\Status_history_model;
-use Admin\Requests\Location;
+use Igniter\Admin\Models\Reservation;
+use Igniter\Admin\Models\StatusHistory;
+use Igniter\Admin\Requests\Location;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
 use Illuminate\Support\Facades\Event;
 
-class Extension extends \System\Classes\BaseExtension
+class Extension extends \Igniter\System\Classes\BaseExtension
 {
     public function boot()
     {
@@ -67,7 +67,7 @@ class Extension extends \System\Classes\BaseExtension
     {
         Event::subscribe(MaxGuestSizePerTimeslotReached::class);
 
-        Event::listen('igniter.reservation.confirmed', function (Reservations_model $model) {
+        Event::listen('igniter.reservation.confirmed', function (Reservation $model) {
             ActivityTypes\ReservationCreated::log($model);
 
             $model->mailSend('igniter.reservation::mail.reservation', 'customer');
@@ -76,24 +76,24 @@ class Extension extends \System\Classes\BaseExtension
         });
 
         Event::listen('admin.statusHistory.beforeAddStatus', function ($model, $object, $statusId, $previousStatus) {
-            if (!$object instanceof Reservations_model)
+            if (!$object instanceof Reservation)
                 return;
 
-            if (Status_history_model::alreadyExists($object, $statusId))
+            if (StatusHistory::alreadyExists($object, $statusId))
                 return;
 
             Event::fire('igniter.reservation.beforeAddStatus', [$model, $object, $statusId, $previousStatus], true);
         });
 
         Event::listen('admin.statusHistory.added', function ($model, $statusHistory) {
-            if (!$model instanceof Reservations_model)
+            if (!$model instanceof Reservation)
                 return;
 
             Event::fire('igniter.reservation.statusAdded', [$model, $statusHistory], true);
         });
 
         Event::listen('admin.assignable.assigned', function ($model, $assignableLog) {
-            if (!$model instanceof Reservations_model)
+            if (!$model instanceof Reservation)
                 return;
 
             Event::fire('igniter.reservation.assigned', [$model, $assignableLog], true);

@@ -2,23 +2,23 @@
 
 namespace Igniter\Reservation\Components;
 
-use Admin\Models\Locations_model;
-use Admin\Traits\ValidatesForm;
 use Carbon\Carbon;
 use Exception;
+use Igniter\Admin\Models\Location as LocationModel;
+use Igniter\Admin\Traits\ValidatesForm;
 use Igniter\Local\Facades\Location;
+use Igniter\Main\Facades\Auth;
 use Igniter\Reservation\Classes\BookingManager;
+use Igniter\System\Classes\BaseComponent;
 use Illuminate\Support\Facades\Redirect;
-use Main\Facades\Auth;
-use System\Classes\BaseComponent;
 
 class Booking extends BaseComponent
 {
     use ValidatesForm;
-    use \Main\Traits\UsesPage;
+    use \Igniter\Main\Traits\UsesPage;
 
     /**
-     * @var Locations_model
+     * @var LocationModel
      */
     public $location;
 
@@ -109,12 +109,6 @@ class Booking extends BaseComponent
                 'options' => [static::class, 'getThemePageOptions'],
                 'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
-            'defaultLocationParam' => [
-                'label' => 'The default location route parameter',
-                'type' => 'text',
-                'default' => 'local',
-                'validationRule' => 'string',
-            ],
             'successPage' => [
                 'label' => 'Page to redirect to when checkout is successful',
                 'type' => 'select',
@@ -186,7 +180,7 @@ class Booking extends BaseComponent
 
     public function getLocations()
     {
-        return Locations_model::isEnabled()
+        return LocationModel::isEnabled()
             ->get()
             ->filter(function ($location) {
                 return $location->getOption('offer_reservation', 1) == 1;
@@ -260,7 +254,7 @@ class Booking extends BaseComponent
             $result[] = (object)[
                 'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
                 'rawTime' => $dateTime->format('H:i'),
-                'time' => Carbon::instance($dateTime)->isoFormat(lang('system::lang.moment.time_format')),
+                'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
                 'fullyBooked' => $autoAllocateTable
                     ? $this->manager->isFullyBookedOn($selectedDateTime, $guestSize) : false,
             ];
@@ -288,7 +282,7 @@ class Booking extends BaseComponent
     }
 
     /**
-     * @return \Admin\Models\Reservations_model
+     * @return \Igniter\Admin\Models\Reservation
      */
     public function getReservation()
     {
@@ -297,7 +291,8 @@ class Booking extends BaseComponent
 
         if (strlen($hash = $this->param('hash'))) {
             $reservation = $this->manager->getReservationByHash($hash);
-        } else {
+        }
+        else {
             $reservation = $this->manager->loadReservation();
         }
 
@@ -354,7 +349,8 @@ class Booking extends BaseComponent
                 $redirect = $this->property('successPage');
 
             return Redirect::to($this->controller->pageUrl($redirect, ['hash' => $reservation->hash]));
-        } catch (Exception $ex) {
+        }
+        catch (Exception $ex) {
             flash()->warning($ex->getMessage());
 
             return Redirect::back()->withInput();
@@ -395,7 +391,7 @@ class Booking extends BaseComponent
                 return [
                     ['first_name', 'lang:igniter.reservation::default.label_first_name', 'required|between:1,48'],
                     ['last_name', 'lang:igniter.reservation::default.label_last_name', 'required|between:1,48'],
-                    ['email', 'lang:igniter.reservation::default.label_email', 'sometimes|required|email:filter|max:96'],
+                    ['email', 'lang:igniter.reservation::default.label_email', 'required|email:filter|max:96'],
                     ['telephone', 'lang:igniter.reservation::default.label_telephone', $telephoneRule],
                     ['comment', 'lang:igniter.reservation::default.label_comment', 'max:520'],
                 ];
@@ -478,10 +474,9 @@ class Booking extends BaseComponent
 
     protected function checkLocationParam()
     {
-        $param = $this->param('location', $this->property('defaultLocationParam', 'local'));
-        if (!empty($param) && Locations_model::whereSlug($param)->exists()) {
+        $param = $this->param('location');
+        if ($param && LocationModel::whereSlug($param)->exists())
             return;
-        }
 
         return Redirect::to($this->controller->pageUrl($this->property('localNotFoundPage')));
     }

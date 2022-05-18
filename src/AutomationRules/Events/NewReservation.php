@@ -2,16 +2,16 @@
 
 namespace Igniter\Reservation\AutomationRules\Events;
 
-use Admin\Models\Reservations_model;
+use Igniter\Admin\Models\Reservation;
 use Igniter\Automation\Classes\BaseEvent;
 
-class NewReservationStatus extends BaseEvent
+class NewReservation extends BaseEvent
 {
     public function eventDetails()
     {
         return [
-            'name' => 'Reservation Status Update Event',
-            'description' => 'When a reservation status is updated',
+            'name' => 'New Reservation Event',
+            'description' => 'When a new reservation is created',
             'group' => 'reservation',
         ];
     }
@@ -20,11 +20,10 @@ class NewReservationStatus extends BaseEvent
     {
         $params = [];
         $reservation = array_get($args, 0);
-        $status = array_get($args, 1);
-        if ($reservation instanceof Reservations_model)
+        if ($reservation instanceof Reservation)
             $params = $reservation->mailGetData();
 
-        $params['status'] = $status;
+        $params['status'] = $reservation->status;
 
         return $params;
     }

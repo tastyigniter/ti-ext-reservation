@@ -2,8 +2,8 @@
 
 namespace Igniter\Reservation\ActivityTypes;
 
-use Admin\Models\Reservations_model;
-use Admin\Models\Staffs_model;
+use Igniter\Admin\Models\Reservation;
+use Igniter\Admin\Models\Staff;
 use Igniter\Flame\ActivityLog\Contracts\ActivityInterface;
 use Igniter\Flame\ActivityLog\Models\Activity;
 
@@ -13,7 +13,7 @@ class ReservationCreated implements ActivityInterface
 
     public $subject;
 
-    public function __construct(string $type, Reservations_model $subject)
+    public function __construct(string $type, Reservation $subject)
     {
         $this->type = $type;
         $this->subject = $subject;
@@ -21,7 +21,7 @@ class ReservationCreated implements ActivityInterface
 
     public static function log($reservation)
     {
-        $recipients = Staffs_model::isEnabled()
+        $recipients = Staff::isEnabled()
             ->whereHasLocation($reservation->location->getKey())
             ->get()
             ->map(function ($staff) {
@@ -71,7 +71,7 @@ class ReservationCreated implements ActivityInterface
      */
     public static function getSubjectModel()
     {
-        return Reservations_model::class;
+        return Reservation::class;
     }
 
     public static function getTitle(Activity $activity)

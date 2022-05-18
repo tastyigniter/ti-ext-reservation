@@ -2,7 +2,7 @@
 
 namespace Igniter\Reservation\AutomationRules\Events;
 
-use Admin\Models\Reservations_model;
+use Igniter\Admin\Models\Reservation;
 use Igniter\Automation\Classes\BaseEvent;
 
 class ReservationAssigned extends BaseEvent
@@ -20,7 +20,7 @@ class ReservationAssigned extends BaseEvent
     {
         $params = [];
         $reservation = array_get($args, 0);
-        if ($reservation instanceof Reservations_model)
+        if ($reservation instanceof Reservation)
             $params = $reservation->mailGetData();
 
         $params['status'] = $reservation->status;

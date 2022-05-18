@@ -2,16 +2,15 @@
 
 namespace Igniter\Reservation\Components;
 
-use Admin\Models\Reservations_model;
-use Admin\Traits\ValidatesForm;
+use Igniter\Admin\Models\Reservation;
+use Igniter\Admin\Models\Status;
 use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Main\Facades\Auth;
+use Igniter\Main\Traits\UsesPage;
 use Igniter\Reservation\Classes\BookingManager;
-use Main\Facades\Auth;
-use Main\Traits\UsesPage;
 
-class Reservations extends \System\Classes\BaseComponent
+class Reservations extends \Igniter\System\Classes\BaseComponent
 {
-    use ValidatesForm;
     use UsesPage;
 
     public function defineProperties()
@@ -26,7 +25,7 @@ class Reservations extends \System\Classes\BaseComponent
             'sortOrder' => [
                 'label' => 'Sort order',
                 'type' => 'text',
-                'default' => 'reserve_date desc',
+                'default' => 'created_at desc',
                 'validationRule' => 'required|string',
             ],
             'reservationsPage' => [
@@ -50,10 +49,16 @@ class Reservations extends \System\Classes\BaseComponent
         if (is_null($reservation) && !$reservation = $this->getReservation())
             return false;
 
-        if (!setting('canceled_reservation_status') || $reservation->isCanceled())
+        if ($reservation->hasStatus(setting('canceled_reservation_status')))
             return false;
 
-        return $reservation->isCancelable();
+        if (!$timeout = $reservation->location->getReservationCancellationTimeout())
+            return false;
+
+        if (!$reservation->reservation_datetime->isFuture())
+            return false;
+
+        return $reservation->reservation_datetime->diffInRealMinutes() > $timeout;
     }
 
     public function onRun()
@@ -67,25 +72,21 @@ class Reservations extends \System\Classes\BaseComponent
 
     public function onCancel()
     {
-        $validated = $this->validate(request()->input(), [
-            'reservationId' => ['required', 'numeric'],
-            'cancel_reason' => ['string', 'max:255'],
-        ]);
+        if (!is_numeric($reservationId = input('reservationId')))
+            return;
 
-        if (!$reservation = Reservations_model::find($validated['reservationId']))
+        if (!$reservation = Reservation::find($reservationId))
             return;
 
         if (!$this->showCancelButton($reservation))
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
-        if (!$reservation->markAsCanceled([
-            'comment' => array_get($validated, 'cancel_reason'),
-            'notify' => true,
-        ])) throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
+        if (!$reservation->addStatusHistory(Status::find(setting('canceled_reservation_status'))))
+            throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
         flash()->success(lang('igniter.reservation::default.reservations.alert_cancel_success'));
 
-        return redirect()->to($this->controller->pageUrl($this->property('reservationsPage')));
+        return redirect()->back();
     }
 
     protected function getReservation()
@@ -102,10 +103,10 @@ class Reservations extends \System\Classes\BaseComponent
         if (!$customer = Auth::customer())
             return [];
 
-        return Reservations_model::with(['location', 'status', 'tables'])->listFrontEnd([
+        return Reservation::with(['location', 'status', 'related_table'])->listFrontEnd([
             'page' => $this->param('page'),
             'pageLimit' => $this->property('itemsPerPage'),
-            'sort' => $this->property('sortOrder', 'reserve_date desc'),
+            'sort' => $this->property('sortOrder', 'created_at desc'),
             'customer' => $customer,
         ]);
     }

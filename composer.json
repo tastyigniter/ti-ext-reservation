@@ -9,6 +9,11 @@
       "email": "sam@sampoyigi.com"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "Igniter\\Reservation\\": "src/"
+    }
+  },
   "extra": {
     "tastyigniter-extension": {
       "code": "igniter.reservation",

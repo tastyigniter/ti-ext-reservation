@@ -15,7 +15,7 @@
     }
 
     Booking.prototype.init = function () {
-	    if (this.$datePicker = this.$el.find('[data-control="datepicker"]'))
+        if (this.$datePicker = this.$el.find('[data-control="datepicker"]'))
             this.initDatePicker();
 
         this.$el.on('change', 'select[name="date"]', $.proxy(this.onSelectDate, this));
@@ -40,7 +40,7 @@
         this.$datePicker.datepicker('update', this.$datePickerValue)
     }
 
-    Booking.prototype.onSelectDatePicker = function(event) {
+    Booking.prototype.onSelectDatePicker = function (event) {
         var pickerDate = moment(event.date.toDateString())
         var lockerValue = pickerDate.format('YYYY-MM-DD')
         this.$datePickerValue = lockerValue;
@@ -49,41 +49,40 @@
     }
 
     Booking.prototype.onSelectDate = function (event) {
-        location.href = location.pathname + '?date=' + event.target.value;
+        location.href = location.pathname+'?date='+event.target.value;
         return;
     }
 
-    Booking.prototype.onHtmlUpdate = function() {
+    Booking.prototype.onHtmlUpdate = function () {
         var $indicatorContainer = this.$el.find('.progress-indicator-container')
         $indicatorContainer.prepend('<div class="progress-indicator"></div>')
         $indicatorContainer.addClass('is-loading')
 
         this.$guestPickerValue = this.$el.find('[name="guest"]').val();
 
-        jQuery.ajax(location.pathname + '?&date=' + this.$datePickerValue + '&guest=' + this.$guestPickerValue, {
+        jQuery.ajax(location.pathname+'?&date='+this.$datePickerValue+'&guest='+this.$guestPickerValue, {
                 dataType: 'html'
             })
             .done($.proxy(this.onHtmlResponse, this));
     }
 
-    Booking.prototype.onHtmlResponse = function(html) {
-	    html = jQuery.parseHTML(html);
-	    html.forEach(function (node) {
-	        if (node.tagName && node.tagName.toUpperCase() == 'MAIN') {
-	            var newEl, currentEl;
-	            if ((newEl = node.querySelector('#ti-datepicker-options')) && (currentEl = document.querySelector('#ti-datepicker-options'))) {
-	                currentEl.innerHTML = newEl.innerHTML;
-	            }
-	        }
-	    });
+    Booking.prototype.onHtmlResponse = function (html) {
+        html = jQuery.parseHTML(html);
+        html.forEach(function (node) {
+            if (node.tagName && node.tagName.toUpperCase() == 'MAIN') {
+                var newEl, currentEl;
+                if ((newEl = node.querySelector('#ti-datepicker-options')) && (currentEl = document.querySelector('#ti-datepicker-options'))) {
+                    currentEl.innerHTML = newEl.innerHTML;
+                }
+            }
+        });
 
         var $indicatorContainer = this.$el.find('.progress-indicator-container')
         $indicatorContainer.find('.progress-indicator').remove()
         $indicatorContainer.removeClass('is-loading')
     }
 
-    Booking.DEFAULTS = {
-    }
+    Booking.DEFAULTS = {}
 
     // PLUGIN DEFINITION
     // ============================
