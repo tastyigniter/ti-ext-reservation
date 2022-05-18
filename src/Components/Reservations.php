@@ -2,14 +2,14 @@
 
 namespace Igniter\Reservation\Components;
 
-use Admin\Models\Reservations_model;
-use Admin\Models\Statuses_model;
+use Igniter\Admin\Models\Reservation;
+use Igniter\Admin\Models\Status;
 use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Main\Facades\Auth;
+use Igniter\Main\Traits\UsesPage;
 use Igniter\Reservation\Classes\BookingManager;
-use Main\Facades\Auth;
-use Main\Traits\UsesPage;
 
-class Reservations extends \System\Classes\BaseComponent
+class Reservations extends \Igniter\System\Classes\BaseComponent
 {
     use UsesPage;
 
@@ -75,13 +75,13 @@ class Reservations extends \System\Classes\BaseComponent
         if (!is_numeric($reservationId = input('reservationId')))
             return;
 
-        if (!$reservation = Reservations_model::find($reservationId))
+        if (!$reservation = Reservation::find($reservationId))
             return;
 
         if (!$this->showCancelButton($reservation))
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
-        if (!$reservation->addStatusHistory(Statuses_model::find(setting('canceled_reservation_status'))))
+        if (!$reservation->addStatusHistory(Status::find(setting('canceled_reservation_status'))))
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
         flash()->success(lang('igniter.reservation::default.reservations.alert_cancel_success'));
@@ -103,7 +103,7 @@ class Reservations extends \System\Classes\BaseComponent
         if (!$customer = Auth::customer())
             return [];
 
-        return Reservations_model::with(['location', 'status', 'related_table'])->listFrontEnd([
+        return Reservation::with(['location', 'status', 'related_table'])->listFrontEnd([
             'page' => $this->param('page'),
             'pageLimit' => $this->property('itemsPerPage'),
             'sort' => $this->property('sortOrder', 'created_at desc'),

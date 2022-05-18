@@ -2,26 +2,26 @@
 
 namespace Igniter\Reservation\Classes;
 
-use Admin\Models\Reservations_model;
-use Admin\Models\Statuses_model;
-use Admin\Models\Tables_model;
 use Carbon\Carbon;
 use DateInterval;
+use Igniter\Admin\Models\Reservation;
+use Igniter\Admin\Models\Status;
+use Igniter\Admin\Models\Table;
 use Igniter\Flame\Traits\Singleton;
+use Igniter\Main\Facades\Auth;
 use Illuminate\Support\Facades\Event;
-use Main\Facades\Auth;
 
 class BookingManager
 {
     use Singleton;
 
     /**
-     * @var \Admin\Models\Customers_model
+     * @var \Igniter\Admin\Models\Customer
      */
     protected $customer;
 
     /**
-     * @var \Admin\Models\Locations_model
+     * @var \Igniter\Admin\Models\Location
      */
     protected $location;
 
@@ -46,12 +46,12 @@ class BookingManager
 
     public function loadReservation()
     {
-        return Reservations_model::make($this->getRequiredAttributes());
+        return Reservation::make($this->getRequiredAttributes());
     }
 
     public function getReservationByHash($hash, $customer = null)
     {
-        $query = Reservations_model::whereHash($hash);
+        $query = Reservation::whereHash($hash);
 
         if (!is_null($customer))
             $query->where('customer_id', $customer->getKey());
@@ -94,7 +94,7 @@ class BookingManager
      * @param $reservation
      * @param $data
      *
-     * @return \Admin\Models\Reservations_model
+     * @return \Igniter\Admin\Models\Reservation
      */
     public function saveReservation($reservation, $data)
     {
@@ -122,7 +122,7 @@ class BookingManager
 
         $reservation->save();
 
-        $status = Statuses_model::find(setting('default_reservation_status'));
+        $status = Status::find(setting('default_reservation_status'));
         $reservation->addStatusHistory($status, ['notify' => false]);
 
         Event::fire('igniter.reservation.confirmed', [$reservation]);
@@ -169,7 +169,7 @@ class BookingManager
     {
         $tables = $this->getAvailableTables();
 
-        $reserved = Reservations_model::findReservedTables(
+        $reserved = Reservation::findReservedTables(
             $this->location, $dateTime
         );
 
@@ -186,7 +186,7 @@ class BookingManager
         if (!is_null($this->availableTables))
             return $this->availableTables;
 
-        $query = Tables_model::isEnabled()
+        $query = Table::isEnabled()
             ->whereHasLocation($this->location->getKey());
 
         $tables = $query->get();

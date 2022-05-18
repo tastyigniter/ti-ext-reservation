@@ -2,23 +2,23 @@
 
 namespace Igniter\Reservation\Components;
 
-use Admin\Models\Locations_model;
-use Admin\Traits\ValidatesForm;
 use Carbon\Carbon;
 use Exception;
+use Igniter\Admin\Models\Location as LocationModel;
+use Igniter\Admin\Traits\ValidatesForm;
 use Igniter\Local\Facades\Location;
+use Igniter\Main\Facades\Auth;
 use Igniter\Reservation\Classes\BookingManager;
+use Igniter\System\Classes\BaseComponent;
 use Illuminate\Support\Facades\Redirect;
-use Main\Facades\Auth;
-use System\Classes\BaseComponent;
 
 class Booking extends BaseComponent
 {
     use ValidatesForm;
-    use \Main\Traits\UsesPage;
+    use \Igniter\Main\Traits\UsesPage;
 
     /**
-     * @var Locations_model
+     * @var LocationModel
      */
     public $location;
 
@@ -180,7 +180,7 @@ class Booking extends BaseComponent
 
     public function getLocations()
     {
-        return Locations_model::isEnabled()
+        return LocationModel::isEnabled()
             ->get()
             ->filter(function ($location) {
                 return $location->getOption('offer_reservation', 1) == 1;
@@ -282,7 +282,7 @@ class Booking extends BaseComponent
     }
 
     /**
-     * @return \Admin\Models\Reservations_model
+     * @return \Igniter\Admin\Models\Reservation
      */
     public function getReservation()
     {
@@ -475,7 +475,7 @@ class Booking extends BaseComponent
     protected function checkLocationParam()
     {
         $param = $this->param('location');
-        if ($param && Locations_model::whereSlug($param)->exists())
+        if ($param && LocationModel::whereSlug($param)->exists())
             return;
 
         return Redirect::to($this->controller->pageUrl($this->property('localNotFoundPage')));

@@ -2,16 +2,16 @@
 
 namespace Igniter\Reservation\AutomationRules\Events;
 
-use Admin\Models\Reservations_model;
+use Igniter\Admin\Models\Reservation;
 use Igniter\Automation\Classes\BaseEvent;
 
-class NewReservation extends BaseEvent
+class ReservationAssigned extends BaseEvent
 {
     public function eventDetails()
     {
         return [
-            'name' => 'New Reservation Event',
-            'description' => 'When a new reservation is created',
+            'name' => 'Reservation Assigned Event',
+            'description' => 'When a reservation is assigned to a staff',
             'group' => 'reservation',
         ];
     }
@@ -20,8 +20,11 @@ class NewReservation extends BaseEvent
     {
         $params = [];
         $reservation = array_get($args, 0);
-        if ($reservation instanceof Reservations_model)
+        if ($reservation instanceof Reservation)
             $params = $reservation->mailGetData();
+
+        $params['reservation'] = $reservation;
+        $params['assignee'] = $reservation->assignee;
 
         return $params;
     }
