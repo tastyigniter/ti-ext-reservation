@@ -16,7 +16,7 @@ class BookingManager
     use Singleton;
 
     /**
-     * @var \Igniter\Admin\Models\Customer
+     * @var \Igniter\Main\Models\Customer
      */
     protected $customer;
 

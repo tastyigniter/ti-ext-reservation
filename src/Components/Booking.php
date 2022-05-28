@@ -139,13 +139,12 @@ class Booking extends BaseComponent
         if ($redirect = $this->checkLocationParam())
             return $redirect;
 
-        $this->addJs('~/app/admin/assets/src/js/vendor/moment.min.js', 'moment-js');
-        $this->addCss('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
-        $this->addJs('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
+        $this->addJs('$/igniter/js/vendor.datetime.js', 'vendor-datetime-js');
+        $this->addCss('$/igniter/css/vendor.css', 'vendor-css');
         if (setting('default_language') != 'en')
-            $this->addJs('~/app/admin/formwidgets/datepicker/assets/vendor/datepicker/locales/bootstrap-datepicker.'.strtolower(str_replace('_', '-', setting('default_language'))).'.min.js', 'bootstrap-datepicker-js');
+            $this->addJs('$/igniter/js/locales/datepicker/bootstrap-datepicker.'.strtolower(str_replace('_', '-', setting('default_language'))).'.min.js', 'bootstrap-datepicker-js');
 
-        $this->addCss('~/app/admin/formwidgets/datepicker/assets/css/datepicker.css', 'datepicker-css');
+        $this->addCss('igniter.admin::css/formwidgets/datepicker.css', 'datepicker-css');
         $this->addCss('css/booking.css', 'booking-css');
         $this->addJs('js/booking.js', 'booking-js');
 

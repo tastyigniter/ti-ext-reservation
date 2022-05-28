@@ -1,11 +1,11 @@
 @if ($customerReservation)
     @if ($showReviews && !empty($reviewable))
         <div class="mb-3">
-            @partial('localReview::form')
+            @themePartial('localReview::form')
         </div>
     @endif
 
-    @partial($__SELF__.'::preview')
+    @themePartial($__SELF__.'::preview')
 @else
-    @partial('@list')
+    @themePartial('@list')
 @endif
