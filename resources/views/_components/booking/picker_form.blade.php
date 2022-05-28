@@ -24,11 +24,11 @@
         <div class="col-md-3" id="ti-datepicker-options">
             <div class="form-group">
                 <label for="noOfGuests">@lang('igniter.reservation::default.label_guest_num')</label>
-                @partial('@input_guest')
+                @themePartial('@input_guest')
             </div>
             <div class="form-group">
                 <label for="time">@lang('igniter.reservation::default.label_time')</label>
-                @partial('@input_time')
+                @themePartial('@input_time')
             </div>
             @if (count($timeOptions))
                 <div class="form-group">
@@ -45,21 +45,21 @@
                 class="sr-only"
                 for="noOfGuests"
             >@lang('igniter.reservation::default.label_guest_num')</label>
-            @partial('@input_guest')
+            @themePartial('@input_guest')
         </div>
         <div class="col-sm-3 mb-3">
             <label
                 class="sr-only"
                 for="date"
             >@lang('igniter.reservation::default.label_date')</label>
-            @partial('@input_date')
+            @themePartial('@input_date')
         </div>
         <div class="col-sm-2 mb-3">
             <label
                 class="sr-only"
                 for="time"
             >@lang('igniter.reservation::default.label_time')</label>
-            @partial('@input_time')
+            @themePartial('@input_time')
         </div>
         <div class="col-sm-2 mb-3">
             <button

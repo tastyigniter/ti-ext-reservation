@@ -3,7 +3,7 @@
 namespace Igniter\Reservation\ActivityTypes;
 
 use Igniter\Admin\Models\Reservation;
-use Igniter\Admin\Models\Staff;
+use Igniter\Admin\Models\User;
 use Igniter\Flame\ActivityLog\Contracts\ActivityInterface;
 use Igniter\Flame\ActivityLog\Models\Activity;
 
@@ -21,12 +21,10 @@ class ReservationCreated implements ActivityInterface
 
     public static function log($reservation)
     {
-        $recipients = Staff::isEnabled()
+        $recipients = User::isEnabled()
             ->whereHasLocation($reservation->location->getKey())
             ->get()
-            ->map(function ($staff) {
-                return $staff->user;
-            })->all();
+            ->all();
 
         activity()->pushLog(new static('reservationCreated', $reservation), $recipients);
     }

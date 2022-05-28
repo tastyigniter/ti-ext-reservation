@@ -28,8 +28,8 @@ Go to **Restaurants > Locations > Edit Location**, under the **Orders & Reservat
 
 | Name     | Page variable                | Description                                      |
 | -------- | ---------------------------- | ------------------------------------------------ |
-| Booking | `@component('booking')` | Display the booking form              |
-| Reservations | `@component('reservations')` | Displays a list of reservations on the page               |
+| Booking | `@componentPartial('booking')` | Display the booking form              |
+| Reservations | `@componentPartial('reservations')` | Displays a list of reservations on the page               |
 
 ### Booking Component
 
@@ -70,7 +70,7 @@ permalink: /reservation
 '[booking]': { }
 ---
 ...
-@component('booking')
+@componentPartial('booking')
 ...
 ```
 
