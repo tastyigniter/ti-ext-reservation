@@ -5,11 +5,17 @@ namespace Igniter\Reservation;
 use Igniter\Admin\Models\Reservation;
 use Igniter\Admin\Models\StatusHistory;
 use Igniter\Admin\Requests\Location;
+use Igniter\Reservation\Classes\BookingManager;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
 use Illuminate\Support\Facades\Event;
 
 class Extension extends \Igniter\System\Classes\BaseExtension
 {
+    public function register()
+    {
+        $this->app->singleton(BookingManager::class);
+    }
+
     public function boot()
     {
         $this->bindReservationEvent();

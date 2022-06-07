@@ -95,7 +95,7 @@ class Reservations extends \Igniter\System\Classes\BaseComponent
         if (!is_string($hashParam))
             return null;
 
-        return BookingManager::instance()->getReservationByHash($hashParam, Auth::customer());
+        return resolve(BookingManager::class)->getReservationByHash($hashParam, Auth::customer());
     }
 
     protected function loadReservations()
