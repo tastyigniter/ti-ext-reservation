@@ -7,14 +7,11 @@ use DateInterval;
 use Igniter\Admin\Models\Reservation;
 use Igniter\Admin\Models\Status;
 use Igniter\Admin\Models\Table;
-use Igniter\Flame\Traits\Singleton;
 use Igniter\Main\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 
 class BookingManager
 {
-    use Singleton;
-
     /**
      * @var \Igniter\Main\Models\Customer
      */
@@ -29,7 +26,7 @@ class BookingManager
 
     protected $fullyBookedCache = [];
 
-    public function initialize()
+    public function __construct()
     {
         $this->customer = Auth::customer();
     }

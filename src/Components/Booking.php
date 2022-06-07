@@ -128,7 +128,7 @@ class Booking extends BaseComponent
 
     public function initialize()
     {
-        $this->manager = BookingManager::instance();
+        $this->manager = resolve(BookingManager::class);
         $this->manager->useLocation($this->getLocation());
 
         $this->processPickerForm();
