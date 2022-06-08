@@ -53,8 +53,8 @@ return [
     'help_reservation_include_start_time' => 'Disabling will start the reservation timeslots from the scheduled open time plus stay time.',
     'help_reservation_time_interval' => 'Set the number of minutes between each reservation time',
     'help_reservation_stay_time' => 'Set in minutes the average time a guest will stay at a table',
-    'help_min_reservation_advance_time' => 'Set in days the minimum time before reservation that a guest can book a table',
-    'help_max_reservation_advance_time' => 'Set in days the maximum time before reservation that a guest can book a table',
+    'help_min_reservation_advance_time' => 'Set the minimum number of days required before a guest can book a table.',
+    'help_max_reservation_advance_time' => 'Set the maximum number of days that a guest can book a table.',
     'help_reservation_cancellation_timeout' => 'Set when a customer can no longer cancel a booking. Number of minutes before booking time. Leave as 0, to disable customer booking cancellation.',
     'help_limit_guests_count' => 'Set the number of guests that can be booked between each time slot.',
 
