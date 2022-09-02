@@ -254,7 +254,7 @@ class Booking extends BaseComponent
             $result[] = (object)[
                 'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
                 'rawTime' => $dateTime->format('H:i'),
-                'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
+                'time' => Carbon::instance($dateTime)->isoFormat(lang('system::lang.moment.time_format')),
                 'fullyBooked' => $autoAllocateTable
                     ? $this->manager->isFullyBookedOn($selectedDateTime, $guestSize) : false,
             ];
