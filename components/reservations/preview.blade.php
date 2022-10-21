@@ -27,8 +27,8 @@
         <tr>
             <td><b>@lang('igniter.reservation::default.reservations.column_location'):</b></td>
             <td>
-                {{ $customerReservation->location->location_name }}<br/>
-                {!! format_address($customerReservation->location->getAddress()) !!}
+                {{ $customerReservation->location->location_name }}<br />
+                {{ format_address($customerReservation->location->getAddress()) }}
             </td>
         </tr>
         <tr>
