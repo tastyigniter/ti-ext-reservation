@@ -168,6 +168,7 @@ class BookingManager
         $reservation->reserve_date = $dateTime->format('Y-m-d');
         $reservation->reserve_time = $dateTime->format('H:i:s');
         $reservation->guest_num = $noOfGuests;
+        $reservation->duration = $this->location->getReservationStayTime();
 
         return $reservation->getNextBookableTable();
     }
