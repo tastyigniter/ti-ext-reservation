@@ -10,6 +10,7 @@ return [
     'text_success_heading' => 'Reservation Confirmation',
     'text_time_heading' => 'Select Time',
     'text_reservation' => 'My Reservation',
+    'text_reservation_schedule' => 'Reservation',
     'text_heading_success' => 'Reservation Confirmed',
     'text_no_table' => 'No tables available at your local restaurant.',
     'text_find_msg' => 'Please use the form below to find a table to reserve',

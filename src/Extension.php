@@ -69,6 +69,16 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         ];
     }
 
+    public function registerScheduleTypes()
+    {
+        return [
+//            \Igniter\Local\ScheduleTypes\Reservation::class => [
+//                'code' => LocationModel::RESERVATION,
+//                'name' => 'lang:igniter.reservation::default.text_reservation_schedule',
+//            ],
+        ];
+    }
+
     protected function bindReservationEvent()
     {
         Event::subscribe(MaxGuestSizePerTimeslotReached::class);
