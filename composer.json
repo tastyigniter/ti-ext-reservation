@@ -1,6 +1,6 @@
 {
   "name": "tastyigniter/ti-ext-reservation",
-  "type": "tastyigniter-extension",
+  "type": "tastyigniter-package",
   "description": "Provides a simple booking form to accept table reservations.",
   "license": "MIT",
   "authors": [
