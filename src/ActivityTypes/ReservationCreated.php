@@ -23,8 +23,7 @@ class ReservationCreated implements ActivityInterface
     {
         $recipients = User::isEnabled()
             ->whereHasLocation($reservation->location->getKey())
-            ->get()
-            ->all();
+            ->get();
 
         activity()->pushLog(new static('reservationCreated', $reservation), $recipients);
     }
