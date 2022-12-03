@@ -23,7 +23,7 @@ class ReservationAssigned extends BaseEvent
         if ($reservation instanceof Reservations_model)
             $params = $reservation->mailGetData();
 
-        $params['reservation'] = $reservation;
+        $params['status'] = $reservation->status;
         $params['assignee'] = $reservation->assignee;
 
         return $params;
