@@ -19,6 +19,8 @@ return [
     'text_date_format' => '%D, %M %j, %Y',
     'text_person' => 'person',
     'text_people' => 'people',
+    'text_mail_reservation' => 'Reservation email to customer',
+    'text_mail_reservation_alert' => 'Reservation alert to admin',
 
     'text_subject' => 'Table Reserved - %s!',
     'text_greetings' => 'Thank You %s,',
