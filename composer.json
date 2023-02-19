@@ -9,9 +9,6 @@
       "email": "sam@sampoyigi.com"
     }
   ],
-  "require": {
-    "tastyigniter/flame": "v4.x-dev"
-  },
   "autoload": {
     "psr-4": {
       "Igniter\\Reservation\\": "src/"
