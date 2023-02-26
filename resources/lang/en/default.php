@@ -78,8 +78,8 @@ return [
     'alert_no_table_available' => 'No table found for the specified number of guests at the selected location.',
     'alert_fully_booked' => 'We are fully booked for the selected date and time, please select a different date or time.',
 
-    'activity_reservation_created_title' => 'New reservation.',
-    'activity_reservation_created' => '<b>:properties.full_name</b> created a reservation.',
+    'notify_reservation_created_title' => 'New reservation.',
+    'notify_reservation_created' => '<b>%s</b> created a reservation.',
 
     'reservations' => [
         'component_title' => 'Account Reservations Component',

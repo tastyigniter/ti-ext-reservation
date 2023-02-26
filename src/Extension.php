@@ -46,13 +46,6 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         ];
     }
 
-    public function registerActivityTypes()
-    {
-        return [
-            ActivityTypes\ReservationCreated::class => 'reservationCreated',
-        ];
-    }
-
     public function registerAutomationRules()
     {
         return [
@@ -84,7 +77,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         Event::subscribe(MaxGuestSizePerTimeslotReached::class);
 
         Event::listen('igniter.reservation.confirmed', function (Reservation $model) {
-            ActivityTypes\ReservationCreated::log($model);
+            Notifications\ReservationCreatedNotification::make()->subject($model)->sendToDatabase();
 
             $model->mailSend('igniter.reservation::mail.reservation', 'customer');
             $model->mailSend('igniter.reservation::mail.reservation_alert', 'location');
