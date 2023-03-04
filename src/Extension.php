@@ -77,7 +77,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         Event::subscribe(MaxGuestSizePerTimeslotReached::class);
 
         Event::listen('igniter.reservation.confirmed', function (Reservation $model) {
-            Notifications\ReservationCreatedNotification::make()->subject($model)->sendToDatabase();
+            Notifications\ReservationCreatedNotification::make()->subject($model)->broadcast();
 
             $model->mailSend('igniter.reservation::mail.reservation', 'customer');
             $model->mailSend('igniter.reservation::mail.reservation_alert', 'location');
