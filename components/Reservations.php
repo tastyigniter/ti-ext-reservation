@@ -3,7 +3,6 @@
 namespace Igniter\Reservation\Components;
 
 use Admin\Models\Reservations_model;
-use Admin\Models\Statuses_model;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Reservation\Classes\BookingManager;
 use Main\Facades\Auth;
@@ -49,16 +48,10 @@ class Reservations extends \System\Classes\BaseComponent
         if (is_null($reservation) && !$reservation = $this->getReservation())
             return false;
 
-        if ($reservation->hasStatus(setting('canceled_reservation_status')))
+        if ($reservation->isCanceled())
             return false;
 
-        if (!$timeout = $reservation->location->getReservationCancellationTimeout())
-            return false;
-
-        if (!$reservation->reservation_datetime->isFuture())
-            return false;
-
-        return $reservation->reservation_datetime->diffInRealMinutes() > $timeout;
+        return $reservation->isCancelable();
     }
 
     public function onRun()
@@ -81,7 +74,7 @@ class Reservations extends \System\Classes\BaseComponent
         if (!$this->showCancelButton($reservation))
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
-        if (!$reservation->addStatusHistory(Statuses_model::find(setting('canceled_reservation_status'))))
+        if (!$reservation->markAsCanceled())
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
         flash()->success(lang('igniter.reservation::default.reservations.alert_cancel_success'));
