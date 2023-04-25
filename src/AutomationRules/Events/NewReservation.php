@@ -23,6 +23,8 @@ class NewReservation extends BaseEvent
         if ($reservation instanceof Reservation)
             $params = $reservation->mailGetData();
 
+        $params['status'] = $reservation->status;
+
         return $params;
     }
 }

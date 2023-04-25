@@ -253,7 +253,7 @@ class Booking extends BaseComponent
             $result[] = (object)[
                 'isSelected' => $dateTime->format('H:i') == $selectedTime->format('H:i'),
                 'rawTime' => $dateTime->format('H:i'),
-                'time' => $dateTime->isoFormat(lang('system::lang.moment.time_format')),
+                'time' => Carbon::instance($dateTime)->isoFormat(lang('system::lang.moment.time_format')),
                 'fullyBooked' => $autoAllocateTable
                     ? $this->manager->isFullyBookedOn($selectedDateTime, $guestSize) : false,
             ];
@@ -390,7 +390,7 @@ class Booking extends BaseComponent
                 return [
                     ['first_name', 'lang:igniter.reservation::default.label_first_name', 'required|between:1,48'],
                     ['last_name', 'lang:igniter.reservation::default.label_last_name', 'required|between:1,48'],
-                    ['email', 'lang:igniter.reservation::default.label_email', 'required|email:filter|max:96'],
+                    ['email', 'lang:igniter.reservation::default.label_email', 'sometimes|required|email:filter|max:96'],
                     ['telephone', 'lang:igniter.reservation::default.label_telephone', $telephoneRule],
                     ['comment', 'lang:igniter.reservation::default.label_comment', 'max:520'],
                 ];

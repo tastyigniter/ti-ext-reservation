@@ -49,16 +49,7 @@ class Reservations extends \Igniter\System\Classes\BaseComponent
         if (is_null($reservation) && !$reservation = $this->getReservation())
             return false;
 
-        if ($reservation->hasStatus(setting('canceled_reservation_status')))
-            return false;
-
-        if (!$timeout = $reservation->location->getReservationCancellationTimeout())
-            return false;
-
-        if (!$reservation->reservation_datetime->isFuture())
-            return false;
-
-        return $reservation->reservation_datetime->diffInRealMinutes() > $timeout;
+        return !$reservation->isCanceled() && $reservation->isCancelable();
     }
 
     public function onRun()
@@ -81,7 +72,7 @@ class Reservations extends \Igniter\System\Classes\BaseComponent
         if (!$this->showCancelButton($reservation))
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
-        if (!$reservation->addStatusHistory(Status::find(setting('canceled_reservation_status'))))
+        if (!$reservation->markAsCanceled())
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
         flash()->success(lang('igniter.reservation::default.reservations.alert_cancel_success'));

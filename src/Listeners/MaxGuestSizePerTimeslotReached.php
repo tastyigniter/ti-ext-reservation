@@ -19,7 +19,7 @@ class MaxGuestSizePerTimeslotReached
     public function isFullyBookedOn($timeslot, $guestNum)
     {
         $locationModel = LocationFacade::current();
-        if (!(bool)$locationModel->getOption('limit_reservations'))
+        if (!(bool)$locationModel->getOption('limit_guests'))
             return;
 
         if (!$limitCount = (int)$locationModel->getOption('limit_guests_count', 20))
