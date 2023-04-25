@@ -1,29 +1,42 @@
 {
-  "name": "tastyigniter/ti-ext-reservation",
-  "type": "tastyigniter-package",
-  "description": "Provides a simple booking form to accept table reservations.",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Sam Poyigi",
-      "email": "sam@sampoyigi.com"
+    "name": "tastyigniter/ti-ext-reservation",
+    "type": "tastyigniter-package",
+    "description": "Provides a simple booking form to accept table reservations.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sam Poyigi",
+            "email": "sam@sampoyigi.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Igniter\\Reservation\\": "src/"
+        }
+    },
+    "extra": {
+        "tastyigniter-extension": {
+            "code": "igniter.reservation",
+            "name": "Reservation",
+            "icon": {
+                "class": "fa fa-calendar",
+                "backgroundColor": "#8C1243",
+                "color": "#FFF"
+            },
+            "homepage": "https://tastyigniter.com/marketplace/item/igniter-reservation"
+        }
+    },
+    "require-dev": {
+        "laravel/pint": "^1.2",
+        "nunomaduro/larastan": "^2.4.0",
+        "pestphp/pest-plugin-laravel": "^2.0",
+        "pestphp/pest": "^2.5",
+        "orchestra/testbench": "^8.5"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Igniter\\Reservation\\": "src/"
-    }
-  },
-  "extra": {
-    "tastyigniter-extension": {
-      "code": "igniter.reservation",
-      "name": "Reservation",
-      "icon": {
-        "class": "fa fa-calendar",
-        "backgroundColor": "#8C1243",
-        "color": "#FFF"
-      },
-      "homepage": "https://tastyigniter.com/marketplace/item/igniter-reservation"
-    }
-  }
 }
