@@ -3,7 +3,6 @@
 namespace Igniter\Reservation\Components;
 
 use Igniter\Admin\Models\Reservation;
-use Igniter\Admin\Models\Status;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Main\Facades\Auth;
 use Igniter\Main\Traits\UsesPage;
@@ -46,8 +45,9 @@ class Reservations extends \Igniter\System\Classes\BaseComponent
 
     public function showCancelButton($reservation = null)
     {
-        if (is_null($reservation) && !$reservation = $this->getReservation())
+        if (is_null($reservation) && !$reservation = $this->getReservation()) {
             return false;
+        }
 
         return !$reservation->isCanceled() && $reservation->isCancelable();
     }
@@ -63,17 +63,21 @@ class Reservations extends \Igniter\System\Classes\BaseComponent
 
     public function onCancel()
     {
-        if (!is_numeric($reservationId = input('reservationId')))
+        if (!is_numeric($reservationId = input('reservationId'))) {
             return;
+        }
 
-        if (!$reservation = Reservation::find($reservationId))
+        if (!$reservation = Reservation::find($reservationId)) {
             return;
+        }
 
-        if (!$this->showCancelButton($reservation))
+        if (!$this->showCancelButton($reservation)) {
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
+        }
 
-        if (!$reservation->markAsCanceled())
+        if (!$reservation->markAsCanceled()) {
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
+        }
 
         flash()->success(lang('igniter.reservation::default.reservations.alert_cancel_success'));
 
@@ -83,16 +87,18 @@ class Reservations extends \Igniter\System\Classes\BaseComponent
     protected function getReservation()
     {
         $hashParam = $this->param($this->property('hashParamName'));
-        if (!is_string($hashParam))
+        if (!is_string($hashParam)) {
             return null;
+        }
 
         return resolve(BookingManager::class)->getReservationByHash($hashParam, Auth::customer());
     }
 
     protected function loadReservations()
     {
-        if (!$customer = Auth::customer())
+        if (!$customer = Auth::customer()) {
             return [];
+        }
 
         return Reservation::with(['location', 'status', 'related_table'])->listFrontEnd([
             'page' => $this->param('page'),

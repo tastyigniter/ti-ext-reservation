@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use DateInterval;
 use Igniter\Admin\Models\Reservation;
 use Igniter\Admin\Models\Status;
-use Igniter\Admin\Models\Table;
 use Igniter\Main\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 
@@ -55,14 +54,14 @@ class BookingManager
     {
         $query = Reservation::whereHash($hash);
 
-        if (!is_null($customer))
+        if (!is_null($customer)) {
             $query->where('customer_id', $customer->getKey());
+        }
 
         return $query->first();
     }
 
     /**
-     * @param \Carbon\Carbon $date
      * @param int $interval
      * @param int $lead
      * @return array|\Illuminate\Support\Collection
@@ -70,15 +69,17 @@ class BookingManager
      */
     public function makeTimeSlots(Carbon $date, $interval = null, $lead = null)
     {
-        if (!$this->location)
+        if (!$this->location) {
             return [];
+        }
 
         $interval = !is_null($interval)
             ? $interval : $this->location->getReservationInterval();
 
         $lead = !is_null($lead) ? $lead : $this->location->getReservationLeadTime();
-        if ($this->location->getOption('reservation_include_start_time', 1))
+        if ($this->location->getOption('reservation_include_start_time', 1)) {
             $lead = 0;
+        }
 
         $dateInterval = new DateInterval('PT'.$interval.'M');
         $leadTime = new DateInterval('PT'.$lead.'M');
@@ -93,9 +94,6 @@ class BookingManager
     }
 
     /**
-     * @param $reservation
-     * @param $data
-     *
      * @return \Igniter\Admin\Models\Reservation
      */
     public function saveReservation($reservation, $data)
@@ -137,8 +135,9 @@ class BookingManager
      */
     public function getSchedule($days = null)
     {
-        if (is_null($days))
+        if (is_null($days)) {
             $days = $this->location->getMaxReservationAdvanceTime();
+        }
 
         return $this->location->newWorkingSchedule('opening', $days);
     }
@@ -147,18 +146,19 @@ class BookingManager
     {
         $index = $dateTime->timestamp.'-'.$noOfGuests;
 
-        if (array_key_exists($index, $this->fullyBookedCache))
+        if (array_key_exists($index, $this->fullyBookedCache)) {
             return $this->fullyBookedCache[$index];
+        }
 
         $isFullyBooked = Event::fire('igniter.reservation.isFullyBookedOn', [$dateTime, $noOfGuests], true);
-        if (!is_bool($isFullyBooked))
+        if (!is_bool($isFullyBooked)) {
             $isFullyBooked = $this->getNextBookableTable($dateTime, $noOfGuests)->isEmpty();
+        }
 
         return $this->fullyBookedCache[$index] = $isFullyBooked;
     }
 
     /**
-     * @param \DateTime $dateTime
      * @param int $noOfGuests
      * @return \Illuminate\Support\Collection|null
      */

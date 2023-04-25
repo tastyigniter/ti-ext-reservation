@@ -21,8 +21,9 @@ class NewReservationStatus extends BaseEvent
         $params = [];
         $reservation = array_get($args, 0);
         $status = array_get($args, 1);
-        if ($reservation instanceof Reservation)
+        if ($reservation instanceof Reservation) {
             $params = $reservation->mailGetData();
+        }
 
         $params['status'] = $status;
 

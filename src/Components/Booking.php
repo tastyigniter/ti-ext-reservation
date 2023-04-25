@@ -136,13 +136,15 @@ class Booking extends BaseComponent
 
     public function onRun()
     {
-        if ($redirect = $this->checkLocationParam())
+        if ($redirect = $this->checkLocationParam()) {
             return $redirect;
+        }
 
         $this->addJs('$/igniter/js/vendor.datetime.js', 'vendor-datetime-js');
         $this->addCss('$/igniter/css/vendor.css', 'vendor-css');
-        if (setting('default_language') != 'en')
+        if (setting('default_language') != 'en') {
             $this->addJs('$/igniter/js/locales/datepicker/bootstrap-datepicker.'.strtolower(str_replace('_', '-', setting('default_language'))).'.min.js', 'bootstrap-datepicker-js');
+        }
 
         $this->addCss('igniter.admin::css/formwidgets/datepicker.css', 'datepicker-css');
         $this->addCss('css/booking.css', 'booking-css');
@@ -198,8 +200,9 @@ class Booking extends BaseComponent
                     : lang('igniter.reservation::default.text_person'));
         }
 
-        if (is_null($noOfGuests))
+        if (is_null($noOfGuests)) {
             return $options;
+        }
 
         return array_get($options, $noOfGuests);
     }
@@ -212,8 +215,9 @@ class Booking extends BaseComponent
         $options = [];
         $schedule = $this->manager->getSchedule();
         for ($date = $start; $date->lte($end); $date->addDay()) {
-            if (count($schedule->forDate($date)))
+            if (count($schedule->forDate($date))) {
                 $options[] = $date->copy();
+            }
         }
 
         return $options;
@@ -231,8 +235,9 @@ class Booking extends BaseComponent
         $endDate = $this->getEndDate()->copy();
         $schedule = $this->manager->getSchedule();
         for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
-            if (!count($schedule->forDate($date)))
+            if (!count($schedule->forDate($date))) {
                 $result[] = $date->toDateString();
+            }
         }
 
         return $result;
@@ -274,8 +279,9 @@ class Booking extends BaseComponent
 
         $noOfSlots = 6;
 
-        if (($from = ($selectedIndex ?: 0) - ((int)($noOfSlots / 2) - 1)) < 0)
+        if (($from = ($selectedIndex ?: 0) - ((int)($noOfSlots / 2) - 1)) < 0) {
             $from = 0;
+        }
 
         return $timeslots->slice($from, $noOfSlots - 1);
     }
@@ -285,13 +291,13 @@ class Booking extends BaseComponent
      */
     public function getReservation()
     {
-        if (!is_null($this->reservation))
+        if (!is_null($this->reservation)) {
             return $this->reservation;
+        }
 
         if (strlen($hash = $this->param('hash'))) {
             $reservation = $this->manager->getReservationByHash($hash);
-        }
-        else {
+        } else {
             $reservation = $this->manager->loadReservation();
         }
 
@@ -326,8 +332,9 @@ class Booking extends BaseComponent
             $this->processValidateAfter($validator);
         });
 
-        if (!$this->validatePasses($data, $this->createRules('picker')))
+        if (!$this->validatePasses($data, $this->createRules('picker'))) {
             return;
+        }
 
         $this->pickerStep = array_get($data, 'sdateTime') ? 'info' : 'timeslot';
     }
@@ -336,20 +343,21 @@ class Booking extends BaseComponent
     {
         $data = input();
 
-        if (!$this->validatePasses($data, $this->createRules('booking')))
+        if (!$this->validatePasses($data, $this->createRules('booking'))) {
             return Redirect::back()->withInput();
+        }
 
         try {
             $reservation = $this->getReservation();
 
             $this->manager->saveReservation($reservation, $data);
 
-            if (!$redirect = input('redirect'))
+            if (!$redirect = input('redirect')) {
                 $redirect = $this->property('successPage');
+            }
 
             return Redirect::to($this->controller->pageUrl($redirect, ['hash' => $reservation->hash]));
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             flash()->warning($ex->getMessage());
 
             return Redirect::back()->withInput();
@@ -362,13 +370,15 @@ class Booking extends BaseComponent
 
     protected function getLocation()
     {
-        if (!is_null($this->location))
+        if (!is_null($this->location)) {
             return $this->location;
+        }
 
         $this->location = Location::current();
 
-        if (!$this->location->location_status)
+        if (!$this->location->location_status) {
             $this->location = null;
+        }
 
         return $this->location;
     }
@@ -384,8 +394,9 @@ class Booking extends BaseComponent
                 ];
             case 'booking':
                 $telephoneRule = 'regex:/^([0-9\s\-\+\(\)]*)$/i';
-                if ($this->property('telephoneIsRequired', true))
+                if ($this->property('telephoneIsRequired', true)) {
                     $telephoneRule = 'required|'.$telephoneRule;
+                }
 
                 return [
                     ['first_name', 'lang:igniter.reservation::default.label_first_name', 'required|between:1,48'],
@@ -399,26 +410,31 @@ class Booking extends BaseComponent
 
     protected function processValidateAfter($validator)
     {
-        if (!$location = $this->getLocation())
+        if (!$location = $this->getLocation()) {
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_location'));
+        }
 
         if (!(bool)$location->getOption('offer_reservation', 1)) {
             return $validator->errors()->add('location', lang('igniter.reservation::default.alert_reservation_disabled'));
         }
 
         $dateTime = $this->getSelectedDateTime();
-        if ($dateTime->lt(Carbon::now()))
+        if ($dateTime->lt(Carbon::now())) {
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_date'));
+        }
 
-        if (!$dateTime->isBetween($this->getStartDate(), $this->getEndDate()))
+        if (!$dateTime->isBetween($this->getStartDate(), $this->getEndDate())) {
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_datetime'));
+        }
 
-        if ($this->getTimeSlots()->where('rawTime', $dateTime->format('H:i'))->isEmpty())
+        if ($this->getTimeSlots()->where('rawTime', $dateTime->format('H:i'))->isEmpty()) {
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
+        }
 
         $autoAllocateTable = (bool)$this->location->getOption('auto_allocate_table', 1);
-        if ($autoAllocateTable && $this->manager->isFullyBookedOn($dateTime, (int)input('guest', 1)))
+        if ($autoAllocateTable && $this->manager->isFullyBookedOn($dateTime, (int)input('guest', 1))) {
             return $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
+        }
     }
 
     //
@@ -427,8 +443,9 @@ class Booking extends BaseComponent
 
     public function getStartDate()
     {
-        if (!is_null($this->startDate))
+        if (!is_null($this->startDate)) {
             return $this->startDate;
+        }
 
         return $this->startDate = now()->addDays(
             $this->getLocation()->getMinReservationAdvanceTime()
@@ -437,8 +454,9 @@ class Booking extends BaseComponent
 
     public function getEndDate()
     {
-        if (!is_null($this->endDate))
+        if (!is_null($this->endDate)) {
             return $this->endDate;
+        }
 
         return $this->endDate = now()->addDays(
             $this->getLocation()->getMaxReservationAdvanceTime()
@@ -474,8 +492,9 @@ class Booking extends BaseComponent
     protected function checkLocationParam()
     {
         $param = $this->param('location');
-        if ($param && LocationModel::whereSlug($param)->exists())
+        if ($param && LocationModel::whereSlug($param)->exists()) {
             return;
+        }
 
         return Redirect::to($this->controller->pageUrl($this->property('localNotFoundPage')));
     }
