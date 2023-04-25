@@ -65,10 +65,10 @@ class Extension extends \Igniter\System\Classes\BaseExtension
     public function registerScheduleTypes()
     {
         return [
-//            \Igniter\Local\ScheduleTypes\Reservation::class => [
-//                'code' => LocationModel::RESERVATION,
-//                'name' => 'lang:igniter.reservation::default.text_reservation_schedule',
-//            ],
+            //            \Igniter\Local\ScheduleTypes\Reservation::class => [
+            //                'code' => LocationModel::RESERVATION,
+            //                'name' => 'lang:igniter.reservation::default.text_reservation_schedule',
+            //            ],
         ];
     }
 
@@ -85,25 +85,29 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         });
 
         Event::listen('admin.statusHistory.beforeAddStatus', function ($model, $object, $statusId, $previousStatus) {
-            if (!$object instanceof Reservation)
+            if (!$object instanceof Reservation) {
                 return;
+            }
 
-            if (StatusHistory::alreadyExists($object, $statusId))
+            if (StatusHistory::alreadyExists($object, $statusId)) {
                 return;
+            }
 
             Event::fire('igniter.reservation.beforeAddStatus', [$model, $object, $statusId, $previousStatus], true);
         });
 
         Event::listen('admin.statusHistory.added', function ($model, $statusHistory) {
-            if (!$model instanceof Reservation)
+            if (!$model instanceof Reservation) {
                 return;
+            }
 
             Event::fire('igniter.reservation.statusAdded', [$model, $statusHistory], true);
         });
 
         Event::listen('admin.assignable.assigned', function ($model, $assignableLog) {
-            if (!$model instanceof Reservation)
+            if (!$model instanceof Reservation) {
                 return;
+            }
 
             Event::fire('igniter.reservation.assigned', [$model, $assignableLog], true);
         });
@@ -224,8 +228,9 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         });
 
         Event::listen('system.formRequest.extendValidator', function ($formRequest, $dataHolder) {
-            if (!$formRequest instanceof Location)
+            if (!$formRequest instanceof Location) {
                 return;
+            }
 
             $dataHolder->attributes = array_merge($dataHolder->attributes, [
                 'options.limit_guests' => lang('igniter.reservation::default.label_limit_guests'),

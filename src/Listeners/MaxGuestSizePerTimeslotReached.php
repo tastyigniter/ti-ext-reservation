@@ -19,26 +19,31 @@ class MaxGuestSizePerTimeslotReached
     public function isFullyBookedOn($timeslot, $guestNum)
     {
         $locationModel = LocationFacade::current();
-        if (!(bool)$locationModel->getOption('limit_guests'))
+        if (!(bool)$locationModel->getOption('limit_guests')) {
             return;
+        }
 
-        if (!$limitCount = (int)$locationModel->getOption('limit_guests_count', 20))
+        if (!$limitCount = (int)$locationModel->getOption('limit_guests_count', 20)) {
             return;
+        }
 
         $totalGuestNumOnThisDay = $this->getGuestNum($timeslot);
-        if (!$totalGuestNumOnThisDay)
+        if (!$totalGuestNumOnThisDay) {
             return;
+        }
 
-        if (($totalGuestNumOnThisDay + $guestNum) > $limitCount)
+        if (($totalGuestNumOnThisDay + $guestNum) > $limitCount) {
             return true;
+        }
     }
 
     protected function getGuestNum($timeslot)
     {
-        $dateTime = Carbon::parse($timeslot)->toDateTimeString();
+        $date = Carbon::parse($timeslot)->toDateString();
 
-        if (array_has(self::$reservationsCache, $dateTime))
-            return self::$reservationsCache[$dateTime];
+        if (array_has(self::$reservationsCache, $date)) {
+            return self::$reservationsCache[$date];
+        }
 
         $startTime = Carbon::parse($timeslot)->subMinutes(2);
         $endTime = Carbon::parse($timeslot)->addMinutes(2);
@@ -48,6 +53,6 @@ class MaxGuestSizePerTimeslotReached
             ->whereBetweenReservationDateTime($startTime->toDateTimeString(), $endTime->toDateTimeString())
             ->sum('guest_num');
 
-        return self::$reservationsCache[$dateTime] = $guestNum;
+        return self::$reservationsCache[$date] = $guestNum;
     }
 }
