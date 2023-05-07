@@ -1,102 +1,37 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Function lang not found\\.$#"
-			count: 1
-			path: resources/views/_components/booking/picker_form.blade.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\AutomationRules\\\\Conditions\\\\ReservationAttribute\\:\\:evalIsTrue\\(\\)\\.$#"
-			count: 1
-			path: src/AutomationRules/Conditions/ReservationAttribute.php
-
-		-
-			message: "#^Class Igniter\\\\Admin\\\\Models\\\\Reservation not found\\.$#"
-			count: 1
-			path: src/AutomationRules/Conditions/ReservationAttribute.php
-
-		-
-			message: "#^Function array_get not found\\.$#"
-			count: 1
-			path: src/AutomationRules/Conditions/ReservationAttribute.php
-
-		-
-			message: "#^Instantiated class Igniter\\\\Flame\\\\Exception\\\\ApplicationException not found\\.$#"
-			count: 1
-			path: src/AutomationRules/Conditions/ReservationAttribute.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\AutomationRules\\\\Conditions\\\\ReservationStatusAttribute\\:\\:evalIsTrue\\(\\)\\.$#"
-			count: 1
-			path: src/AutomationRules/Conditions/ReservationStatusAttribute.php
-
-		-
-			message: "#^Class Igniter\\\\Admin\\\\Models\\\\Status not found\\.$#"
-			count: 1
-			path: src/AutomationRules/Conditions/ReservationStatusAttribute.php
-
-		-
-			message: "#^Function array_get not found\\.$#"
-			count: 1
-			path: src/AutomationRules/Conditions/ReservationStatusAttribute.php
-
-		-
-			message: "#^Instantiated class Igniter\\\\Flame\\\\Exception\\\\ApplicationException not found\\.$#"
-			count: 1
-			path: src/AutomationRules/Conditions/ReservationStatusAttribute.php
-
-		-
-			message: "#^Call to method mailGetData\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
-			count: 1
-			path: src/AutomationRules/Events/NewReservation.php
-
-		-
-			message: "#^Class Igniter\\\\Admin\\\\Models\\\\Reservation not found\\.$#"
-			count: 1
-			path: src/AutomationRules/Events/NewReservation.php
-
-		-
-			message: "#^Function array_get not found\\.$#"
-			count: 1
-			path: src/AutomationRules/Events/NewReservation.php
-
-		-
-			message: "#^Call to method mailGetData\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
-			count: 1
-			path: src/AutomationRules/Events/NewReservationStatus.php
-
-		-
-			message: "#^Class Igniter\\\\Admin\\\\Models\\\\Reservation not found\\.$#"
-			count: 1
-			path: src/AutomationRules/Events/NewReservationStatus.php
-
-		-
-			message: "#^Function array_get not found\\.$#"
-			count: 2
-			path: src/AutomationRules/Events/NewReservationStatus.php
-
-		-
-			message: "#^Call to method mailGetData\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
-			count: 1
-			path: src/AutomationRules/Events/ReservationAssigned.php
-
-		-
-			message: "#^Class Igniter\\\\Admin\\\\Models\\\\Reservation not found\\.$#"
-			count: 1
-			path: src/AutomationRules/Events/ReservationAssigned.php
-
-		-
-			message: "#^Function array_get not found\\.$#"
-			count: 1
-			path: src/AutomationRules/Events/ReservationAssigned.php
-
-		-
 			message: "#^Access to an undefined property DateTime\\:\\:\\$timestamp\\.$#"
 			count: 1
 			path: src/Classes/BookingManager.php
 
 		-
-			message: "#^Access to property \\$email on an unknown class Igniter\\\\Main\\\\Models\\\\Customer\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$customer\\.$#"
+			count: 1
+			path: src/Classes/BookingManager.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$location\\.$#"
+			count: 1
+			path: src/Classes/BookingManager.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Models\\\\Reservation\\:\\:whereHash\\(\\)\\.$#"
+			count: 1
+			path: src/Classes/BookingManager.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Models\\\\Status\\:\\:find\\(\\)\\.$#"
+			count: 1
+			path: src/Classes/BookingManager.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Main\\\\Facades\\\\Auth\\:\\:customer\\(\\)\\.$#"
+			count: 1
+			path: src/Classes/BookingManager.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Main\\\\Facades\\\\Auth\\:\\:getUser\\(\\)\\.$#"
 			count: 1
 			path: src/Classes/BookingManager.php
 
@@ -106,289 +41,39 @@ parameters:
 			path: src/Classes/BookingManager.php
 
 		-
-			message: "#^Call to method generateTimeslot\\(\\) on an unknown class Igniter\\\\Flame\\\\Location\\\\WorkingSchedule\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to method getKey\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Location\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to method getKey\\(\\) on an unknown class Igniter\\\\Main\\\\Models\\\\Customer\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to method getMaxReservationAdvanceTime\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Location\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to method getOption\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Location\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to method getReservationInterval\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Location\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to method getReservationLeadTime\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Location\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to method getReservationStayTime\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Location\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to method newWorkingSchedule\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Location\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to static method customer\\(\\) on an unknown class Igniter\\\\Main\\\\Facades\\\\Auth\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to static method find\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Status\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to static method getUser\\(\\) on an unknown class Igniter\\\\Main\\\\Facades\\\\Auth\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to static method make\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to static method whereHash\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Function array_get not found\\.$#"
-			count: 7
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Function make_carbon not found\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Function setting not found\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Method Igniter\\\\Reservation\\\\Classes\\\\BookingManager\\:\\:getSchedule\\(\\) has invalid return type Igniter\\\\Flame\\\\Location\\\\WorkingSchedule\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Method Igniter\\\\Reservation\\\\Classes\\\\BookingManager\\:\\:saveReservation\\(\\) has invalid return type Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Property Igniter\\\\Reservation\\\\Classes\\\\BookingManager\\:\\:\\$customer has unknown class Igniter\\\\Main\\\\Models\\\\Customer as its type\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Property Igniter\\\\Reservation\\\\Classes\\\\BookingManager\\:\\:\\$location has unknown class Igniter\\\\Admin\\\\Models\\\\Location as its type\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Components\\\\Booking\\:\\:\\$controller\\.$#"
-			count: 3
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Components\\\\Booking\\:\\:\\$page\\.$#"
-			count: 2
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Access to property \\$hash on an unknown class Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
+			message: "#^Access to an undefined property Igniter\\\\Admin\\\\Models\\\\Reservation\\:\\:\\$hash\\.$#"
 			count: 1
 			path: src/Components/Booking.php
 
 		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Components\\\\Booking\\:\\:addCss\\(\\)\\.$#"
-			count: 3
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Components\\\\Booking\\:\\:addJs\\(\\)\\.$#"
-			count: 3
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Components\\\\Booking\\:\\:getEventHandler\\(\\)\\.$#"
+			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Models\\\\Location\\:\\:isEnabled\\(\\)\\.$#"
 			count: 1
 			path: src/Components/Booking.php
 
 		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Components\\\\Booking\\:\\:param\\(\\)\\.$#"
-			count: 2
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Components\\\\Booking\\:\\:property\\(\\)\\.$#"
-			count: 12
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Components\\\\Booking\\:\\:validateAfter\\(\\)\\.$#"
+			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Models\\\\Location\\:\\:whereSlug\\(\\)\\.$#"
 			count: 1
 			path: src/Components/Booking.php
 
 		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Components\\\\Booking\\:\\:validatePasses\\(\\)\\.$#"
-			count: 2
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Call to method forDate\\(\\) on an unknown class Igniter\\\\Flame\\\\Location\\\\WorkingSchedule\\.$#"
-			count: 2
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Call to method getOpenTime\\(\\) on an unknown class Igniter\\\\Flame\\\\Location\\\\WorkingSchedule\\.$#"
+			message: "#^Call to an undefined static method Igniter\\\\Main\\\\Facades\\\\Auth\\:\\:getUser\\(\\)\\.$#"
 			count: 1
 			path: src/Components/Booking.php
 
 		-
-			message: "#^Call to method getOption\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Location\\.$#"
-			count: 2
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Call to static method getUser\\(\\) on an unknown class Igniter\\\\Main\\\\Facades\\\\Auth\\.$#"
-			count: 1
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Call to static method isEnabled\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Location\\.$#"
-			count: 1
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Call to static method whereSlug\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Location\\.$#"
-			count: 1
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Function array_get not found\\.$#"
-			count: 2
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Function flash not found\\.$#"
-			count: 1
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Function get not found\\.$#"
-			count: 2
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Function input not found\\.$#"
-			count: 11
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Function lang not found\\.$#"
-			count: 13
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Function setting not found\\.$#"
-			count: 2
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Method Igniter\\\\Reservation\\\\Components\\\\Booking\\:\\:getReservation\\(\\) has invalid return type Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
-			count: 1
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Property Igniter\\\\Reservation\\\\Components\\\\Booking\\:\\:\\$location has unknown class Igniter\\\\Admin\\\\Models\\\\Location as its type\\.$#"
-			count: 1
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Components\\\\Reservations\\:\\:\\$page\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:listFrontEnd\\(\\)\\.$#"
 			count: 1
 			path: src/Components/Reservations.php
 
 		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Components\\\\Reservations\\:\\:param\\(\\)\\.$#"
+			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Models\\\\Reservation\\:\\:find\\(\\)\\.$#"
+			count: 1
+			path: src/Components/Reservations.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Main\\\\Facades\\\\Auth\\:\\:customer\\(\\)\\.$#"
 			count: 2
 			path: src/Components/Reservations.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Components\\\\Reservations\\:\\:property\\(\\)\\.$#"
-			count: 4
-			path: src/Components/Reservations.php
-
-		-
-			message: "#^Call to static method customer\\(\\) on an unknown class Igniter\\\\Main\\\\Facades\\\\Auth\\.$#"
-			count: 2
-			path: src/Components/Reservations.php
-
-		-
-			message: "#^Call to static method find\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
-			count: 1
-			path: src/Components/Reservations.php
-
-		-
-			message: "#^Call to static method with\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
-			count: 1
-			path: src/Components/Reservations.php
-
-		-
-			message: "#^Function flash not found\\.$#"
-			count: 1
-			path: src/Components/Reservations.php
-
-		-
-			message: "#^Function input not found\\.$#"
-			count: 1
-			path: src/Components/Reservations.php
-
-		-
-			message: "#^Function lang not found\\.$#"
-			count: 4
-			path: src/Components/Reservations.php
-
-		-
-			message: "#^Instantiated class Igniter\\\\Flame\\\\Exception\\\\ApplicationException not found\\.$#"
-			count: 2
-			path: src/Components/Reservations.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Extension\\:\\:\\$app\\.$#"
-			count: 1
-			path: src/Extension.php
-
-		-
-			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Notifications\\\\ReservationCreatedNotification\\:\\:make\\(\\)\\.$#"
-			count: 1
-			path: src/Extension.php
 
 		-
 			message: "#^Call to an undefined static method Illuminate\\\\Support\\\\Facades\\\\Event\\:\\:fire\\(\\)\\.$#"
@@ -396,47 +81,17 @@ parameters:
 			path: src/Extension.php
 
 		-
-			message: "#^Call to method mailSend\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
-			count: 3
-			path: src/Extension.php
-
-		-
-			message: "#^Call to static method alreadyExists\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\StatusHistory\\.$#"
-			count: 1
-			path: src/Extension.php
-
-		-
-			message: "#^Class Igniter\\\\Admin\\\\Models\\\\Reservation not found\\.$#"
-			count: 3
-			path: src/Extension.php
-
-		-
-			message: "#^Class Igniter\\\\Admin\\\\Requests\\\\Location not found\\.$#"
-			count: 1
-			path: src/Extension.php
-
-		-
-			message: "#^Function lang not found\\.$#"
-			count: 8
-			path: src/Extension.php
-
-		-
-			message: "#^Parameter \\$model of anonymous function has invalid type Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
-			count: 1
-			path: src/Extension.php
-
-		-
-			message: "#^Call to static method current\\(\\) on an unknown class Igniter\\\\Local\\\\Facades\\\\Location\\.$#"
+			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Models\\\\Reservation\\:\\:where\\(\\)\\.$#"
 			count: 1
 			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
 
 		-
-			message: "#^Call to static method getId\\(\\) on an unknown class Igniter\\\\Local\\\\Facades\\\\Location\\.$#"
+			message: "#^Call to an undefined static method Igniter\\\\Local\\\\Facades\\\\Location\\:\\:current\\(\\)\\.$#"
 			count: 1
 			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
 
 		-
-			message: "#^Call to static method where\\(\\) on an unknown class Igniter\\\\Admin\\\\Models\\\\Reservation\\.$#"
+			message: "#^Call to an undefined static method Igniter\\\\Local\\\\Facades\\\\Location\\:\\:getId\\(\\)\\.$#"
 			count: 1
 			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
 
@@ -446,66 +101,21 @@ parameters:
 			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
 
 		-
-			message: "#^Function array_has not found\\.$#"
-			count: 1
-			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
-
-		-
-			message: "#^Function setting not found\\.$#"
-			count: 1
-			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Notifications\\\\ReservationCreatedNotification\\:\\:\\$subject\\.$#"
-			count: 3
-			path: src/Notifications/ReservationCreatedNotification.php
-
-		-
-			message: "#^Call to static method isEnabled\\(\\) on an unknown class Igniter\\\\Flame\\\\Auth\\\\Models\\\\User\\.$#"
+			message: "#^Access to an undefined property Igniter\\\\Flame\\\\Database\\\\Model\\:\\:\\$customer_name\\.$#"
 			count: 1
 			path: src/Notifications/ReservationCreatedNotification.php
 
 		-
-			message: "#^Function admin_url not found\\.$#"
+			message: "#^Access to an undefined property Igniter\\\\Flame\\\\Database\\\\Model\\:\\:\\$location\\.$#"
 			count: 1
 			path: src/Notifications/ReservationCreatedNotification.php
 
 		-
-			message: "#^Function lang not found\\.$#"
-			count: 2
+			message: "#^Call to an undefined static method Igniter\\\\Flame\\\\Auth\\\\Models\\\\User\\:\\:isEnabled\\(\\)\\.$#"
+			count: 1
 			path: src/Notifications/ReservationCreatedNotification.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\ScheduleTypes\\\\Opening\\:\\:\\$code\\.$#"
-			count: 1
-			path: src/ScheduleTypes/Opening.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\ScheduleTypes\\\\Opening\\:\\:\\$model\\.$#"
-			count: 1
-			path: src/ScheduleTypes/Opening.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\ScheduleTypes\\\\Opening\\:\\:getLeadTime\\(\\)\\.$#"
-			count: 1
-			path: src/ScheduleTypes/Opening.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\ScheduleTypes\\\\Opening\\:\\:getSchedule\\(\\)\\.$#"
-			count: 1
-			path: src/ScheduleTypes/Opening.php
 
 		-
 			message: "#^Call to static method orderType\\(\\) on an unknown class Igniter\\\\Reservation\\\\ScheduleTypes\\\\LocationFacade\\.$#"
-			count: 1
-			path: src/ScheduleTypes/Opening.php
-
-		-
-			message: "#^Function lang not found\\.$#"
-			count: 7
-			path: src/ScheduleTypes/Opening.php
-
-		-
-			message: "#^Function make_carbon not found\\.$#"
 			count: 1
 			path: src/ScheduleTypes/Opening.php
