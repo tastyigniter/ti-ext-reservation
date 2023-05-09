@@ -109,6 +109,12 @@ class Booking extends BaseComponent
                 'options' => [static::class, 'getThemePageOptions'],
                 'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
+            'defaultLocationParam' => [
+                'label' => 'The default location route parameter',
+                'type' => 'text',
+                'default' => 'local',
+                'validationRule' => 'string',
+            ],
             'successPage' => [
                 'label' => 'Page to redirect to when checkout is successful',
                 'type' => 'select',
@@ -475,9 +481,16 @@ class Booking extends BaseComponent
     protected function checkLocationParam()
     {
         $param = $this->param('location');
-        if ($param && Locations_model::whereSlug($param)->exists())
+        if (!empty($param) && Locations_model::whereSlug($param)->exists()) {
             return;
-
-        return Redirect::to($this->controller->pageUrl($this->property('localNotFoundPage')));
+        } else {
+            $defaultLocationSlug = $this->property('defaultLocationParam', 'local'); 
+            if (Locations_model::whereSlug($defaultLocationSlug)->exists()) {
+                return;
+            } else {
+                return Redirect::to($this->controller->pageUrl($this->property('localNotFoundPage')));
+            }
+        }
+        
     }
 }
