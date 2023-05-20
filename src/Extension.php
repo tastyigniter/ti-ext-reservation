@@ -4,7 +4,7 @@ namespace Igniter\Reservation;
 
 use Igniter\Admin\Models\Reservation;
 use Igniter\Admin\Models\StatusHistory;
-use Igniter\Admin\Requests\Location;
+use Igniter\Admin\Requests\LocationRequest;
 use Igniter\Reservation\Classes\BookingManager;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
 use Illuminate\Support\Facades\Event;
@@ -228,7 +228,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         });
 
         Event::listen('system.formRequest.extendValidator', function ($formRequest, $dataHolder) {
-            if (!$formRequest instanceof Location) {
+            if (!$formRequest instanceof LocationRequest) {
                 return;
             }
 
