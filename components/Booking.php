@@ -297,8 +297,7 @@ class Booking extends BaseComponent
 
         if (strlen($hash = $this->param('hash'))) {
             $reservation = $this->manager->getReservationByHash($hash);
-        }
-        else {
+        } else {
             $reservation = $this->manager->loadReservation();
         }
 
@@ -355,8 +354,7 @@ class Booking extends BaseComponent
                 $redirect = $this->property('successPage');
 
             return Redirect::to($this->controller->pageUrl($redirect, ['hash' => $reservation->hash]));
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             flash()->warning($ex->getMessage());
 
             return Redirect::back()->withInput();
@@ -480,17 +478,11 @@ class Booking extends BaseComponent
 
     protected function checkLocationParam()
     {
-        $param = $this->param('location');
+        $param = $this->param('location', $this->property('defaultLocationParam', 'local'));
         if (!empty($param) && Locations_model::whereSlug($param)->exists()) {
             return;
-        } else {
-            $defaultLocationSlug = $this->property('defaultLocationParam', 'local'); 
-            if (Locations_model::whereSlug($defaultLocationSlug)->exists()) {
-                return;
-            } else {
-                return Redirect::to($this->controller->pageUrl($this->property('localNotFoundPage')));
-            }
         }
-        
+
+        return Redirect::to($this->controller->pageUrl($this->property('localNotFoundPage')));
     }
 }
