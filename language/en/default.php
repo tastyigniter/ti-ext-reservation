@@ -87,6 +87,7 @@ return [
         'text_my_account' => 'My Account',
         'text_view_heading' => 'My Reservation View',
         'text_empty' => 'There are no reservation(s).',
+        'text_title_cancel' => 'Cancel Order',
 
         'column_id' => 'Reservation ID',
         'column_status' => 'Status',
@@ -97,6 +98,8 @@ return [
         'column_occasion' => 'Occasion',
         'column_telephone' => 'Telephone',
         'column_comment' => 'Comment',
+
+        'label_cancel_reason' => 'Reason for cancellation',
 
         'button_reserve' => 'Make Reservation',
         'button_cancel' => 'Cancel Reservation',

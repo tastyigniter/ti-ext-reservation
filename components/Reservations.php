@@ -3,6 +3,7 @@
 namespace Igniter\Reservation\Components;
 
 use Admin\Models\Reservations_model;
+use Admin\Traits\ValidatesForm;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Reservation\Classes\BookingManager;
 use Main\Facades\Auth;
@@ -10,6 +11,7 @@ use Main\Traits\UsesPage;
 
 class Reservations extends \System\Classes\BaseComponent
 {
+    use ValidatesForm;
     use UsesPage;
 
     public function defineProperties()
@@ -48,7 +50,7 @@ class Reservations extends \System\Classes\BaseComponent
         if (is_null($reservation) && !$reservation = $this->getReservation())
             return false;
 
-        if ($reservation->isCanceled())
+        if (!setting('canceled_reservation_status') || $reservation->isCanceled())
             return false;
 
         return $reservation->isCancelable();
@@ -65,17 +67,21 @@ class Reservations extends \System\Classes\BaseComponent
 
     public function onCancel()
     {
-        if (!is_numeric($reservationId = input('reservationId')))
-            return;
+        $validated = $this->validate(request()->input(), [
+            'reservationId' => ['required', 'numeric'],
+            'cancel_reason' => ['required', 'max:255'],
+        ]);
 
-        if (!$reservation = Reservations_model::find($reservationId))
+        if (!$reservation = Reservations_model::find($validated['reservationId']))
             return;
 
         if (!$this->showCancelButton($reservation))
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
-        if (!$reservation->markAsCanceled())
-            throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
+        if (!$reservation->markAsCanceled([
+            'comment' => $validated['cancel_reason'],
+            'notify' => false,
+        ])) throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
         flash()->success(lang('igniter.reservation::default.reservations.alert_cancel_success'));
 

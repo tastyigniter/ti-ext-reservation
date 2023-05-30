@@ -52,11 +52,6 @@
 @if ($__SELF__->showCancelButton())
     <hr>
     <div class="mt-3 text-center">
-        <button
-            class="btn btn-light text-danger"
-            data-request="{{ $__SELF__.'::onCancel' }}"
-            data-request-data="reservationId: {{ $customerReservation->reservation_id }}"
-            data-attach-loading
-        >@lang('igniter.reservation::default.reservations.button_cancel')</button>
+        @partial($__SELF__.'::cancel_modal')
     </div>
 @endif
