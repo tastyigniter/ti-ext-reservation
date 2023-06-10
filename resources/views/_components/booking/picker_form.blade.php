@@ -17,7 +17,7 @@
                 data-dates-disabled='@json($disabledDates ?? [])'
                 data-week-start="{{ $weekStartOn }}"
                 data-format="yyyy-mm-dd"
-                data-language={{ setting('default_language') }}
+                data-language={{ app()->getLocale() }}
             ></div>
             <input type="hidden" name="date" value="{{ $__SELF__->getSelectedDate()->format('Y-m-d') }}"/>
         </div>

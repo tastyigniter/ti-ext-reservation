@@ -142,8 +142,8 @@ class Booking extends BaseComponent
 
         $this->addJs('$/igniter/js/vendor.datetime.js', 'vendor-datetime-js');
         $this->addCss('$/igniter/css/vendor.css', 'vendor-css');
-        if (setting('default_language') != 'en') {
-            $this->addJs('$/igniter/js/locales/datepicker/bootstrap-datepicker.'.strtolower(str_replace('_', '-', setting('default_language'))).'.min.js', 'bootstrap-datepicker-js');
+        if (($locale = app()->getLocale()) != 'en') {
+            $this->addJs('$/igniter/js/locales/datepicker/bootstrap-datepicker.'.strtolower(str_replace('_', '-', $locale)).'.min.js', 'bootstrap-datepicker-js');
         }
 
         $this->addCss('igniter.admin::css/formwidgets/datepicker.css', 'datepicker-css');
