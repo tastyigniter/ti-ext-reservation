@@ -3,20 +3,14 @@
 namespace Igniter\Reservation\Listeners;
 
 use Carbon\Carbon;
-use Igniter\Admin\Models\Reservation;
 use Igniter\Local\Facades\Location as LocationFacade;
-use Illuminate\Contracts\Events\Dispatcher;
+use Igniter\Reservation\Models\Reservation;
 
 class MaxGuestSizePerTimeslotReached
 {
     protected static $reservationsCache = [];
 
-    public function subscribe(Dispatcher $dispatcher)
-    {
-        $dispatcher->listen('igniter.reservation.isFullyBookedOn', __CLASS__.'@isFullyBookedOn');
-    }
-
-    public function isFullyBookedOn($timeslot, $guestNum)
+    public function handle($timeslot, $guestNum)
     {
         $locationModel = LocationFacade::current();
         if (!(bool)$locationModel->getOption('limit_guests')) {

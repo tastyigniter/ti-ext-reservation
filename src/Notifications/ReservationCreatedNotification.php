@@ -2,8 +2,8 @@
 
 namespace Igniter\Reservation\Notifications;
 
-use Igniter\Flame\Auth\Models\User;
-use Igniter\System\Classes\Notification;
+use Igniter\User\Auth\Models\User;
+use Igniter\User\Classes\Notification;
 
 class ReservationCreatedNotification extends Notification
 {

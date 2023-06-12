@@ -11,7 +11,7 @@
 
         @themePartial('@timeslot')
     @else
-        <h1 class="h3">@lang('igniter.reservation::default.text_heading')</h1>
+        <h1 class="h3">@lang('igniter.reservation::default.text_booking_title')</h1>
 
         @themePartial('@picker_form')
     @endif

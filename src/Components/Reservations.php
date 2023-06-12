@@ -2,11 +2,11 @@
 
 namespace Igniter\Reservation\Components;
 
-use Igniter\Admin\Models\Reservation;
 use Igniter\Flame\Exception\ApplicationException;
-use Igniter\Main\Facades\Auth;
 use Igniter\Main\Traits\UsesPage;
 use Igniter\Reservation\Classes\BookingManager;
+use Igniter\Reservation\Models\Reservation;
+use Igniter\User\Facades\Auth;
 
 class Reservations extends \Igniter\System\Classes\BaseComponent
 {

@@ -2,24 +2,98 @@
 
 namespace Igniter\Reservation;
 
-use Igniter\Admin\Models\Reservation;
 use Igniter\Admin\Models\StatusHistory;
-use Igniter\Admin\Requests\LocationRequest;
+use Igniter\Admin\Widgets\Form;
 use Igniter\Reservation\Classes\BookingManager;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
+use Igniter\Reservation\Listeners\SendReservationConfirmation;
+use Igniter\Reservation\Models\Observers\ReservationObserver;
+use Igniter\Reservation\Models\Reservation;
+use Igniter\Reservation\Models\Scopes\ReservationScope;
+use Igniter\Reservation\Requests\ReservationSettingsRequest;
+use Igniter\Reservation\Subscribers\DefineOptionsFormFieldsSubscriber;
+use Igniter\System\Models\Settings;
+use Igniter\User\Http\Controllers\Customers;
+use Igniter\User\Models\Customer;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 
 class Extension extends \Igniter\System\Classes\BaseExtension
 {
+    protected $listen = [
+        'igniter.reservation.isFullyBookedOn' => [
+            MaxGuestSizePerTimeslotReached::class,
+        ],
+        'igniter.reservation.confirmed' => [
+            SendReservationConfirmation::class,
+        ],
+    ];
+
+    protected $subscribe = [
+        DefineOptionsFormFieldsSubscriber::class,
+    ];
+
+    protected $observers = [
+        Reservation::class => ReservationObserver::class,
+    ];
+
+    protected array $scopes = [
+        Reservation::class => ReservationScope::class,
+    ];
+
     public function register()
     {
+        parent::register();
+
         $this->app->singleton(BookingManager::class);
+
+        $this->registerSystemSettings();
     }
 
     public function boot()
     {
         $this->bindReservationEvent();
-        $this->extendLocationOptionsFields();
+
+        Relation::enforceMorphMap([
+            'reservations' => \Igniter\Reservation\Models\Reservation::class,
+            'tables' => \Igniter\Reservation\Models\Table::class,
+        ]);
+
+        Customers::extendFormFields(function (Form $form) {
+            if (!$form->model instanceof Customer) {
+                return;
+            }
+
+            $form->addTabFields([
+                'reservations' => [
+                    'tab' => 'lang:igniter.reservation::default.text_tab_reservations',
+                    'type' => 'datatable',
+                    'context' => ['edit', 'preview'],
+                    'useAjax' => true,
+                    'defaultSort' => ['reservation_id', 'desc'],
+                    'columns' => [
+                        'reservation_id' => [
+                            'title' => 'lang:igniter::admin.column_id',
+                        ],
+                        'customer_name' => [
+                            'title' => 'lang:igniter::admin.label_name',
+                        ],
+                        'status_name' => [
+                            'title' => 'lang:igniter::admin.label_status',
+                        ],
+                        'table_name' => [
+                            'title' => 'lang:igniter.reservation::default.column_table',
+                        ],
+                        'reserve_time' => [
+                            'title' => 'lang:igniter.reservation::default.column_time',
+                        ],
+                        'reserve_date' => [
+                            'title' => 'lang:igniter.reservation::default.column_date',
+                        ],
+                    ],
+                ],
+            ], 'primary');
+        });
     }
 
     public function registerComponents()
@@ -43,6 +117,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         return [
             'igniter.reservation::mail.reservation' => 'lang:igniter.reservation::default.text_mail_reservation',
             'igniter.reservation::mail.reservation_alert' => 'lang:igniter.reservation::default.text_mail_reservation_alert',
+            'igniter.reservation::mail.reservation_update' => 'lang:igniter.reservation::default.text_mail_reservation_update',
         ];
     }
 
@@ -72,18 +147,58 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         ];
     }
 
+    public function registerPermissions()
+    {
+        return [
+            'Admin.Tables' => [
+                'label' => 'igniter.reservation::default.text_permission_tables',
+                'group' => 'reservation',
+            ],
+            'Admin.Reservations' => [
+                'label' => 'igniter.reservation::default.text_permission_reservations',
+                'group' => 'reservation',
+            ],
+            'Admin.DeleteReservations' => [
+                'label' => 'igniter.reservation::default.text_permission_delete_reservations',
+                'group' => 'reservation',
+            ],
+            'Admin.AssignReservations' => [
+                'label' => 'igniter.reservation::default.text_permission_assign_reservations',
+                'group' => 'reservation',
+            ],
+        ];
+    }
+
+    public function registerNavigation()
+    {
+        return [
+            'restaurant' => [
+                'child' => [
+                    'tables' => [
+                        'priority' => 50,
+                        'class' => 'tables',
+                        'href' => admin_url('tables'),
+                        'title' => lang('igniter.reservation::default.text_side_menu_table'),
+                        'permission' => 'Admin.Tables',
+                    ],
+                ],
+            ],
+            'sales' => [
+                'child' => [
+                    'reservations' => [
+                        'priority' => 20,
+                        'class' => 'reservations',
+                        'href' => admin_url('reservations'),
+                        'title' => lang('igniter.reservation::default.text_side_menu_reservation'),
+                        'permission' => 'Admin.Reservations',
+                    ],
+                ],
+            ],
+        ];
+    }
+
     protected function bindReservationEvent()
     {
-        Event::subscribe(MaxGuestSizePerTimeslotReached::class);
-
-        Event::listen('igniter.reservation.confirmed', function (Reservation $model) {
-            Notifications\ReservationCreatedNotification::make()->subject($model)->broadcast();
-
-            $model->mailSend('igniter.reservation::mail.reservation', 'customer');
-            $model->mailSend('igniter.reservation::mail.reservation_alert', 'location');
-            $model->mailSend('igniter.reservation::mail.reservation_alert', 'admin');
-        });
-
         Event::listen('admin.statusHistory.beforeAddStatus', function ($model, $object, $statusId, $previousStatus) {
             if (!$object instanceof Reservation) {
                 return;
@@ -113,145 +228,20 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         });
     }
 
-    protected function extendLocationOptionsFields()
+    protected function registerSystemSettings()
     {
-        Event::listen('admin.locations.defineOptionsFormFields', function () {
-            return [
-                'offer_reservation' => [
-                    'label' => 'lang:igniter.reservation::default.label_offer_reservation',
-                    'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
-                    'default' => 1,
-                    'type' => 'switch',
-                    'span' => 'left',
+        Settings::registerCallback(function (Settings $manager) {
+            $manager->registerSettingItems('core', [
+                'reservation' => [
+                    'label' => 'lang:igniter.reservation::default.text_setting_reservation',
+                    'description' => 'lang:igniter.reservation::default.help_setting_reservation',
+                    'icon' => 'fa fa-chair',
+                    'priority' => 1,
+                    'permission' => ['Site.Settings'],
+                    'url' => admin_url('settings/edit/reservation'),
+                    'form' => 'igniter.reservation::/models/reservationsettings',
+                    'request' => ReservationSettingsRequest::class,
                 ],
-                'auto_allocate_table' => [
-                    'label' => 'lang:igniter.reservation::default.label_auto_allocate_table',
-                    'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
-                    'default' => 1,
-                    'type' => 'switch',
-                    'span' => 'right',
-                    'trigger' => [
-                        'action' => 'enable',
-                        'field' => 'offer_reservation',
-                        'condition' => 'checked',
-                    ],
-                ],
-                'reservation_time_interval' => [
-                    'label' => 'lang:igniter.reservation::default.label_reservation_time_interval',
-                    'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
-                    'default' => 15,
-                    'type' => 'number',
-                    'span' => 'left',
-                    'comment' => 'lang:igniter.reservation::default.help_reservation_time_interval',
-                    'trigger' => [
-                        'action' => 'enable',
-                        'field' => 'offer_reservation',
-                        'condition' => 'checked',
-                    ],
-                ],
-                'reservation_stay_time' => [
-                    'label' => 'lang:igniter.reservation::default.label_reservation_stay_time',
-                    'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
-                    'default' => 45,
-                    'type' => 'number',
-                    'span' => 'right',
-                    'comment' => 'lang:igniter.reservation::default.help_reservation_stay_time',
-                    'trigger' => [
-                        'action' => 'enable',
-                        'field' => 'offer_reservation',
-                        'condition' => 'checked',
-                    ],
-                ],
-                'min_reservation_advance_time' => [
-                    'label' => 'lang:igniter.reservation::default.label_min_reservation_advance_time',
-                    'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
-                    'default' => 2,
-                    'type' => 'number',
-                    'span' => 'left',
-                    'comment' => 'lang:igniter.reservation::default.help_min_reservation_advance_time',
-                    'trigger' => [
-                        'action' => 'enable',
-                        'field' => 'offer_reservation',
-                        'condition' => 'checked',
-                    ],
-                ],
-                'max_reservation_advance_time' => [
-                    'label' => 'lang:igniter.reservation::default.label_max_reservation_advance_time',
-                    'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
-                    'default' => 30,
-                    'type' => 'number',
-                    'span' => 'right',
-                    'comment' => 'lang:igniter.reservation::default.help_max_reservation_advance_time',
-                    'trigger' => [
-                        'action' => 'enable',
-                        'field' => 'offer_reservation',
-                        'condition' => 'checked',
-                    ],
-                ],
-                'limit_guests' => [
-                    'label' => 'lang:igniter.reservation::default.label_limit_guests',
-                    'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
-                    'default' => 0,
-                    'type' => 'switch',
-                    'span' => 'left',
-                ],
-                'limit_guests_count' => [
-                    'label' => 'lang:igniter.reservation::default.label_limit_guests_count',
-                    'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
-                    'default' => 20,
-                    'type' => 'number',
-                    'span' => 'right',
-                    'comment' => 'lang:igniter.reservation::default.help_limit_guests_count',
-                    'trigger' => [
-                        'action' => 'enable',
-                        'field' => 'limit_guests',
-                        'condition' => 'checked',
-                    ],
-                ],
-                'reservation_cancellation_timeout' => [
-                    'label' => 'lang:igniter.reservation::default.label_reservation_cancellation_timeout',
-                    'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
-                    'type' => 'number',
-                    'span' => 'left',
-                    'default' => 0,
-                    'comment' => 'lang:igniter.reservation::default.help_reservation_cancellation_timeout',
-                ],
-                'reservation_include_start_time' => [
-                    'label' => 'lang:igniter.reservation::default.label_reservation_include_start_time',
-                    'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
-                    'type' => 'switch',
-                    'span' => 'right',
-                    'default' => 1,
-                    'comment' => 'lang:igniter.reservation::default.help_reservation_include_start_time',
-                ],
-            ];
-        });
-
-        Event::listen('system.formRequest.extendValidator', function ($formRequest, $dataHolder) {
-            if (!$formRequest instanceof LocationRequest) {
-                return;
-            }
-
-            $dataHolder->attributes = array_merge($dataHolder->attributes, [
-                'options.limit_guests' => lang('igniter.reservation::default.label_limit_guests'),
-                'options.limit_guests_count' => lang('igniter.reservation::default.label_limit_guests_count'),
-                'options.reservation_time_interval' => lang('igniter.reservation::default.label_reservation_time_interval'),
-                'options.reservation_stay_time' => lang('igniter.reservation::default.reservation_stay_time'),
-                'options.auto_allocate_table' => lang('igniter.reservation::default.label_auto_allocate_table'),
-                'options.min_reservation_advance_time' => lang('igniter.reservation::default.label_min_reservation_advance_time'),
-                'options.max_reservation_advance_time' => lang('igniter.reservation::default.label_max_reservation_advance_time'),
-                'options.reservation_cancellation_timeout' => lang('igniter.reservation::default.label_reservation_cancellation_timeout'),
-            ]);
-
-            $dataHolder->rules = array_merge($dataHolder->rules, [
-                'options.limit_guests' => ['boolean'],
-                'options.limit_guests_count' => ['integer', 'min:1', 'max:999'],
-                'options.reservation_time_interval' => ['min:5', 'integer'],
-                'options.reservation_stay_time' => ['min:5', 'integer'],
-                'options.auto_allocate_table' => ['integer'],
-                'options.min_reservation_advance_time' => ['integer', 'min:0', 'max:999'],
-                'options.max_reservation_advance_time' => ['integer', 'min:0', 'max:999'],
-                'options.reservation_cancellation_timeout' => ['integer', 'min:0', 'max:999'],
             ]);
         });
     }
