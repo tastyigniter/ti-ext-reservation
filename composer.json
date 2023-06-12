@@ -1,57 +1,58 @@
 {
-	"name": "tastyigniter/ti-ext-reservation",
-	"type": "tastyigniter-package",
-	"description": "Provides a simple booking form to accept table reservations.",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Sam Poyigi",
-			"email": "sam@sampoyigi.com"
-		}
-	],
-	"require-dev": {
-		"laravel/pint": "^1.2",
-		"nunomaduro/larastan": "^2.4.0",
-		"orchestra/testbench": "^8.5",
-		"pestphp/pest-plugin-laravel": "^2.0",
-		"tastyigniter/core": "dev-master",
-		"tastyigniter/ti-ext-automation": "v4.x-dev as 4.0",
-		"tastyigniter/ti-ext-local": "v4.x-dev as 4.0"
-	},
-	"autoload": {
-		"psr-4": {
-			"Igniter\\Reservation\\": "src/"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"Igniter\\Reservation\\Tests\\": "tests/"
-		}
-	},
-	"extra": {
-		"tastyigniter-extension": {
-			"code": "igniter.reservation",
-			"name": "Reservation",
-			"icon": {
-				"class": "fa fa-calendar",
-				"backgroundColor": "#8C1243",
-				"color": "#FFF"
-			},
-			"homepage": "https://tastyigniter.com/marketplace/item/igniter-reservation"
-		}
-	},
-	"scripts": {
-		"test": "vendor/bin/pest",
-		"test-coverage": "vendor/bin/pest --coverage",
-		"format": "vendor/bin/pint",
-		"static": "vendor/bin/phpstan analyse --ansi --memory-limit 1056M"
-	},
-	"config": {
-		"allow-plugins": {
-			"pestphp/pest-plugin": true,
-			"php-http/discovery": true,
-			"composer/installers": true
-		},
-		"sort-packages": true
-	}
+  "name": "tastyigniter/ti-ext-reservation",
+  "type": "tastyigniter-package",
+  "description": "Provides a simple booking form to accept table reservations.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sam Poyigi",
+      "email": "sam@sampoyigi.com"
+    }
+  ],
+  "require-dev": {
+    "laravel/pint": "^1.2",
+    "nunomaduro/larastan": "^2.4.0",
+    "orchestra/testbench": "^8.5",
+    "pestphp/pest-plugin-laravel": "^2.0",
+    "tastyigniter/core": "dev-master",
+    "tastyigniter/ti-ext-automation": "v4.x-dev as 4.0",
+    "tastyigniter/ti-ext-local": "v4.x-dev as 4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Igniter\\Reservation\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Igniter\\Reservation\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "tastyigniter-extension": {
+      "code": "igniter.reservation",
+      "name": "Reservation",
+      "icon": {
+        "class": "fa fa-calendar",
+        "backgroundColor": "#8C1243",
+        "color": "#FFF"
+      },
+      "homepage": "https://tastyigniter.com/marketplace/item/igniter-reservation"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/pest",
+    "test-coverage": "vendor/bin/pest --coverage",
+    "format": "vendor/bin/pint",
+    "static": "vendor/bin/phpstan analyse --ansi --memory-limit 1056M"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true,
+      "php-http/discovery": true,
+      "composer/installers": true
+    },
+    "sort-packages": true
+  },
+  "minimum-stability": "dev"
 }

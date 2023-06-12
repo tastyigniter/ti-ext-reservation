@@ -4,20 +4,20 @@ namespace Igniter\Reservation\Classes;
 
 use Carbon\Carbon;
 use DateInterval;
-use Igniter\Admin\Models\Reservation;
 use Igniter\Admin\Models\Status;
-use Igniter\Main\Facades\Auth;
+use Igniter\Reservation\Models\Reservation;
+use Igniter\User\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 
 class BookingManager
 {
     /**
-     * @var \Igniter\Main\Models\Customer
+     * @var \Igniter\User\Models\Customer
      */
     protected $customer;
 
     /**
-     * @var \Igniter\Admin\Models\Location
+     * @var \Igniter\Local\Models\Location
      */
     protected $location;
 
@@ -94,7 +94,7 @@ class BookingManager
     }
 
     /**
-     * @return \Igniter\Admin\Models\Reservation
+     * @return \Igniter\Reservation\Models\Reservation
      */
     public function saveReservation($reservation, $data)
     {
@@ -131,7 +131,7 @@ class BookingManager
 
     /**
      * @param $dateTime
-     * @return \Igniter\Flame\Location\WorkingSchedule
+     * @return \Igniter\Local\Classes\WorkingSchedule
      */
     public function getSchedule($days = null)
     {

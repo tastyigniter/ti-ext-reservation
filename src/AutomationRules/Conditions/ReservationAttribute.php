@@ -7,7 +7,7 @@ use Igniter\Flame\Exception\ApplicationException;
 
 class ReservationAttribute extends BaseModelAttributesCondition
 {
-    protected $modelClass = \Igniter\Admin\Models\Reservation::class;
+    protected $modelClass = \Igniter\Reservation\Models\Reservation::class;
 
     protected $modelAttributes;
 

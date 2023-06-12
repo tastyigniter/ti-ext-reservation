@@ -15,8 +15,8 @@
     }
 
     Booking.prototype.init = function () {
-        if (this.$datePicker = this.$el.find('[data-control="datepicker"]'))
-            this.initDatePicker();
+        // if (this.$datePicker = this.$el.find('[data-control="datepicker"]'))
+        //     this.initDatePicker();
 
         this.$el.on('change', 'select[name="date"]', $.proxy(this.onSelectDate, this));
     }
@@ -49,7 +49,7 @@
     }
 
     Booking.prototype.onSelectDate = function (event) {
-        location.href = location.pathname+'?date='+event.target.value;
+        location.href = location.pathname + '?date=' + event.target.value;
         return;
     }
 
@@ -60,9 +60,9 @@
 
         this.$guestPickerValue = this.$el.find('[name="guest"]').val();
 
-        jQuery.ajax(location.pathname+'?&date='+this.$datePickerValue+'&guest='+this.$guestPickerValue, {
-                dataType: 'html'
-            })
+        jQuery.ajax(location.pathname + '?&date=' + this.$datePickerValue + '&guest=' + this.$guestPickerValue, {
+            dataType: 'html'
+        })
             .done($.proxy(this.onHtmlResponse, this));
     }
 
