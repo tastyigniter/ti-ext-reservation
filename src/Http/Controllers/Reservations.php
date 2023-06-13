@@ -2,10 +2,14 @@
 
 namespace Igniter\Reservation\Http\Controllers;
 
+use Carbon\Carbon;
+use DateInterval;
+use DatePeriod;
 use Exception;
 use Igniter\Admin\Facades\AdminMenu;
 use Igniter\Admin\Models\Status;
 use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\Reservation;
 
 class Reservations extends \Igniter\Admin\Classes\AdminController
@@ -26,13 +30,22 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
             'defaultSort' => ['reservation_id', 'DESC'],
             'configFile' => 'reservation',
         ],
+        'floor_plan' => [
+            'model' => 'Igniter\Reservation\Models\Reservation',
+            'title' => 'lang:igniter.reservation::default.text_title',
+            'emptyMessage' => 'lang:igniter.reservation::default.text_empty',
+            'defaultSort' => ['reservation_id', 'DESC'],
+            'showCheckboxes' => false,
+            'showSetup' => false,
+            'configFile' => 'floor_plan',
+        ],
     ];
 
     public $calendarConfig = [
         'calender' => [
             'title' => 'lang:igniter.reservation::default.text_title',
             'emptyMessage' => 'lang:igniter.reservation::default.text_no_booking',
-            'popoverPartial' => 'reservations/calendar_popover',
+            'popoverPartial' => 'reservations/form/calendar_popover',
             'configFile' => 'reservation',
         ],
     ];
@@ -88,6 +101,17 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         $this->vars['statusesOptions'] = \Igniter\Admin\Models\Status::getDropdownOptionsForReservation();
     }
 
+    public function floor_plan()
+    {
+        $this->addJs('https://unpkg.com/konva@8.3.12/konva.min.js', 'konva-js');
+        $this->addCss('igniter.reservation::/css/floorplanner.css', 'floorplanner-css');
+        $this->addJs('igniter.reservation::/js/floorplanner.js', 'floorplanner-js');
+
+        $this->asExtension('ListController')->index();
+
+        $this->vars['statusesOptions'] = Status::getDropdownOptionsForReservation();
+    }
+
     public function index_onDelete()
     {
         if (!$this->getUser()->hasPermission('Admin.DeleteReservations')) {
@@ -97,7 +121,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         return $this->asExtension(\Igniter\Admin\Http\Actions\ListController::class)->index_onDelete();
     }
 
-    public function index_onUpdateStatus()
+    public function onUpdateStatus()
     {
         $model = Reservation::find((int)post('recordId'));
         $status = Status::find((int)post('statusId'));
@@ -144,6 +168,11 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         $reservation->save();
     }
 
+    public function listExtendQuery($query, $alias)
+    {
+        $query->with(['tables', 'status']);
+    }
+
     public function formExtendQuery($query)
     {
         $query->with([
@@ -153,5 +182,47 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
             'status_history.user',
             'status_history.status',
         ]);
+    }
+
+    public function listFilterExtendScopesBefore($filter)
+    {
+        if ($filter->alias !== 'floor_plan_filter')
+            return;
+
+        $filter->scopes['reserve_date']['default'] = now()->toDateString();
+    }
+
+    public function listFilterExtendScopes($filter)
+    {
+        if ($filter->alias !== 'floor_plan_filter')
+            return;
+
+        if ($diningAreaId = $filter->getScopeValue('dining_area'))
+            $this->vars['diningArea'] = DiningArea::find($diningAreaId);
+
+        $reserveDateScope = $filter->getScope('reserve_date');
+        $reserveTimeScope = $filter->getScope('reserve_time');
+
+        $selectedDate = $filter->getScopeValue('reserve_date', $reserveDateScope->config['default']);
+
+        $reserveTimeScope->options = $this->getReserveTimeOptions($selectedDate) ?: ['No times available'];
+    }
+
+    protected function getReserveTimeOptions($date = null)
+    {
+        $items = [];
+
+        $date = make_carbon($date ?? now());
+        $start = $date->copy()->startOfDay();
+        $end = $date->copy()->endOfDay();
+        $interval = new DateInterval('PT15M');
+
+        $datePeriod = new DatePeriod($start, $interval, $end);
+        foreach ($datePeriod as $dateTime) {
+            $dateTime = new Carbon($dateTime);
+            $items[$dateTime->toDateTimeString()] = $dateTime->isoFormat(lang('system::lang.moment.time_format'));
+        }
+
+        return $items;
     }
 }

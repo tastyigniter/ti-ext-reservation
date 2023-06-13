@@ -44,8 +44,8 @@ class BookingManager
     {
         $reservation = Reservation::make($this->getRequiredAttributes());
 
-        $reservation->customer = $this->customer;
-        $reservation->location = $this->location;
+        $reservation->customer()->associate($this->customer);
+        $reservation->location()->associate($this->location);
 
         return $reservation;
     }
@@ -100,9 +100,6 @@ class BookingManager
     {
         Event::fire('igniter.reservation.beforeSaveReservation', [$reservation, $data]);
 
-        $reservation->customer_id = $this->customer ? $this->customer->getKey() : null;
-        $reservation->location_id = $this->location ? $this->location->getKey() : null;
-
         $reservation->guest_num = (int)array_get($data, 'guest', 1);
         $reservation->first_name = array_get($data, 'first_name', $reservation->first_name);
         $reservation->last_name = array_get($data, 'last_name', $reservation->last_name);
@@ -110,7 +107,7 @@ class BookingManager
         $reservation->telephone = array_get($data, 'telephone', $reservation->telephone);
         $reservation->comment = array_get($data, 'comment');
 
-        $dateTime = make_carbon(array_get($data, 'sdateTime'));
+        $dateTime = Carbon::createFromFormat('Y-m-d H:i', array_get($data, 'sdateTime'));
         $reservation->reserve_date = $dateTime->format('Y-m-d');
         $reservation->reserve_time = $dateTime->format('H:i:s');
         $reservation->duration = $this->location->getReservationStayTime();
@@ -142,7 +139,7 @@ class BookingManager
         return $this->location->newWorkingSchedule('opening', $days);
     }
 
-    public function isFullyBookedOn(\DateTime $dateTime, $noOfGuests)
+    public function isFullyBookedOn(\DateTime $dateTime, $noOfGuests = null)
     {
         $index = $dateTime->timestamp.'-'.$noOfGuests;
 
@@ -169,6 +166,7 @@ class BookingManager
         $reservation->reserve_date = $dateTime->format('Y-m-d');
         $reservation->reserve_time = $dateTime->format('H:i:s');
         $reservation->guest_num = $noOfGuests;
+        $reservation->duration = $this->location->getReservationStayTime();
 
         return $reservation->getNextBookableTable();
     }

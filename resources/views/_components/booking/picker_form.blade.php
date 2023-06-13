@@ -8,18 +8,24 @@
 
 <div class="form-row align-items-center progress-indicator-container">
     @if ($useCalendarView)
-        <div class="col-md-9 pr-md-4">
-            <div
-                data-control="datepicker"
-                data-start-date="{{ $__SELF__->getStartDate()->format('Y-m-d') }}"
-                data-end-date="{{ $__SELF__->getEndDate()->format('Y-m-d') }}"
-                data-days-of-week-disabled='@json($disabledDaysOfWeek ?? [])'
-                data-dates-disabled='@json($disabledDates ?? [])'
-                data-week-start="{{ $weekStartOn }}"
-                data-format="yyyy-mm-dd"
-                data-language={{ app()->getLocale() }}
-            ></div>
-            <input type="hidden" name="date" value="{{ $__SELF__->getSelectedDate()->format('Y-m-d') }}"/>
+        <div class="col-md-9 pr-md-4"
+             data-start-date="{{ $__SELF__->getStartDate()->format('Y-m-d') }}"
+             data-end-date="{{ $__SELF__->getEndDate()->format('Y-m-d') }}"
+             data-days-of-week-disabled='@json($disabledDaysOfWeek ?? [])'
+             data-dates-disabled='@json($disabledDates ?? [])'
+             data-week-start="{{ $weekStartOn }}"
+             data-format="yyyy-mm-dd"
+             data-language={{ app()->getLocale() }}
+        >
+            <input
+                    type="text"
+                    name="date"
+                    value="{{ $__SELF__->getSelectedDate()->format('Y-m-d') }}"
+                    class="d-none"
+                    data-control="datepicker"
+                    data-inline="true"
+                    data-static="true"
+            />
         </div>
         <div class="col-md-3" id="ti-datepicker-options">
             <div class="form-group">

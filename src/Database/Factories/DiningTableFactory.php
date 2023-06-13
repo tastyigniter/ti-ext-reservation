@@ -4,9 +4,9 @@ namespace Igniter\Reservation\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
 
-class TableFactory extends Factory
+class DiningTableFactory extends Factory
 {
-    protected $model = \Igniter\Reservation\Models\Table::class;
+    protected $model = \Igniter\Reservation\Models\DiningTable::class;
 
     public function definition(): array
     {

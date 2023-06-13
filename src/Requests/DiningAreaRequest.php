@@ -4,7 +4,7 @@ namespace Igniter\Reservation\Requests;
 
 use Igniter\System\Classes\FormRequest;
 
-class TableRequest extends FormRequest
+class DiningAreaRequest extends FormRequest
 {
     public function attributes()
     {
@@ -24,15 +24,7 @@ class TableRequest extends FormRequest
     public function rules()
     {
         return [
-            'table_name' => ['required', 'string', 'between:2,255'],
-            'min_capacity' => ['required', 'integer', 'min:1', 'lte:max_capacity'],
-            'max_capacity' => ['required', 'integer', 'min:1', 'gte:min_capacity'],
-            'extra_capacity' => ['required', 'integer'],
-            'priority' => ['required', 'integer'],
-            'is_joinable' => ['required', 'boolean'],
-            'table_status' => ['required', 'boolean'],
-            'locations' => ['required', 'array'],
-            'locations.*' => ['integer'],
+            ['name', 'admin::lang.label_name', 'required|between:2,128'],
         ];
     }
 }

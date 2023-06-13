@@ -4,7 +4,7 @@
     var Booking = function (element, options) {
         this.$el = $(element)
         this.options = options || {}
-        this.$datePicker = null
+        this.$datePicker = this.$el.find('[data-control="datepicker"]')
         this.$datePickerValue = null
         this.$guestPicker = null
         this.$guestPickerValue = 1
@@ -15,15 +15,16 @@
     }
 
     Booking.prototype.init = function () {
-        // if (this.$datePicker = this.$el.find('[data-control="datepicker"]'))
-        //     this.initDatePicker();
+        if (this.$datePicker)
+            this.initDatePicker();
 
         this.$el.on('change', 'select[name="date"]', $.proxy(this.onSelectDate, this));
     }
 
     Booking.prototype.initDatePicker = function () {
         this.$datePickerValue = this.$datePicker.data('startDate');
-        this.$datePicker.datepicker($.extend({
+
+        var options = $.extend({
             format: 'yyyy-mm-dd',
             icons: {
                 time: "fa fa-clock-o",
@@ -32,25 +33,23 @@
                 down: "fa fa-arrow-down"
             },
             todayHighlight: true,
-        }, this.$datePicker.data()));
+        }, this.$datePicker.data())
+        options.onValueUpdate = $.proxy(this.onSelectDatePicker, this)
+        this.$datePicker.flatpickr(options);
 
         this.$dataLocker = this.$datePicker.next('input');
-        this.$datePicker.on('changeDate', $.proxy(this.onSelectDatePicker, this))
 
-        this.$datePicker.datepicker('update', this.$datePickerValue)
+        // this.$datePicker.datepicker('update', this.$datePickerValue)
     }
 
-    Booking.prototype.onSelectDatePicker = function (event) {
-        var pickerDate = moment(event.date.toDateString())
-        var lockerValue = pickerDate.format('YYYY-MM-DD')
-        this.$datePickerValue = lockerValue;
-        this.$dataLocker.val(lockerValue);
+    Booking.prototype.onSelectDatePicker = function (selectedDates, dateStr) {
+        this.$datePickerValue = dateStr;
+        this.$dataLocker.val(dateStr);
         this.onHtmlUpdate();
     }
 
     Booking.prototype.onSelectDate = function (event) {
         location.href = location.pathname + '?date=' + event.target.value;
-        return;
     }
 
     Booking.prototype.onHtmlUpdate = function () {

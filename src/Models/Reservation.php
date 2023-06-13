@@ -72,11 +72,10 @@ class Reservation extends Model
     public $relation = [
         'belongsTo' => [
             'customer' => \Igniter\User\Models\Customer::class,
-            'related_table' => [\Igniter\Reservation\Models\Table::class, 'foreignKey' => 'table_id'],
             'location' => \Igniter\Local\Models\Location::class,
         ],
         'belongsToMany' => [
-            'tables' => [\Igniter\Reservation\Models\Table::class, 'table' => 'reservation_tables'],
+            'tables' => [\Igniter\Reservation\Models\DiningTable::class, 'table' => 'reservation_tables'],
         ],
     ];
 
@@ -160,7 +159,7 @@ class Reservation extends Model
     public function getTableNameAttribute()
     {
         return ($this->tables && $this->tables->isNotEmpty())
-            ? implode(', ', $this->tables->pluck('table_name')->all())
+            ? implode(', ', $this->tables->pluck('name')->all())
             : '';
     }
 
@@ -211,18 +210,19 @@ class Reservation extends Model
         return $canceled;
     }
 
-    public static function findReservedTables($location, $dateTime)
+    public static function findReservedTables($locationId, $dateTime)
     {
-        $query = self::with('tables');
-        $query->whereHas('tables', function ($query) use ($location) {
-            $query->whereHasLocation($location->getKey());
-        });
-        $query->whereLocationId($location->getKey());
-        $query->whereBetweenDate($dateTime->toDateTimeString());
-        $query->whereNotIn('status_id', [0, setting('canceled_reservation_status')]);
-        $result = $query->get();
-
-        return $result->pluck('tables')->flatten()->keyBy('table_id');
+        return self::with('tables')
+            ->whereHas('tables', function ($query) use ($locationId) {
+                $query->whereHasLocation($locationId);
+            })
+            ->whereLocationId($locationId)
+            ->whereBetweenStayTime($dateTime)
+            ->whereNotIn('status_id', [0, setting('canceled_reservation_status')])
+            ->get()
+            ->pluck('tables')
+            ->flatten()
+            ->keyBy('table_id');
     }
 
     public static function listCalendarEvents($startAt, $endAt, $locationId = null)
@@ -291,6 +291,14 @@ class Reservation extends Model
         ];
     }
 
+    public function getDiningTableOptions()
+    {
+        if (!$location = $this->location)
+            return [];
+
+        return DiningTable::whereHasLocation($location)->pluck('name', 'id');
+    }
+
     /**
      * Return the dates of all reservations
      *
@@ -322,29 +330,96 @@ class Reservation extends Model
      */
     public function getNextBookableTable()
     {
-        $tables = $this->location->tables->where('table_status', 1);
+        $diningTables = DiningTable::query()
+            ->with(['dining_section'])
+            ->withCount(['reservations' => function ($query) {
+                $query->where('reserve_date', $this->reserve_date)
+                    ->whereNotIn('status_id', [0, setting('canceled_reservation_status')]);
+            }])
+            ->reservable([
+                'locationId' => $this->location_id,
+                'dateTime' => $this->reservation_datetime,
+                'guestNum' => $this->guest_num,
+                'duration' => $this->duration,
+            ])->get();
 
-        $reserved = static::findReservedTables($this->location, $this->reservation_datetime);
+        if (!$diningTable = $this->getNextBookableTableInSection($diningTables))
+            $diningTable = $diningTables->first();
 
-        $tables = $tables->diff($reserved)->sortBy('priority');
+        return collect($diningTable ? [$diningTable] : []);
+    }
 
-        $result = collect();
-        $unseatedGuests = $this->guest_num;
-        foreach ($tables as $table) {
-            if ($table->min_capacity <= $this->guest_num && $table->max_capacity >= $this->guest_num) {
-                return collect([$table]);
+    public function assignTable()
+    {
+        $diningTables = $this->getNextBookableTable();
+        if ($diningTables->isEmpty())
+            return false;
+
+        $this->addReservationTables($diningTables->pluck('id')->all());
+
+        return true;
+    }
+
+    protected function getLastSectionId()
+    {
+        $lastReservation = $this->newQuery()
+            ->has('tables')
+            ->where('location_id', $this->location_id)
+            ->whereDate('reserve_date', $this->reserve_date)
+            ->where(function ($query) {
+                $query->whereNotIn('status_id', [0, setting('canceled_reservation_status')])
+                    ->orWhereNull('status_id');
+            })
+            ->orderBy('reservation_id', 'desc')
+            ->first();
+
+        $nextSectionId = null;
+        if ($lastReservation && $lastReservation->tables && $lastReservation->tables->first()->dining_section)
+            $nextSectionId = $lastReservation->tables->first()->dining_section->id;
+
+        return $nextSectionId;
+    }
+
+    protected function getNextBookableTableInSection($diningTables)
+    {
+        if ($diningTables->isEmpty() || $diningTables->pluck('dining_section.id')->unique()->isEmpty())
+            return null;
+
+        $diningSectionsIds = DiningSection::whereHasLocation($this->location_id)
+            ->whereIsReservable()->orderBy('priority')->pluck('id');
+
+        if ($diningSectionsIds->isEmpty())
+            return null;
+
+        $diningSectionsIds = $diningSectionsIds->all();
+
+        $lastSectionId = $this->getLastSectionId();
+        if (($nextIndex = array_search($lastSectionId, $diningSectionsIds)) !== false)
+            $nextIndex++;
+
+        $sectionCount = count($diningSectionsIds);
+        if ($nextIndex === false || $nextIndex >= $sectionCount)
+            $nextIndex = 0;
+
+        $diningTable = null;
+        $diningSections = $diningTables->groupBy('dining_section.id')->all();
+        for ($i = $nextIndex; $i < $sectionCount; $i++) {
+            $sectionId = $diningSectionsIds[$i];
+            $tables = array_pull($diningSections, $sectionId);
+            if ($tables && $tables->isNotEmpty()) {
+                $diningTable = $tables->sortBy('reservations_count')->first();
+                break;
             }
 
-            if ($table->is_joinable && $unseatedGuests >= $table->min_capacity) {
-                $result->push($table);
-                $unseatedGuests -= $table->max_capacity;
-                if ($unseatedGuests <= 0) {
-                    break;
-                }
+            if (!count($diningSections))
+                break;
+
+            if ($i == count($diningSectionsIds) - 1) {
+                $i = -1;
             }
         }
 
-        return $unseatedGuests > 0 ? collect() : $result;
+        return $diningTable;
     }
 
     //

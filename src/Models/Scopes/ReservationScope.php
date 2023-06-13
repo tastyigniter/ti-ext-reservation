@@ -28,11 +28,39 @@ class ReservationScope extends Scope
     public function addWhereBetweenDate()
     {
         return function (Builder $builder, $dateTime) {
+            return $this->whereBetweenStayTime($dateTime);
+        };
+    }
+
+    public function addWhereBetweenStayTime()
+    {
+        return function (Builder $builder, $dateTime) {
+            return $builder
+                ->whereRaw(
+                    '? between DATE_SUB(ADDTIME(reserve_date, reserve_time), INTERVAL 2 MINUTE)'.
+                    ' and DATE_ADD(ADDTIME(reserve_date, reserve_time), INTERVAL duration MINUTE)',
+                    [$dateTime]
+                );
+        };
+    }
+
+    public function addWhereNotBetweenStayTime()
+    {
+        return function (Builder $builder, $dateTime) {
             return $builder->whereRaw(
-                '? between DATE_SUB(ADDTIME(reserve_date, reserve_time), INTERVAL (duration - 2) MINUTE)'.
+                '? not between DATE_SUB(ADDTIME(reserve_date, reserve_time), INTERVAL (duration - 2) MINUTE)'.
                 ' and DATE_ADD(ADDTIME(reserve_date, reserve_time), INTERVAL duration MINUTE)',
                 [$dateTime]
             );
+        };
+    }
+
+    public function addWhereHasDiningArea()
+    {
+        return function (Builder $builder, $diningAreaId) {
+            return $builder->whereHas('tables', function ($q) use ($diningAreaId) {
+                $q->where('dining_tables.dining_area_id', $diningAreaId);
+            })->orDoesntHave('tables');
         };
     }
 }

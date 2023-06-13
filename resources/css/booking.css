@@ -1,17 +1,20 @@
 .timeslot {
-  padding: 6px 20px;
-  text-align: center;
-  white-space: nowrap;
+    padding: 6px 20px;
+    text-align: center;
+    white-space: nowrap;
 }
 
-.datepicker-inline {
-  width: auto;
+.flatpickr-wrapper,
+.flatpickr-calendar.inline,
+.flatpickr-days,
+.dayContainer,
+.flatpickr-rContainer {
+    width: 100%;
+    max-width: 100%;
 }
 
-.datepicker-inline table {
-  width: 100%;
-}
-
-.datepicker-inline table .day {
-  padding: 12px;
+.flatpickr-day {
+    width: auto;
+    max-width: 100%;
+    height: auto;
 }

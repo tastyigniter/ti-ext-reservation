@@ -47,7 +47,8 @@ $config['list']['toolbar'] = [
             'href' => 'reservations/create',
         ],
         'calendar' => [
-            'label' => 'lang:igniter.reservation::default.text_switch_to_calendar',
+            'label' => 'lang:igniter.reservation::default.text_view_calendar',
+            'partial' => 'lists/switch_to_button',
             'class' => 'btn btn-default',
             'href' => 'reservations/calendar',
             'context' => 'index',
@@ -56,6 +57,11 @@ $config['list']['toolbar'] = [
 ];
 
 $config['list']['bulkActions'] = [
+    'assign_table' => [
+        'label' => 'lang:igniter.reservation::default.button_assign_table',
+        'class' => 'btn btn-light',
+        'permissions' => 'Admin.AssignTables',
+    ],
     'delete' => [
         'label' => 'lang:igniter::admin.button_delete',
         'class' => 'btn btn-light text-danger',
@@ -95,9 +101,10 @@ $config['list']['columns'] = [
     ],
     'table_name' => [
         'label' => 'lang:igniter.reservation::default.column_table',
-        'type' => 'text',
+        'type' => 'partial',
+        'path' => 'reservations/lists/column_table_name',
         'relation' => 'tables',
-        'select' => 'table_name',
+        'select' => 'name',
         'searchable' => true,
     ],
     'status_name' => [
@@ -136,10 +143,10 @@ $config['calendar']['toolbar'] = [
             'href' => 'reservations/create',
         ],
         'list' => [
-            'label' => 'lang:igniter::admin.text_switch_to_list',
+            'label' => 'lang:igniter.reservation::default.text_view_calendar',
             'class' => 'btn btn-default',
-            'href' => 'reservations',
             'context' => 'calendar',
+            'partial' => 'lists/switch_to_button',
         ],
     ],
 ];
@@ -175,7 +182,7 @@ $config['form']['fields'] = [
     '_info' => [
         'type' => 'partial',
         'disabled' => true,
-        'path' => 'reservations/info',
+        'path' => 'reservations/form/info',
         'span' => 'left',
         'context' => ['edit', 'preview'],
     ],
@@ -191,32 +198,30 @@ $config['form']['fields'] = [
 $config['form']['tabs'] = [
     'defaultTab' => 'lang:igniter.reservation::default.text_tab_general',
     'fields' => [
+        'tables' => [
+            'label' => 'lang:igniter.reservation::default.label_table_name',
+            'type' => 'relation',
+            'relationFrom' => 'tables',
+            'nameFrom' => 'name',
+            'scope' => 'whereHasReservationLocation',
+            'span' => 'left',
+        ],
         'guest_num' => [
             'label' => 'lang:igniter.reservation::default.label_guest',
             'type' => 'number',
-            'span' => 'left',
-            'cssClass' => 'flex-width',
-        ],
-        'duration' => [
-            'label' => 'lang:igniter.reservation::default.label_reservation_duration',
-            'type' => 'number',
-            'span' => 'left',
-            'cssClass' => 'flex-width',
-            'comment' => 'lang:igniter.reservation::default.help_reservation_duration',
+            'span' => 'right',
         ],
         'reserve_date' => [
             'label' => 'lang:igniter.reservation::default.label_reservation_date',
             'type' => 'datepicker',
             'mode' => 'date',
-            'span' => 'right',
-            'cssClass' => 'flex-width',
+            'span' => 'left',
         ],
         'reserve_time' => [
             'label' => 'lang:igniter.reservation::default.label_reservation_time',
             'type' => 'datepicker',
             'mode' => 'time',
             'span' => 'right',
-            'cssClass' => 'flex-width',
         ],
         'first_name' => [
             'label' => 'lang:igniter.reservation::default.label_first_name',
@@ -246,23 +251,21 @@ $config['form']['tabs'] = [
             'span' => 'right',
             'placeholder' => 'lang:igniter::admin.text_please_select',
         ],
-        'tables' => [
-            'label' => 'lang:igniter.reservation::default.label_table_name',
-            'type' => 'relation',
-            'relationFrom' => 'tables',
-            'nameFrom' => 'table_name',
+        'duration' => [
+            'label' => 'lang:igniter.reservation::default.label_reservation_duration',
+            'type' => 'number',
             'span' => 'left',
-            'cssClass' => 'flex-width',
-        ],
-        'notify' => [
-            'label' => 'lang:igniter.reservation::default.label_send_confirmation',
-            'type' => 'switch',
-            'span' => 'right',
-            'default' => 1,
+            'comment' => 'lang:igniter.reservation::default.help_reservation_duration',
         ],
         'comment' => [
             'label' => 'lang:igniter::admin.statuses.label_comment',
             'type' => 'textarea',
+        ],
+        'notify' => [
+            'label' => 'lang:igniter.reservation::default.label_send_confirmation',
+            'type' => 'switch',
+            'span' => 'left',
+            'default' => 1,
         ],
         'created_at' => [
             'label' => 'lang:igniter.reservation::default.label_date_added',
