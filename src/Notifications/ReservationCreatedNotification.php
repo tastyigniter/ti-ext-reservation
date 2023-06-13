@@ -2,14 +2,14 @@
 
 namespace Igniter\Reservation\Notifications;
 
-use Igniter\User\Auth\Models\User;
 use Igniter\User\Classes\Notification;
+use Igniter\User\Models\User;
 
 class ReservationCreatedNotification extends Notification
 {
     public function getRecipients(): array
     {
-        return User::isEnabled()
+        return User::query()->isEnabled()
             ->whereHasLocation($this->subject->location->getKey())
             ->get()->all();
     }

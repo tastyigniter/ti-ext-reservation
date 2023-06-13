@@ -4,11 +4,16 @@ namespace Igniter\Reservation;
 
 use Igniter\Admin\Models\StatusHistory;
 use Igniter\Admin\Widgets\Form;
+use Igniter\Local\Models\Location;
 use Igniter\Reservation\Classes\BookingManager;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
 use Igniter\Reservation\Listeners\SendReservationConfirmation;
+use Igniter\Reservation\Models\Concerns\ExtendsLocation;
+use Igniter\Reservation\Models\DiningTable;
+use Igniter\Reservation\Models\Observers\DiningTableObserver;
 use Igniter\Reservation\Models\Observers\ReservationObserver;
 use Igniter\Reservation\Models\Reservation;
+use Igniter\Reservation\Models\Scopes\DiningTableScope;
 use Igniter\Reservation\Models\Scopes\ReservationScope;
 use Igniter\Reservation\Requests\ReservationSettingsRequest;
 use Igniter\Reservation\Subscribers\DefineOptionsFormFieldsSubscriber;
@@ -34,10 +39,12 @@ class Extension extends \Igniter\System\Classes\BaseExtension
     ];
 
     protected $observers = [
+        DiningTable::class => DiningTableObserver::class,
         Reservation::class => ReservationObserver::class,
     ];
 
     protected array $scopes = [
+        DiningTable::class => DiningTableScope::class,
         Reservation::class => ReservationScope::class,
     ];
 
@@ -56,7 +63,8 @@ class Extension extends \Igniter\System\Classes\BaseExtension
 
         Relation::enforceMorphMap([
             'reservations' => \Igniter\Reservation\Models\Reservation::class,
-            'tables' => \Igniter\Reservation\Models\Table::class,
+            'tables' => \Igniter\Reservation\Models\DiningTable::class,
+            'dining_areas' => \Igniter\Reservation\Models\DiningArea::class,
         ]);
 
         Customers::extendFormFields(function (Form $form) {
@@ -94,6 +102,8 @@ class Extension extends \Igniter\System\Classes\BaseExtension
                 ],
             ], 'primary');
         });
+
+        Location::implement(ExtendsLocation::class);
     }
 
     public function registerComponents()
@@ -166,6 +176,9 @@ class Extension extends \Igniter\System\Classes\BaseExtension
                 'label' => 'igniter.reservation::default.text_permission_assign_reservations',
                 'group' => 'reservation',
             ],
+            'Admin.AssignReservationTables' => [
+                'label' => 'admin::lang.permissions.assign_reservation_tables', 'group' => 'admin::lang.permissions.name',
+            ],
         ];
     }
 
@@ -174,11 +187,11 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         return [
             'restaurant' => [
                 'child' => [
-                    'tables' => [
+                    'dining_areas' => [
                         'priority' => 50,
-                        'class' => 'tables',
-                        'href' => admin_url('tables'),
-                        'title' => lang('igniter.reservation::default.text_side_menu_table'),
+                        'class' => 'dining_areas',
+                        'href' => admin_url('dining_areas'),
+                        'title' => lang('igniter.reservation::default.text_side_menu_tables'),
                         'permission' => 'Admin.Tables',
                     ],
                 ],
@@ -194,6 +207,25 @@ class Extension extends \Igniter\System\Classes\BaseExtension
                     ],
                 ],
             ],
+        ];
+    }
+
+    public function registerFormWidgets()
+    {
+        return [
+            \Igniter\Reservation\FormWidgets\FloorPlanner::class => [
+                'label' => 'Floor planner',
+                'code' => 'floorplanner',
+            ],
+        ];
+    }
+
+    public function registerListActionWidgets()
+    {
+        return [
+            \Igniter\Reservation\BulkActionWidgets\AssignTable::class => [
+                'code' => 'assign_table',
+            ]
         ];
     }
 

@@ -42,7 +42,12 @@ class BookingManager
 
     public function loadReservation()
     {
-        return Reservation::make($this->getRequiredAttributes());
+        $reservation = Reservation::make($this->getRequiredAttributes());
+
+        $reservation->customer()->associate($this->customer);
+        $reservation->location()->associate($this->location);
+
+        return $reservation;
     }
 
     public function getReservationByHash($hash, $customer = null)
@@ -95,9 +100,6 @@ class BookingManager
     {
         Event::fire('igniter.reservation.beforeSaveReservation', [$reservation, $data]);
 
-        $reservation->customer_id = $this->customer ? $this->customer->getKey() : null;
-        $reservation->location_id = $this->location ? $this->location->getKey() : null;
-
         $reservation->guest_num = (int)array_get($data, 'guest', 1);
         $reservation->first_name = array_get($data, 'first_name', $reservation->first_name);
         $reservation->last_name = array_get($data, 'last_name', $reservation->last_name);
@@ -105,15 +107,10 @@ class BookingManager
         $reservation->telephone = array_get($data, 'telephone', $reservation->telephone);
         $reservation->comment = array_get($data, 'comment');
 
-        $dateTime = Carbon::createFromFormat('Y-m-d H:i', array_get($data, 'date').' '.array_get($data, 'time'));
+        $dateTime = Carbon::createFromFormat('Y-m-d H:i', array_get($data, 'sdateTime'));
         $reservation->reserve_date = $dateTime->format('Y-m-d');
         $reservation->reserve_time = $dateTime->format('H:i:s');
         $reservation->duration = $this->location->getReservationStayTime();
-
-        if ((bool)$this->location->getOption('auto_allocate_table', 1)) {
-            $tables = $this->getNextBookableTable($dateTime, $reservation->guest_num);
-            $reservation->tables = $tables->pluck('table_id')->all();
-        }
 
         $reservation->save();
 
@@ -142,7 +139,7 @@ class BookingManager
         return $this->location->newWorkingSchedule('opening', $days);
     }
 
-    public function isFullyBookedOn(\DateTime $dateTime, $noOfGuests)
+    public function isFullyBookedOn(\DateTime $dateTime, $noOfGuests = null)
     {
         $index = $dateTime->timestamp.'-'.$noOfGuests;
 
@@ -164,50 +161,14 @@ class BookingManager
      */
     public function getNextBookableTable(\DateTime $dateTime, $noOfGuests)
     {
-        $tables = $this->getAvailableTables();
+        $reservation = $this->getReservation();
 
-        $reserved = Reservation::findReservedTables(
-            $this->location, $dateTime
-        );
+        $reservation->reserve_date = $dateTime->format('Y-m-d');
+        $reservation->reserve_time = $dateTime->format('H:i:s');
+        $reservation->guest_num = $noOfGuests;
+        $reservation->duration = $this->location->getReservationStayTime();
 
-        $tables = $tables->diff($reserved)->sortBy('priority');
-
-        return $this->filterNextBookableTable($tables, $noOfGuests);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    protected function getAvailableTables()
-    {
-        if (!is_null($this->availableTables))
-            return $this->availableTables;
-
-        $query = Table::isEnabled()
-            ->whereHasLocation($this->location->getKey());
-
-        $tables = $query->get();
-
-        return $this->availableTables = $tables;
-    }
-
-    protected function filterNextBookableTable($tables, int $noOfGuests)
-    {
-        $result = collect();
-        $unseatedGuests = $noOfGuests;
-        foreach ($tables as $table) {
-            if ($table->min_capacity <= $noOfGuests && $table->max_capacity >= $noOfGuests)
-                return collect([$table]);
-
-            if ($table->is_joinable && $unseatedGuests >= $table->min_capacity) {
-                $result->push($table);
-                $unseatedGuests -= $table->max_capacity;
-                if ($unseatedGuests <= 0)
-                    break;
-            }
-        }
-
-        return $unseatedGuests > 0 ? collect() : $result;
+        return $reservation->getNextBookableTable();
     }
 
     protected function getRequiredAttributes()

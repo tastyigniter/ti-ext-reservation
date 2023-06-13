@@ -100,7 +100,7 @@ class Reservations extends \Igniter\System\Classes\BaseComponent
             return [];
         }
 
-        return Reservation::with(['location', 'status', 'related_table'])->listFrontEnd([
+        return Reservation::with(['location', 'status', 'tables'])->listFrontEnd([
             'page' => $this->param('page'),
             'pageLimit' => $this->property('itemsPerPage'),
             'sort' => $this->property('sortOrder', 'created_at desc'),

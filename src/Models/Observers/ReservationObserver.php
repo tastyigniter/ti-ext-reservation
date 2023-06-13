@@ -24,7 +24,7 @@ class ReservationObserver
         }
 
         if ($reservation->location->getOption('auto_allocate_table', 1) && !$reservation->tables()->count()) {
-            $reservation->addReservationTables($reservation->getNextBookableTable()->pluck('table_id')->all());
+            $reservation->assignTable();
         }
     }
 }
