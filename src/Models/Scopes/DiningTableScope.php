@@ -12,17 +12,21 @@ class DiningTableScope extends Scope
         return function (Builder $builder, $options) {
             $builder->whereIsReservable();
 
-            if (strlen($dateTime = array_get($options, 'dateTime')))
+            if (strlen($dateTime = array_get($options, 'dateTime'))) {
                 $builder->whereIsAvailableOn($dateTime, array_get($options, 'duration', 15));
+            }
 
-            if (strlen($date = array_get($options, 'date')))
+            if (strlen($date = array_get($options, 'date'))) {
                 $builder->whereIsAvailableForDate($date);
+            }
 
-            if (strlen($locationId = array_get($options, 'locationId')))
+            if (strlen($locationId = array_get($options, 'locationId'))) {
                 $builder->whereIsAvailableAt($locationId);
+            }
 
-            if (strlen($guestNum = array_get($options, 'guestNum')))
+            if (strlen($guestNum = array_get($options, 'guestNum'))) {
                 $builder->whereCanAccommodate($guestNum);
+            }
 
             $builder
                 ->orderBy('dining_sections.priority', 'desc')
@@ -84,8 +88,9 @@ class DiningTableScope extends Scope
     public function addWhereIsAvailableOn()
     {
         return function (Builder $builder, $dateTime, $duration = 15) {
-            if (is_string($dateTime))
+            if (is_string($dateTime)) {
                 $dateTime = make_carbon($dateTime);
+            }
 
             return $builder->whereDoesntHave('reservations', function ($builder) use ($dateTime, $duration) {
                 $builder

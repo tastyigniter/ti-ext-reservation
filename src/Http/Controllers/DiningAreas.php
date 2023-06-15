@@ -81,8 +81,9 @@ class DiningAreas extends AdminController
     public function edit_onCreateCombo($context, $recordId)
     {
         $checked = (array)post('DiningArea._select_dining_tables', []);
-        if (!$checked || count($checked) < 2)
+        if (!$checked || count($checked) < 2) {
             throw new ApplicationException(lang('igniter.reservation::default.dining_areas.alert_tables_not_checked'));
+        }
 
         $model = $this->asExtension('FormController')->formFindModelObject($recordId);
 
@@ -102,13 +103,15 @@ class DiningAreas extends AdminController
 
     public function formExtendFields($form)
     {
-        if ($form->context != 'create')
+        if ($form->context != 'create') {
             $form->getField('location_id')->disabled = true;
+        }
     }
 
     public function formBeforeSave($model)
     {
-        if (DiningTable::isBroken())
+        if (DiningTable::isBroken()) {
             DiningTable::fixBrokenTreeQuietly();
+        }
     }
 }
