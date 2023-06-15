@@ -186,19 +186,22 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
 
     public function listFilterExtendScopesBefore($filter)
     {
-        if ($filter->alias !== 'floor_plan_filter')
+        if ($filter->alias !== 'floor_plan_filter') {
             return;
+        }
 
         $filter->scopes['reserve_date']['default'] = now()->toDateString();
     }
 
     public function listFilterExtendScopes($filter)
     {
-        if ($filter->alias !== 'floor_plan_filter')
+        if ($filter->alias !== 'floor_plan_filter') {
             return;
+        }
 
-        if ($diningAreaId = $filter->getScopeValue('dining_area'))
+        if ($diningAreaId = $filter->getScopeValue('dining_area')) {
             $this->vars['diningArea'] = DiningArea::find($diningAreaId);
+        }
 
         $reserveDateScope = $filter->getScope('reserve_date');
         $reserveTimeScope = $filter->getScope('reserve_time');

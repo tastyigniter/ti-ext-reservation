@@ -225,7 +225,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         return [
             \Igniter\Reservation\BulkActionWidgets\AssignTable::class => [
                 'code' => 'assign_table',
-            ]
+            ],
         ];
     }
 

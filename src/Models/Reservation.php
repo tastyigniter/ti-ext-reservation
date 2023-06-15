@@ -293,8 +293,9 @@ class Reservation extends Model
 
     public function getDiningTableOptions()
     {
-        if (!$location = $this->location)
+        if (!$location = $this->location) {
             return [];
+        }
 
         return DiningTable::whereHasLocation($location)->pluck('name', 'id');
     }
@@ -343,8 +344,9 @@ class Reservation extends Model
                 'duration' => $this->duration,
             ])->get();
 
-        if (!$diningTable = $this->getNextBookableTableInSection($diningTables))
+        if (!$diningTable = $this->getNextBookableTableInSection($diningTables)) {
             $diningTable = $diningTables->first();
+        }
 
         return collect($diningTable ? [$diningTable] : []);
     }
@@ -352,8 +354,9 @@ class Reservation extends Model
     public function assignTable()
     {
         $diningTables = $this->getNextBookableTable();
-        if ($diningTables->isEmpty())
+        if ($diningTables->isEmpty()) {
             return false;
+        }
 
         $this->addReservationTables($diningTables->pluck('id')->all());
 
@@ -374,32 +377,37 @@ class Reservation extends Model
             ->first();
 
         $nextSectionId = null;
-        if ($lastReservation && $lastReservation->tables && $lastReservation->tables->first()->dining_section)
+        if ($lastReservation && $lastReservation->tables && $lastReservation->tables->first()->dining_section) {
             $nextSectionId = $lastReservation->tables->first()->dining_section->id;
+        }
 
         return $nextSectionId;
     }
 
     protected function getNextBookableTableInSection($diningTables)
     {
-        if ($diningTables->isEmpty() || $diningTables->pluck('dining_section.id')->unique()->isEmpty())
+        if ($diningTables->isEmpty() || $diningTables->pluck('dining_section.id')->unique()->isEmpty()) {
             return null;
+        }
 
         $diningSectionsIds = DiningSection::whereHasLocation($this->location_id)
             ->whereIsReservable()->orderBy('priority')->pluck('id');
 
-        if ($diningSectionsIds->isEmpty())
+        if ($diningSectionsIds->isEmpty()) {
             return null;
+        }
 
         $diningSectionsIds = $diningSectionsIds->all();
 
         $lastSectionId = $this->getLastSectionId();
-        if (($nextIndex = array_search($lastSectionId, $diningSectionsIds)) !== false)
+        if (($nextIndex = array_search($lastSectionId, $diningSectionsIds)) !== false) {
             $nextIndex++;
+        }
 
         $sectionCount = count($diningSectionsIds);
-        if ($nextIndex === false || $nextIndex >= $sectionCount)
+        if ($nextIndex === false || $nextIndex >= $sectionCount) {
             $nextIndex = 0;
+        }
 
         $diningTable = null;
         $diningSections = $diningTables->groupBy('dining_section.id')->all();
@@ -411,8 +419,9 @@ class Reservation extends Model
                 break;
             }
 
-            if (!count($diningSections))
+            if (!count($diningSections)) {
                 break;
+            }
 
             if ($i == count($diningSectionsIds) - 1) {
                 $i = -1;

@@ -71,7 +71,6 @@ class DiningTable extends \Igniter\Flame\Database\Model
         })->all();
     }
 
-
     //
     // Accessors & Mutators
     //

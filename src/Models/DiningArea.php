@@ -107,11 +107,13 @@ class DiningArea extends \Igniter\Flame\Database\Model
 
         if ($tables->filter(function ($table) {
             return $table->parent !== null;
-        })->isNotEmpty())
+        })->isNotEmpty()) {
             throw new ApplicationException(lang('igniter.reservation::default.dining_areas.alert_table_already_combined'));
+        }
 
-        if ($tables->pluck('dining_section_id')->unique()->count() > 1)
+        if ($tables->pluck('dining_section_id')->unique()->count() > 1) {
             throw new ApplicationException(lang('igniter.reservation::default.dining_areas.alert_table_combo_section_mismatch'));
+        }
 
         $comboTable = $this->dining_tables()->create([
             'name' => $tableNames,

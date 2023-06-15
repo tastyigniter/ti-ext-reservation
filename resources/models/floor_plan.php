@@ -79,6 +79,6 @@ return [
                 'path' => 'statuses/form/status_column',
                 'sortable' => false,
             ],
-        ]
+        ],
     ],
 ];

@@ -9,8 +9,9 @@ class DiningTableObserver
 {
     public function saving(DiningTable $diningTable)
     {
-        if (!$diningTable->getRgt() || !$diningTable->getLft())
+        if (!$diningTable->getRgt() || !$diningTable->getLft()) {
             $diningTable->fixTree();
+        }
     }
 
     public function saved(DiningTable $diningTable)
@@ -23,8 +24,9 @@ class DiningTableObserver
 
     public function deleting(DiningTable $diningTable)
     {
-        if (!is_null($diningTable->parent_id))
+        if (!is_null($diningTable->parent_id)) {
             throw new ApplicationException(lang('igniter.reservation::default.dining_tables.error_cannot_delete_has_parent'));
+        }
 
         if ($diningTable->is_combo) {
             $diningTable->descendants()->each(function ($descendant) {

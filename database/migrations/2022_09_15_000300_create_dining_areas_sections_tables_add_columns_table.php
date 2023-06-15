@@ -6,7 +6,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public static $diningTables;
 
     public function up()
@@ -86,8 +87,9 @@ return new class extends Migration {
 
     protected function createLocationDiningAreas()
     {
-        if (!DB::table('tables')->count())
+        if (!DB::table('tables')->count()) {
             return;
+        }
 
         DB::table('locations')->get()->each(function ($location) {
             DB::table('dining_areas')->insertGetId([
@@ -101,8 +103,9 @@ return new class extends Migration {
 
     protected function copyTablesIntoDiningTables()
     {
-        if (!DB::table('tables')->count())
+        if (!DB::table('tables')->count()) {
             return;
+        }
 
         $diningAreas = DB::table('dining_areas')->pluck('id', 'location_id');
 
@@ -140,8 +143,9 @@ return new class extends Migration {
             ->join('reservations', 'reservation_tables.reservation_id', '=', 'reservations.reservation_id')
             ->select('reservation_tables.reservation_id', 'reservation_tables.table_id', 'reservations.location_id')
             ->get()->each(function ($reservationTable) {
-                if (!$diningTable = $this->findDiningTable($reservationTable))
+                if (!$diningTable = $this->findDiningTable($reservationTable)) {
                     return;
+                }
 
                 DB::table('reservation_tables')
                     ->where('reservation_id', $reservationTable->reservation_id)
