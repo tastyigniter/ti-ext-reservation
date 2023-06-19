@@ -9,6 +9,7 @@ use Igniter\Reservation\Classes\BookingManager;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
 use Igniter\Reservation\Listeners\SendReservationConfirmation;
 use Igniter\Reservation\Models\Concerns\ExtendsLocation;
+use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Observers\DiningTableObserver;
 use Igniter\Reservation\Models\Observers\ReservationObserver;
@@ -103,7 +104,10 @@ class Extension extends \Igniter\System\Classes\BaseExtension
             ], 'primary');
         });
 
-        Location::implement(ExtendsLocation::class);
+        Location::extend(function (Location $model) {
+            $model->relation['hasMany']['dining_areas'] = [DiningArea::class, 'delete' => true];
+            $model->relation['morphedByMany']['tables'] = [DiningTable::class, 'name' => 'locationable'];
+        });
     }
 
     public function registerComponents()
