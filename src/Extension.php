@@ -8,7 +8,6 @@ use Igniter\Local\Models\Location;
 use Igniter\Reservation\Classes\BookingManager;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
 use Igniter\Reservation\Listeners\SendReservationConfirmation;
-use Igniter\Reservation\Models\Concerns\ExtendsLocation;
 use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Observers\DiningTableObserver;
