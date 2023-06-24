@@ -47,7 +47,7 @@ $config['list']['toolbar'] = [
             'href' => 'reservations/create',
         ],
         'calendar' => [
-            'label' => 'lang:igniter.reservation::default.text_view_calendar',
+            'label' => 'lang:igniter.reservation::default.text_view_list',
             'partial' => 'lists/switch_to_button',
             'class' => 'btn btn-default',
             'href' => 'reservations/calendar',
