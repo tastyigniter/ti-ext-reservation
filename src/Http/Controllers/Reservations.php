@@ -31,7 +31,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
             'configFile' => 'reservation',
         ],
         'floor_plan' => [
-            'model' => 'Igniter\Reservation\Models\Reservation',
+            'model' => \Igniter\Reservation\Models\Reservation::class,
             'title' => 'lang:igniter.reservation::default.text_title',
             'emptyMessage' => 'lang:igniter.reservation::default.text_empty',
             'defaultSort' => ['reservation_id', 'DESC'],
