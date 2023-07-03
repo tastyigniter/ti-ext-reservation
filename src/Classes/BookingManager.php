@@ -77,7 +77,7 @@ class BookingManager
             ? $interval : $this->location->getReservationInterval();
 
         $lead = !is_null($lead) ? $lead : $this->location->getReservationLeadTime();
-        if ($this->location->getOption('reservation_include_start_time', 1)) {
+        if ($this->location->getSettings('booking.include_start_time', 1)) {
             $lead = 0;
         }
 

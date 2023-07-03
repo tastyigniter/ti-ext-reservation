@@ -3,7 +3,6 @@
 return [
     'text_component_title' => 'Booking Component',
     'text_component_desc' => 'Displays the booking form',
-    'text_tab_reservation' => 'Reservation options',
     'text_tab_reservations' => 'Reservations',
 
     'text_title' => 'Reservations',
@@ -257,4 +256,9 @@ return [
         'error_cannot_delete_has_parent' => 'Cannot delete this table, it belongs to a combo',
         'error_cannot_delete_has_children' => 'Cannot delete this table, it has tables combined to it',
     ],
+
+    'settings' => [
+        'text_tab_booking' => 'Reservation settings',
+        'text_tab_desc_booking' => 'Configure your reservation settings',
+    ]
 ];

@@ -13,11 +13,11 @@ class MaxGuestSizePerTimeslotReached
     public function handle($timeslot, $guestNum)
     {
         $locationModel = LocationFacade::current();
-        if (!(bool)$locationModel->getOption('limit_guests')) {
+        if (!(bool)$locationModel->getSettings('booking.limit_guests')) {
             return;
         }
 
-        if (!$limitCount = (int)$locationModel->getOption('limit_guests_count', 20)) {
+        if (!$limitCount = (int)$locationModel->getSettings('booking.limit_guests_count', 20)) {
             return;
         }
 
