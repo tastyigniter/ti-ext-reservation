@@ -184,7 +184,7 @@ class Booking extends BaseComponent
         return LocationModel::query()->isEnabled()
             ->get()
             ->filter(function ($location) {
-                return $location->getOption('offer_reservation', 1) == 1;
+                return $location->getSettings('booking.is_enabled', 1) == 1;
             })
             ->pluck('location_name', 'permalink_slug');
     }
@@ -248,7 +248,7 @@ class Booking extends BaseComponent
         $result = [];
         $selectedDate = $this->getSelectedDate();
         $selectedTime = $this->getSelectedDateTime();
-        $autoAllocateTable = (bool)$this->location->getOption('auto_allocate_table', 1);
+        $autoAllocateTable = (bool)$this->location->getSettings('auto_allocate_table', 1);
 
         $dateTimes = $this->manager->makeTimeSlots($selectedDate);
         foreach ($dateTimes as $dateTime) {
@@ -414,7 +414,7 @@ class Booking extends BaseComponent
             return $validator->errors()->add('date', lang('igniter.reservation::default.error_invalid_location'));
         }
 
-        if (!(bool)$location->getOption('offer_reservation', 1)) {
+        if (!(bool)$location->getSettings('booking.is_enabled', 1)) {
             return $validator->errors()->add('location', lang('igniter.reservation::default.alert_reservation_disabled'));
         }
 
@@ -431,7 +431,7 @@ class Booking extends BaseComponent
             return $validator->errors()->add('time', lang('igniter.reservation::default.error_invalid_time'));
         }
 
-        $autoAllocateTable = (bool)$this->location->getOption('auto_allocate_table', 1);
+        $autoAllocateTable = (bool)$this->location->getSettings('auto_allocate_table', 1);
         if ($autoAllocateTable && $this->manager->isFullyBookedOn($dateTime, (int)input('guest', 1))) {
             return $validator->errors()->add('guest', lang('igniter.reservation::default.alert_no_table_available'));
         }

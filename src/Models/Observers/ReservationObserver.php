@@ -23,7 +23,7 @@ class ReservationObserver
             $reservation->addReservationTables((array)array_get($attributes, 'tables', []));
         }
 
-        if ($reservation->location->getOption('auto_allocate_table', 1) && !$reservation->tables()->count()) {
+        if ($reservation->location->shouldAutoAllocateTable() && !$reservation->tables()->count()) {
             $reservation->assignTable();
         }
     }

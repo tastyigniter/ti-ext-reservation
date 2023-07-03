@@ -5,9 +5,11 @@ namespace Igniter\Reservation;
 use Igniter\Admin\Models\StatusHistory;
 use Igniter\Admin\Widgets\Form;
 use Igniter\Local\Models\Location;
+use Igniter\Local\Models\Location as LocationModel;
 use Igniter\Reservation\Classes\BookingManager;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
 use Igniter\Reservation\Listeners\SendReservationConfirmation;
+use Igniter\Reservation\Models\Concerns\LocationAction;
 use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Observers\DiningTableObserver;
@@ -16,7 +18,6 @@ use Igniter\Reservation\Models\Reservation;
 use Igniter\Reservation\Models\Scopes\DiningTableScope;
 use Igniter\Reservation\Models\Scopes\ReservationScope;
 use Igniter\Reservation\Requests\ReservationSettingsRequest;
-use Igniter\Reservation\Subscribers\DefineOptionsFormFieldsSubscriber;
 use Igniter\System\Models\Settings;
 use Igniter\User\Http\Controllers\Customers;
 use Igniter\User\Models\Customer;
@@ -32,10 +33,6 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         'igniter.reservation.confirmed' => [
             SendReservationConfirmation::class,
         ],
-    ];
-
-    protected $subscribe = [
-        DefineOptionsFormFieldsSubscriber::class,
     ];
 
     protected $observers = [
@@ -102,6 +99,8 @@ class Extension extends \Igniter\System\Classes\BaseExtension
                 ],
             ], 'primary');
         });
+
+        LocationModel::implement(LocationAction::class);
 
         Location::extend(function (Location $model) {
             $model->relation['hasMany']['dining_areas'] = [DiningArea::class, 'delete' => true];
@@ -228,6 +227,20 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         return [
             \Igniter\Reservation\BulkActionWidgets\AssignTable::class => [
                 'code' => 'assign_table',
+            ],
+        ];
+    }
+
+    public function registerLocationSettings()
+    {
+        return [
+            'booking' => [
+                'label' => 'igniter.reservation::default.settings.text_tab_booking',
+                'description' => 'igniter.reservation::default.settings.text_tab_desc_booking',
+                'icon' => 'fa fa-sliders',
+                'priority' => 0,
+                'form' => 'igniter.reservation::/models/bookingsettings',
+                'request' => \Igniter\Reservation\Requests\BookingSettingsRequest::class,
             ],
         ];
     }

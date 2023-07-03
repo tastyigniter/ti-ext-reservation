@@ -3,6 +3,7 @@
 namespace Igniter\Reservation\ScheduleTypes;
 
 use Igniter\Local\Classes\AbstractOrderType;
+use Igniter\Local\Facades\Location as LocationFacade;
 
 class Opening extends AbstractOrderType
 {
