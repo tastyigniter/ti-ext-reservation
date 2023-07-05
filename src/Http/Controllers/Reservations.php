@@ -9,6 +9,7 @@ use Exception;
 use Igniter\Admin\Facades\AdminMenu;
 use Igniter\Admin\Models\Status;
 use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Local\Facades\Location as LocationFacade;
 use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\Reservation;
 
@@ -148,7 +149,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
     public function calendarGenerateEvents($startAt, $endAt)
     {
         return Reservation::listCalendarEvents(
-            $startAt, $endAt, $this->getLocationId()
+            $startAt, $endAt, LocationFacade::getId()
         );
     }
 
