@@ -6,12 +6,32 @@ parameters:
 			path: src/Classes/BookingManager.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$customer\\.$#"
+			message: "#^Call to an undefined method Igniter\\\\Local\\\\Models\\\\Location\\:\\:getMaxReservationAdvanceTime\\(\\)\\.$#"
 			count: 1
 			path: src/Classes/BookingManager.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$location\\.$#"
+			message: "#^Call to an undefined method Igniter\\\\Local\\\\Models\\\\Location\\:\\:getReservationInterval\\(\\)\\.$#"
+			count: 1
+			path: src/Classes/BookingManager.php
+
+		-
+			message: "#^Call to an undefined method Igniter\\\\Local\\\\Models\\\\Location\\:\\:getReservationLeadTime\\(\\)\\.$#"
+			count: 1
+			path: src/Classes/BookingManager.php
+
+		-
+			message: "#^Call to an undefined method Igniter\\\\Local\\\\Models\\\\Location\\:\\:getReservationStayTime\\(\\)\\.$#"
+			count: 2
+			path: src/Classes/BookingManager.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:customer\\(\\)\\.$#"
+			count: 1
+			path: src/Classes/BookingManager.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:location\\(\\)\\.$#"
 			count: 1
 			path: src/Classes/BookingManager.php
 
@@ -46,22 +66,17 @@ parameters:
 			path: src/Components/Booking.php
 
 		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:isEnabled\\(\\)\\.$#"
+			count: 1
+			path: src/Components/Booking.php
+
+		-
 			message: "#^Call to an undefined static method Igniter\\\\Local\\\\Models\\\\Location\\:\\:whereSlug\\(\\)\\.$#"
 			count: 1
 			path: src/Components/Booking.php
 
 		-
 			message: "#^Call to an undefined static method Igniter\\\\User\\\\Facades\\\\Auth\\:\\:getUser\\(\\)\\.$#"
-			count: 1
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Cannot call method get\\(\\) on bool\\.$#"
-			count: 1
-			path: src/Components/Booking.php
-
-		-
-			message: "#^Static call to instance method Igniter\\\\Local\\\\Models\\\\Location\\:\\:isEnabled\\(\\)\\.$#"
 			count: 1
 			path: src/Components/Booking.php
 
@@ -96,6 +111,26 @@ parameters:
 			path: src/Extension.php
 
 		-
+			message: "#^Access to an undefined property Igniter\\\\Flame\\\\Database\\\\Model\\:\\:\\$floor_plan\\.$#"
+			count: 1
+			path: src/FormWidgets/FloorPlanner.php
+
+		-
+			message: "#^Call to an undefined method Igniter\\\\Flame\\\\Database\\\\Model\\:\\:dining_tables\\(\\)\\.$#"
+			count: 1
+			path: src/FormWidgets/FloorPlanner.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Facades\\\\AdminMenu\\:\\:setContext\\(\\)\\.$#"
+			count: 1
+			path: src/Http/Controllers/DiningAreas.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:isBroken\\(\\)\\.$#"
+			count: 1
+			path: src/Http/Controllers/DiningAreas.php
+
+		-
 			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Facades\\\\AdminMenu\\:\\:setContext\\(\\)\\.$#"
 			count: 1
 			path: src/Http/Controllers/Reservations.php
@@ -106,14 +141,19 @@ parameters:
 			path: src/Http/Controllers/Reservations.php
 
 		-
-			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:find\\(\\)\\.$#"
-			count: 2
+			message: "#^Call to an undefined static method Igniter\\\\Local\\\\Facades\\\\Location\\:\\:getId\\(\\)\\.$#"
+			count: 1
 			path: src/Http/Controllers/Reservations.php
 
 		-
-			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Facades\\\\AdminMenu\\:\\:setContext\\(\\)\\.$#"
+			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\DiningArea\\:\\:find\\(\\)\\.$#"
 			count: 1
-			path: src/Http/Controllers/Tables.php
+			path: src/Http/Controllers/Reservations.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:find\\(\\)\\.$#"
+			count: 2
+			path: src/Http/Controllers/Reservations.php
 
 		-
 			message: "#^Call to an undefined static method Igniter\\\\Local\\\\Facades\\\\Location\\:\\:current\\(\\)\\.$#"
@@ -134,6 +174,116 @@ parameters:
 			message: "#^Comparison operation \"\\>\" between \\(array\\|float\\|int\\) and int\\<min, \\-1\\>\\|int\\<1, max\\> results in an error\\.$#"
 			count: 1
 			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
+
+		-
+			message: "#^Call to an undefined method Igniter\\\\Flame\\\\Database\\\\Model\\:\\:getSettings\\(\\)\\.$#"
+			count: 6
+			path: src/Models/Concerns/LocationAction.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningArea\\:\\:\\$available_tables\\.$#"
+			count: 3
+			path: src/Models/DiningArea.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningArea\\:\\:\\$dining_tables\\.$#"
+			count: 1
+			path: src/Models/DiningArea.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningArea\\:\\:\\$name\\.$#"
+			count: 1
+			path: src/Models/DiningArea.php
+
+		-
+			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Models\\\\DiningArea\\:\\:dining_tables\\(\\)\\.$#"
+			count: 1
+			path: src/Models/DiningArea.php
+
+		-
+			message: "#^Call to an undefined static method static\\(Igniter\\\\Reservation\\\\Models\\\\DiningArea\\)\\:\\:dropdown\\(\\)\\.$#"
+			count: 1
+			path: src/Models/DiningArea.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\DiningSection\\:\\:dropdown\\(\\)\\.$#"
+			count: 1
+			path: src/Models/DiningSection.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$dining_area\\.$#"
+			count: 1
+			path: src/Models/DiningTable.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$dining_section\\.$#"
+			count: 1
+			path: src/Models/DiningTable.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$id\\.$#"
+			count: 1
+			path: src/Models/DiningTable.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$max_capacity\\.$#"
+			count: 2
+			path: src/Models/DiningTable.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$min_capacity\\.$#"
+			count: 1
+			path: src/Models/DiningTable.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$name\\.$#"
+			count: 1
+			path: src/Models/DiningTable.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$seat_layout\\.$#"
+			count: 1
+			path: src/Models/DiningTable.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$shape\\.$#"
+			count: 1
+			path: src/Models/DiningTable.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\DiningSection\\:\\:where\\(\\)\\.$#"
+			count: 1
+			path: src/Models/DiningTable.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$is_combo\\.$#"
+			count: 1
+			path: src/Models/Observers/DiningTableObserver.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$parent\\.$#"
+			count: 1
+			path: src/Models/Observers/DiningTableObserver.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$parent_id\\.$#"
+			count: 2
+			path: src/Models/Observers/DiningTableObserver.php
+
+		-
+			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:fixTree\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Observers/DiningTableObserver.php
+
+		-
+			message: "#^Call to an undefined method Kalnoy\\\\Nestedset\\\\DescendantsRelation\\:\\:each\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Observers/DiningTableObserver.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\Observers\\\\DiningTableObserver\\:\\:fixBrokenTreeQuietly\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Observers/DiningTableObserver.php
 
 		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$location\\.$#"
@@ -157,7 +307,7 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$duration\\.$#"
-			count: 2
+			count: 3
 			path: src/Models/Reservation.php
 
 		-
@@ -172,7 +322,7 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$guest_num\\.$#"
-			count: 5
+			count: 4
 			path: src/Models/Reservation.php
 
 		-
@@ -182,7 +332,12 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$location\\.$#"
-			count: 8
+			count: 7
+			path: src/Models/Reservation.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$location_id\\.$#"
+			count: 3
 			path: src/Models/Reservation.php
 
 		-
@@ -207,7 +362,7 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$reserve_date\\.$#"
-			count: 2
+			count: 4
 			path: src/Models/Reservation.php
 
 		-
@@ -261,7 +416,7 @@ parameters:
 			path: src/Models/Reservation.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:whereBetweenDate\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:reservable\\(\\)\\.$#"
 			count: 1
 			path: src/Models/Reservation.php
 
@@ -276,6 +431,16 @@ parameters:
 			path: src/Models/Reservation.php
 
 		-
+			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\DiningSection\\:\\:whereHasLocation\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
+			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:whereHasLocation\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
 			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:whereBetween\\(\\)\\.$#"
 			count: 1
 			path: src/Models/Reservation.php
@@ -284,6 +449,51 @@ parameters:
 			message: "#^Method Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:addReservationTables\\(\\) should return bool but return statement is missing\\.$#"
 			count: 1
 			path: src/Models/Reservation.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:whereCanAccommodate\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Scopes/DiningTableScope.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:whereHasLocation\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Scopes/DiningTableScope.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:whereIsAvailableAt\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Scopes/DiningTableScope.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:whereIsAvailableForDate\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Scopes/DiningTableScope.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:whereIsAvailableOn\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Scopes/DiningTableScope.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:whereIsReservable\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Scopes/DiningTableScope.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:whereIsRoot\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Scopes/DiningTableScope.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:fireEvent\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Scopes/DiningTableScope.php
+
+		-
+			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Models\\\\Scopes\\\\ReservationScope\\:\\:whereBetweenStayTime\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Scopes/ReservationScope.php
 
 		-
 			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:whereBetweenReservationDateTime\\(\\)\\.$#"
@@ -306,11 +516,6 @@ parameters:
 			path: src/Notifications/ReservationCreatedNotification.php
 
 		-
-			message: "#^Call to an undefined static method Igniter\\\\User\\\\Auth\\\\Models\\\\User\\:\\:isEnabled\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:isEnabled\\(\\)\\.$#"
 			count: 1
 			path: src/Notifications/ReservationCreatedNotification.php
-
-		-
-			message: "#^Call to static method orderType\\(\\) on an unknown class Igniter\\\\Reservation\\\\ScheduleTypes\\\\LocationFacade\\.$#"
-			count: 1
-			path: src/ScheduleTypes/Opening.php
