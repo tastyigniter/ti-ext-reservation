@@ -110,6 +110,6 @@ return [
                 'default' => 1,
                 'comment' => 'lang:igniter.reservation::default.help_reservation_include_start_time',
             ],
-        ]
-    ]
+        ],
+    ],
 ];
