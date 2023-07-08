@@ -260,5 +260,5 @@ return [
     'settings' => [
         'text_tab_booking' => 'Reservation settings',
         'text_tab_desc_booking' => 'Configure your reservation settings',
-    ]
+    ],
 ];
