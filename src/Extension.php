@@ -153,7 +153,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
     {
         return [
             'Admin.Tables' => [
-                'label' => 'igniter.reservation::default.text_permission_tables',
+                'label' => 'igniter.reservation::default.text_permission_dining_areas',
                 'group' => 'reservation',
             ],
             'Admin.Reservations' => [
@@ -169,7 +169,8 @@ class Extension extends \Igniter\System\Classes\BaseExtension
                 'group' => 'reservation',
             ],
             'Admin.AssignReservationTables' => [
-                'label' => 'admin::lang.permissions.assign_reservation_tables', 'group' => 'admin::lang.permissions.name',
+                'label' => 'igniter.reservation::default.text_permission_assign_reservation_tables',
+                'group' => 'reservation',
             ],
         ];
     }
