@@ -3,7 +3,6 @@
 namespace Igniter\Reservation\Components;
 
 use Carbon\Carbon;
-use Exception;
 use Igniter\Admin\Traits\ValidatesForm;
 use Igniter\Local\Facades\Location;
 use Igniter\Local\Models\Location as LocationModel;
@@ -347,21 +346,15 @@ class Booking extends BaseComponent
             return Redirect::back()->withInput();
         }
 
-        try {
-            $reservation = $this->getReservation();
+        $reservation = $this->getReservation();
 
-            $this->manager->saveReservation($reservation, $data);
+        $this->manager->saveReservation($reservation, $data);
 
-            if (!$redirect = input('redirect')) {
-                $redirect = $this->property('successPage');
-            }
-
-            return Redirect::to($this->controller->pageUrl($redirect, ['hash' => $reservation->hash]));
-        } catch (Exception $ex) {
-            flash()->warning($ex->getMessage());
-
-            return Redirect::back()->withInput();
+        if (!$redirect = input('redirect')) {
+            $redirect = $this->property('successPage');
         }
+
+        return Redirect::to($this->controller->pageUrl($redirect, ['hash' => $reservation->hash]));
     }
 
     //
