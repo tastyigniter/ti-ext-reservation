@@ -38,28 +38,28 @@
         <div class="py-2">
             @if ($showEditButton)
                 <button
-                        type="button"
-                        class="btn btn-outline-default"
-                        data-control="edit-record"
-                        {!! ($this->previewMode) ? 'disabled="disabled"' : '' !!}
+                    type="button"
+                    class="btn btn-light"
+                    data-control="edit-record"
+                    {!! ($this->previewMode) ? 'disabled="disabled"' : '' !!}
                 ><i class="fa fa-pencil"></i>&nbsp;&nbsp;@lang($editLabel)&nbsp;@lang($this->formName)</button>
             @endif
             @if ($showDeleteButton)
                 <button
-                        type="button"
-                        class="btn btn-outline-danger"
-                        title="{{ lang($deleteLabel).' '.lang($this->formName) }}"
-                        data-control="delete-record"
-                        data-confirm-message="@lang('admin::lang.alert_warning_confirm')"
-                        {!! ($this->previewMode) ? 'disabled="disabled"' : '' !!}
+                    type="button"
+                    class="btn btn-light text-danger"
+                    title="{{ lang($deleteLabel).' '.lang($this->formName) }}"
+                    data-control="delete-record"
+                    data-confirm-message="@lang('admin::lang.alert_warning_confirm')"
+                    {!! ($this->previewMode) ? 'disabled="disabled"' : '' !!}
                 ><i class="fa fa-trash"></i></button>
             @endif
             @if ($showCreateButton)
                 <button
-                        type="button"
-                        class="btn btn-outline-default"
-                        data-control="create-record"
-                        {!! ($this->previewMode) ? 'disabled="disabled"' : '' !!}
+                    type="button"
+                    class="btn btn-light"
+                    data-control="create-record"
+                    {!! ($this->previewMode) ? 'disabled="disabled"' : '' !!}
                 ><i class="fa fa-plus"></i>&nbsp;&nbsp;@lang($addLabel)&nbsp;@lang($this->formName)</button>
             @endif
         </div>
