@@ -32,7 +32,7 @@ return [
                 'type' => 'button',
                 'iconCssClass' => 'fa fa-copy  text-muted',
                 'attributes' => [
-                    'class' => 'btn',
+                    'class' => 'btn shadow-none',
                     'data-request' => 'onDuplicate',
                     'data-request-data' => 'id: {id}',
                 ],
