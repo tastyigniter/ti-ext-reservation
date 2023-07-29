@@ -6,8 +6,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public static $diningTables;
 
     public function up()
@@ -63,9 +62,9 @@ return new class extends Migration
         $this->copyTablesIntoDiningTables();
 
         if (!Schema::hasColumn('reservation_tables', 'dining_table_id')) {
-            Schema::table('reservation_tables', function (Blueprint $table) {
+            rescue(fn () => Schema::table('reservation_tables', function (Blueprint $table) {
                 $table->dropUnique(['reservation_id', 'table_id']);
-            });
+            }));
 
             Schema::table('reservation_tables', function (Blueprint $table) {
                 $table->unsignedBigInteger('dining_table_id')->nullable()->after('reservation_id');
