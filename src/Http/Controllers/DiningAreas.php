@@ -45,7 +45,7 @@ class DiningAreas extends AdminController
         ],
         'preview' => [
             'title' => 'lang:admin::lang.form.preview_title',
-            'redirect' => 'dining_areas',
+            'back' => 'dining_areas',
         ],
         'delete' => [
             'redirect' => 'dining_areas',

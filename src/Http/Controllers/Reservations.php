@@ -69,7 +69,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         ],
         'preview' => [
             'title' => 'lang:igniter::admin.form.preview_title',
-            'redirect' => 'reservations',
+            'back' => 'reservations',
         ],
         'delete' => [
             'redirect' => 'reservations',
