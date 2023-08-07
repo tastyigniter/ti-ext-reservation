@@ -44,6 +44,8 @@ return [
     'label_reservation_stay_time' => 'Reservation Stay Time',
     'label_min_reservation_advance_time' => 'Min. Advance Reservation Time',
     'label_max_reservation_advance_time' => 'Max. Advance Reservation Time',
+    'label_min_reservation_guest_num' => 'Min. Reservation Guest Size',
+    'label_max_reservation_guest_num' => 'Max. Reservation Guest Size',
     'label_reservation_include_start_time' => 'Include Start Time in Reservation Timeslots',
     'label_auto_allocate_table' => 'Automatically Assign Tables To Reservations',
     'label_reservation_cancellation_timeout' => 'Reservation Cancellation Timeout',
@@ -55,6 +57,8 @@ return [
     'help_reservation_stay_time' => 'Set in minutes the average time a guest will stay at a table',
     'help_min_reservation_advance_time' => 'Set the minimum number of days required before a guest can book a table.',
     'help_max_reservation_advance_time' => 'Set the maximum number of days that a guest can book a table.',
+    'help_min_reservation_guest_num' => 'Set the minimum number of guests required to book a table.',
+    'help_max_reservation_guest_num' => 'Set the maximum number of guests allowed to book a table.',
     'help_reservation_cancellation_timeout' => 'Set when a customer can no longer cancel a booking. Number of minutes before booking time. Leave as 0, to disable customer booking cancellation.',
     'help_limit_guests_count' => 'Set the number of guests that can be booked between each time slot.',
 
@@ -70,6 +74,10 @@ return [
     'error_invalid_date' => 'Date must be after today, you can only make future reservations!',
     'error_invalid_datetime' => 'Selected reservation date time is invalid',
     'error_invalid_time' => 'Time must be between restaurant opening time!',
+    'error_telephone_invalid' => 'Invalid number',
+    'error_telephone_invalid_country_code' => 'Invalid country code',
+    'error_telephone_too_short' => 'Too short',
+    'error_telephone_too_long' => 'Too long',
 
     'alert_reservation_disabled' => 'Table reservation has been disabled, please contact administrator.',
     'alert_no_table_available' => 'No table found for the specified number of guests at the selected location.',

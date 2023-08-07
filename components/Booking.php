@@ -190,9 +190,11 @@ class Booking extends BaseComponent
 
     public function getGuestSizeOptions($noOfGuests = null)
     {
+        $location = $this->getLocation();
+        $minGuestSize = $location->getOption('min_reservation_guest_num') ?: $this->property('minGuestSize');
+        $maxGuestSize = $location->getOption('max_reservation_guest_num') ?: $this->property('maxGuestSize');
+
         $options = [];
-        $minGuestSize = $this->property('minGuestSize');
-        $maxGuestSize = $this->property('maxGuestSize');
         for ($i = $minGuestSize; $i <= $maxGuestSize; $i++) {
             $options[$i] = "{$i} ".(($i > 1)
                     ? lang('igniter.reservation::default.text_people')
