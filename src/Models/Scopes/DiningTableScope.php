@@ -12,19 +12,19 @@ class DiningTableScope extends Scope
         return function (Builder $builder, $options) {
             $builder->whereIsReservable();
 
-            if (strlen($dateTime = array_get($options, 'dateTime'))) {
+            if ($dateTime = array_get($options, 'dateTime')) {
                 $builder->whereIsAvailableOn($dateTime, array_get($options, 'duration', 15));
             }
 
-            if (strlen($date = array_get($options, 'date'))) {
+            if ($date = array_get($options, 'date')) {
                 $builder->whereIsAvailableForDate($date);
             }
 
-            if (strlen($locationId = array_get($options, 'locationId'))) {
+            if ($locationId = array_get($options, 'locationId')) {
                 $builder->whereIsAvailableAt($locationId);
             }
 
-            if (strlen($guestNum = array_get($options, 'guestNum'))) {
+            if ($guestNum = array_get($options, 'guestNum')) {
                 $builder->whereCanAccommodate($guestNum);
             }
 
