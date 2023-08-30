@@ -35,8 +35,8 @@ class Extension extends \System\Classes\BaseExtension
     public function registerMailTemplates()
     {
         return [
-            'igniter.reservation::mail.reservation' => 'Reservation confirmation email to customer',
-            'igniter.reservation::mail.reservation_alert' => 'New reservation alert email to admin',
+            'igniter.reservation::mail.reservation' => 'lang:igniter.reservation::default.text_mail_reservation',
+            'igniter.reservation::mail.reservation_alert' => 'lang:igniter.reservation::default.text_mail_reservation_alert',
         ];
     }
 

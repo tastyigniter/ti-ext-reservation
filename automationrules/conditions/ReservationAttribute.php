@@ -2,7 +2,6 @@
 
 namespace Igniter\Reservation\AutomationRules\Conditions;
 
-use Carbon\Carbon;
 use Igniter\Automation\Classes\BaseModelAttributesCondition;
 use Igniter\Flame\Exception\ApplicationException;
 
@@ -44,27 +43,33 @@ class ReservationAttribute extends BaseModelAttributesCondition
             'hours_until' => [
                 'label' => 'Hours until reservation time',
             ],
+            'history_status_id' => [
+                'label' => 'Recent reservation status IDs (eg. 1,2,3)',
+            ],
         ];
     }
 
     public function getHoursSinceAttribute($value, $reservation)
     {
-        $currentDateTime = Carbon::now();
-        $reservationDateTime = $reservation->reservation_datetime;
+        $currentDateTime = now();
 
-        return $currentDateTime->isAfter($reservationDateTime)
-            ? $reservationDateTime->diffInRealHours($currentDateTime)
+        return $currentDateTime->isAfter($reservation->reservation_datetime)
+            ? $reservation->reservation_datetime->diffInRealHours($currentDateTime)
             : 0;
     }
 
     public function getHoursUntilAttribute($value, $reservation)
     {
-        $currentDateTime = Carbon::now();
-        $reservationDateTime = $reservation->reservation_datetime;
+        $currentDateTime = now();
 
-        return $currentDateTime->isBefore($reservationDateTime)
-            ? $currentDateTime->diffInRealHours($reservationDateTime)
+        return $currentDateTime->isBefore($reservation->reservation_datetime)
+            ? $currentDateTime->diffInRealHours($reservation->reservation_datetime)
             : 0;
+    }
+
+    public function getHistoryStatusIdAttribute($value, $reservation)
+    {
+        return $reservation->status_history()->pluck('status_id')->implode(',');
     }
 
     /**

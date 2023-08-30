@@ -3,7 +3,7 @@
 namespace Igniter\Reservation\Components;
 
 use Admin\Models\Reservations_model;
-use Admin\Models\Statuses_model;
+use Admin\Traits\ValidatesForm;
 use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Reservation\Classes\BookingManager;
 use Main\Facades\Auth;
@@ -11,6 +11,7 @@ use Main\Traits\UsesPage;
 
 class Reservations extends \System\Classes\BaseComponent
 {
+    use ValidatesForm;
     use UsesPage;
 
     public function defineProperties()
@@ -49,16 +50,10 @@ class Reservations extends \System\Classes\BaseComponent
         if (is_null($reservation) && !$reservation = $this->getReservation())
             return false;
 
-        if ($reservation->hasStatus(setting('canceled_reservation_status')))
+        if (!setting('canceled_reservation_status') || $reservation->isCanceled())
             return false;
 
-        if (!$timeout = $reservation->location->getReservationCancellationTimeout())
-            return false;
-
-        if (!$reservation->reservation_datetime->isFuture())
-            return false;
-
-        return $reservation->reservation_datetime->diffInRealMinutes() > $timeout;
+        return $reservation->isCancelable();
     }
 
     public function onRun()
@@ -72,17 +67,21 @@ class Reservations extends \System\Classes\BaseComponent
 
     public function onCancel()
     {
-        if (!is_numeric($reservationId = input('reservationId')))
-            return;
+        $validated = $this->validate(request()->input(), [
+            'reservationId' => ['required', 'numeric'],
+            'cancel_reason' => ['required', 'max:255'],
+        ]);
 
-        if (!$reservation = Reservations_model::find($reservationId))
+        if (!$reservation = Reservations_model::find($validated['reservationId']))
             return;
 
         if (!$this->showCancelButton($reservation))
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
-        if (!$reservation->addStatusHistory(Statuses_model::find(setting('canceled_reservation_status'))))
-            throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
+        if (!$reservation->markAsCanceled([
+            'comment' => $validated['cancel_reason'],
+            'notify' => false,
+        ])) throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
         flash()->success(lang('igniter.reservation::default.reservations.alert_cancel_success'));
 

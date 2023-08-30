@@ -19,6 +19,8 @@ return [
     'text_date_format' => '%D, %M %j, %Y',
     'text_person' => 'person',
     'text_people' => 'people',
+    'text_mail_reservation' => 'Reservation email to customer',
+    'text_mail_reservation_alert' => 'Reservation alert to admin',
 
     'text_subject' => 'Table Reserved - %s!',
     'text_greetings' => 'Thank You %s,',
@@ -93,6 +95,7 @@ return [
         'text_my_account' => 'My Account',
         'text_view_heading' => 'My Reservation View',
         'text_empty' => 'There are no reservation(s).',
+        'text_title_cancel' => 'Cancel Order',
 
         'column_id' => 'Reservation ID',
         'column_status' => 'Status',
@@ -103,6 +106,8 @@ return [
         'column_occasion' => 'Occasion',
         'column_telephone' => 'Telephone',
         'column_comment' => 'Comment',
+
+        'label_cancel_reason' => 'Reason for cancellation',
 
         'button_reserve' => 'Make Reservation',
         'button_cancel' => 'Cancel Reservation',
