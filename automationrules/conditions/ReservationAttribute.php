@@ -34,6 +34,9 @@ class ReservationAttribute extends BaseModelAttributesCondition
             'location_id' => [
                 'label' => 'Location ID',
             ],
+            'status_id' => [
+                'label' => 'Last reservation status ID',
+            ],
             'guest_num' => [
                 'label' => 'Number of guests',
             ],
@@ -42,6 +45,12 @@ class ReservationAttribute extends BaseModelAttributesCondition
             ],
             'hours_until' => [
                 'label' => 'Hours until reservation time',
+            ],
+            'days_since' => [
+                'label' => 'Days since reservation time',
+            ],
+            'days_until' => [
+                'label' => 'Days until reservation time',
             ],
             'history_status_id' => [
                 'label' => 'Recent reservation status IDs (eg. 1,2,3)',
@@ -64,6 +73,24 @@ class ReservationAttribute extends BaseModelAttributesCondition
 
         return $currentDateTime->isBefore($reservation->reservation_datetime)
             ? $currentDateTime->diffInRealHours($reservation->reservation_datetime)
+            : 0;
+    }
+
+    public function getDaysSinceAttribute($value, $reservation)
+    {
+        $currentDateTime = now();
+
+        return $currentDateTime->isAfter($reservation->reservation_datetime)
+            ? $reservation->reservation_datetime->diffInDays($currentDateTime)
+            : 0;
+    }
+
+    public function getDaysUntilAttribute($value, $reservation)
+    {
+        $currentDateTime = now();
+
+        return $currentDateTime->isBefore($reservation->reservation_datetime)
+            ? $currentDateTime->diffInDays($reservation->reservation_datetime)
             : 0;
     }
 

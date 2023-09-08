@@ -57,7 +57,7 @@
                 name="telephone"
                 id="telephone"
                 class="form-control"
-                placeholder="@lang('igniter.reservation::default.label_telephone')"
+                data-control="country-code-picker"
                 value="{{ set_value('telephone', $reservation->telephone) }}"
             />
             {!! form_error('telephone', '<span class="text-danger">', '</span>') !!}
