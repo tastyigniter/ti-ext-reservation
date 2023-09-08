@@ -32,7 +32,7 @@ class Reservations extends \System\Classes\BaseComponent
             'reservationsPage' => [
                 'label' => 'Account Reservations Page',
                 'type' => 'select',
-                'default' => 'account'.DIRECTORY_SEPARATOR.'reservations',
+                'default' => 'account' . DIRECTORY_SEPARATOR . 'reservations',
                 'options' => [static::class, 'getThemePageOptions'],
                 'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
@@ -69,7 +69,7 @@ class Reservations extends \System\Classes\BaseComponent
     {
         $validated = $this->validate(request()->input(), [
             'reservationId' => ['required', 'numeric'],
-            'cancel_reason' => ['required', 'max:255'],
+            'cancel_reason' => ['string', 'max:255'],
         ]);
 
         if (!$reservation = Reservations_model::find($validated['reservationId']))
@@ -79,7 +79,7 @@ class Reservations extends \System\Classes\BaseComponent
             throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
         if (!$reservation->markAsCanceled([
-            'comment' => $validated['cancel_reason'],
+            'comment' => array_get($validated, 'cancel_reason'),
             'notify' => false,
         ])) throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
