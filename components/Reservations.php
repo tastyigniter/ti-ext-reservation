@@ -32,7 +32,7 @@ class Reservations extends \System\Classes\BaseComponent
             'reservationsPage' => [
                 'label' => 'Account Reservations Page',
                 'type' => 'select',
-                'default' => 'account' . DIRECTORY_SEPARATOR . 'reservations',
+                'default' => 'account'.DIRECTORY_SEPARATOR.'reservations',
                 'options' => [static::class, 'getThemePageOptions'],
                 'validationRule' => 'required|regex:/^[a-z0-9\-_\/]+$/i',
             ],
@@ -80,7 +80,7 @@ class Reservations extends \System\Classes\BaseComponent
 
         if (!$reservation->markAsCanceled([
             'comment' => array_get($validated, 'cancel_reason'),
-            'notify' => false,
+            'notify' => true,
         ])) throw new ApplicationException(lang('igniter.reservation::default.reservations.alert_cancel_failed'));
 
         flash()->success(lang('igniter.reservation::default.reservations.alert_cancel_success'));
