@@ -25,6 +25,9 @@
                             href="{{ site_url($reservationsPage, ['reservationId' => $reservation->reservation_id, 'hash' => $reservation->hash]) }}"
                         ><i class="fa fa-receipt"></i>&nbsp;&nbsp;@lang('igniter.reservation::default.reservations.btn_view')
                         </a>
+                        @if ($__SELF__->showCancelButton())
+                            @partial($__SELF__.'::cancel_modal', ['customerReservation' => $reservation])
+                        @endif
                     </td>
                 </tr>
             @endforeach
