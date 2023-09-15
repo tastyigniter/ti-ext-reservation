@@ -26,7 +26,7 @@ class Reservations extends \System\Classes\BaseComponent
             'sortOrder' => [
                 'label' => 'Sort order',
                 'type' => 'text',
-                'default' => 'created_at desc',
+                'default' => 'reserve_date desc',
                 'validationRule' => 'required|string',
             ],
             'reservationsPage' => [
@@ -85,7 +85,7 @@ class Reservations extends \System\Classes\BaseComponent
 
         flash()->success(lang('igniter.reservation::default.reservations.alert_cancel_success'));
 
-        return redirect()->back();
+        return redirect()->to($this->controller->pageUrl($this->property('reservationsPage')));
     }
 
     protected function getReservation()
@@ -102,10 +102,10 @@ class Reservations extends \System\Classes\BaseComponent
         if (!$customer = Auth::customer())
             return [];
 
-        return Reservations_model::with(['location', 'status', 'related_table'])->listFrontEnd([
+        return Reservations_model::with(['location', 'status', 'tables'])->listFrontEnd([
             'page' => $this->param('page'),
             'pageLimit' => $this->property('itemsPerPage'),
-            'sort' => $this->property('sortOrder', 'created_at desc'),
+            'sort' => $this->property('sortOrder', 'reserve_date desc'),
             'customer' => $customer,
         ]);
     }
