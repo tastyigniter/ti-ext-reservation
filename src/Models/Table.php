@@ -13,9 +13,9 @@ use Igniter\System\Models\Concerns\Switchable;
  */
 class Table extends Model
 {
+    use HasFactory;
     use Locationable;
     use Sortable;
-    use HasFactory;
     use Switchable;
 
     public const LOCATIONABLE_RELATION = 'locations';

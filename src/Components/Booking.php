@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Redirect;
 
 class Booking extends BaseComponent
 {
-    use ValidatesForm;
     use \Igniter\Main\Traits\UsesPage;
+    use ValidatesForm;
 
     /**
      * @var LocationModel
