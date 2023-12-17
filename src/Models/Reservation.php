@@ -21,14 +21,14 @@ use Igniter\User\Models\Concerns\HasCustomer;
  */
 class Reservation extends Model
 {
-    use Purgeable;
-    use LogsStatusHistory;
-    use SendsMailTemplate;
-    use Locationable;
     use Assignable;
-    use HasFactory;
-    use HasCustomer;
     use GeneratesHash;
+    use HasCustomer;
+    use HasFactory;
+    use Locationable;
+    use LogsStatusHistory;
+    use Purgeable;
+    use SendsMailTemplate;
 
     /**
      * @var string The database table name

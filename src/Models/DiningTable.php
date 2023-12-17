@@ -9,9 +9,9 @@ use Igniter\Local\Models\Location;
 
 class DiningTable extends \Igniter\Flame\Database\Model
 {
-    use Sortable;
-    use NestedTree;
     use Locationable;
+    use NestedTree;
+    use Sortable;
 
     const SORT_ORDER = 'priority';
 
