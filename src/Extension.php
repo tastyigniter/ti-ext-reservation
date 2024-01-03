@@ -108,22 +108,6 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         });
     }
 
-    public function registerComponents()
-    {
-        return [
-            \Igniter\Reservation\Components\Booking::class => [
-                'code' => 'booking',
-                'name' => 'lang:igniter.reservation::default.text_component_title',
-                'description' => 'lang:igniter.reservation::default.text_component_desc',
-            ],
-            \Igniter\Reservation\Components\Reservations::class => [
-                'code' => 'accountReservations',
-                'name' => 'lang:igniter.reservation::default.reservations.component_title',
-                'description' => 'lang:igniter.reservation::default.reservations.component_desc',
-            ],
-        ];
-    }
-
     public function registerMailTemplates()
     {
         return [

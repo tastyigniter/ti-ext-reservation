@@ -1,8 +1,6 @@
 <?php
 
 return [
-    'text_component_title' => 'Booking Component',
-    'text_component_desc' => 'Displays the booking form',
     'text_tab_reservations' => 'Reservations',
 
     'text_title' => 'Reservations',
@@ -27,8 +25,6 @@ return [
     'text_view_floor_plan' => 'Floor Plan View',
 
     'button_assign_table' => 'Assign Table',
-    'component_title' => 'Account Reservations Component',
-    'component_desc' => 'Displays and manages account reservations',
     'text_heading' => 'Recent Reservations',
     'text_my_account' => 'My Account',
     'text_view_heading' => 'My Reservation View',
