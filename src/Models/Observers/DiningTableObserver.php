@@ -2,7 +2,7 @@
 
 namespace Igniter\Reservation\Models\Observers;
 
-use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Flame\Exception\SystemException;
 use Igniter\Reservation\Models\DiningTable;
 
 class DiningTableObserver
@@ -25,7 +25,7 @@ class DiningTableObserver
     public function deleting(DiningTable $diningTable)
     {
         if (!is_null($diningTable->parent_id)) {
-            throw new ApplicationException(lang('igniter.reservation::default.dining_tables.error_cannot_delete_has_parent'));
+            throw new SystemException(lang('igniter.reservation::default.dining_tables.error_cannot_delete_has_parent'));
         }
 
         if ($diningTable->is_combo) {

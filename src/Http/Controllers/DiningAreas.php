@@ -4,7 +4,7 @@ namespace Igniter\Reservation\Http\Controllers;
 
 use Igniter\Admin\Classes\AdminController;
 use Igniter\Admin\Facades\AdminMenu;
-use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Flame\Exception\FlashException;
 use Igniter\Reservation\Models\DiningTable;
 
 /**
@@ -81,9 +81,9 @@ class DiningAreas extends AdminController
     public function edit_onCreateCombo($context, $recordId)
     {
         $checked = (array)post('DiningArea._select_dining_tables', []);
-        if (!$checked || count($checked) < 2) {
-            throw new ApplicationException(lang('igniter.reservation::default.dining_areas.alert_tables_not_checked'));
-        }
+        throw_if(!$checked || count($checked) < 2,
+            FlashException::error(lang('igniter.reservation::default.dining_areas.alert_tables_not_checked'))
+        );
 
         $model = $this->asExtension('FormController')->formFindModelObject($recordId);
 
