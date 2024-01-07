@@ -2,7 +2,7 @@
 
 namespace Igniter\Reservation\Models;
 
-use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Flame\Exception\FlashException;
 use Igniter\Local\Models\Concerns\Locationable;
 use Igniter\Local\Models\Location;
 use Illuminate\Support\Collection;
@@ -108,11 +108,11 @@ class DiningArea extends \Igniter\Flame\Database\Model
         if ($tables->filter(function ($table) {
             return $table->parent !== null;
         })->isNotEmpty()) {
-            throw new ApplicationException(lang('igniter.reservation::default.dining_areas.alert_table_already_combined'));
+            throw new FlashException(lang('igniter.reservation::default.dining_areas.alert_table_already_combined'));
         }
 
         if ($tables->pluck('dining_section_id')->unique()->count() > 1) {
-            throw new ApplicationException(lang('igniter.reservation::default.dining_areas.alert_table_combo_section_mismatch'));
+            throw new FlashException(lang('igniter.reservation::default.dining_areas.alert_table_combo_section_mismatch'));
         }
 
         $comboTable = $this->dining_tables()->create([

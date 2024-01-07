@@ -5,10 +5,9 @@ namespace Igniter\Reservation\Http\Controllers;
 use Carbon\Carbon;
 use DateInterval;
 use DatePeriod;
-use Exception;
 use Igniter\Admin\Facades\AdminMenu;
 use Igniter\Admin\Models\Status;
-use Igniter\Flame\Exception\ApplicationException;
+use Igniter\Flame\Exception\FlashException;
 use Igniter\Local\Facades\Location as LocationFacade;
 use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\Reservation;
@@ -115,9 +114,9 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
 
     public function index_onDelete()
     {
-        if (!$this->getUser()->hasPermission('Admin.DeleteReservations')) {
-            throw new ApplicationException(lang('igniter::admin.alert_user_restricted'));
-        }
+        throw_unless($this->authorize('Admin.DeleteReservations'),
+            FlashException::error(lang('igniter::admin.alert_user_restricted'))
+        );
 
         return $this->asExtension(\Igniter\Admin\Http\Actions\ListController::class)->index_onDelete();
     }
@@ -139,9 +138,9 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
 
     public function edit_onDelete()
     {
-        if (!$this->getUser()->hasPermission('Admin.DeleteReservations')) {
-            throw new ApplicationException(lang('igniter::admin.alert_user_restricted'));
-        }
+        throw_unless($this->authorize('Admin.DeleteReservations'),
+            FlashException::error(lang('igniter::admin.alert_user_restricted'))
+        );
 
         return $this->asExtension(\Igniter\Admin\Http\Actions\FormController::class)->edit_onDelete();
     }
@@ -155,9 +154,9 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
 
     public function calendarUpdateEvent($eventId, $startAt, $endAt)
     {
-        if (!$reservation = Reservation::find($eventId)) {
-            throw new Exception(lang('igniter.reservation::default.alert_no_reservation_found'));
-        }
+        throw_unless($reservation = Reservation::find($eventId),
+            FlashException::error(lang('igniter.reservation::default.alert_no_reservation_found'))
+        );
 
         $startAt = make_carbon($startAt);
         $endAt = make_carbon($endAt);

@@ -2,8 +2,8 @@
 
 namespace Igniter\Reservation\AutomationRules\Conditions;
 
+use Igniter\Automation\AutomationException;
 use Igniter\Automation\Classes\BaseModelAttributesCondition;
-use Igniter\Flame\Exception\ApplicationException;
 
 class ReservationAttribute extends BaseModelAttributesCondition
 {
@@ -107,7 +107,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
     public function isTrue(&$params)
     {
         if (!$reservation = array_get($params, 'reservation')) {
-            throw new ApplicationException('Error evaluating the reservation attribute condition: the reservation object is not found in the condition parameters.');
+            throw new AutomationException('Error evaluating the reservation attribute condition: the reservation object is not found in the condition parameters.');
         }
 
         return $this->evalIsTrue($reservation);
