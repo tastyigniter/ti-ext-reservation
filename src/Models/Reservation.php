@@ -40,9 +40,6 @@ class Reservation extends Model
      */
     protected $primaryKey = 'reservation_id';
 
-    /**
-     * @var array The model table column to convert to dates on insert/update
-     */
     public $timestamps = true;
 
     /**
@@ -506,7 +503,7 @@ class Reservation extends Model
         $data['status_name'] = $statusHistory ? optional($statusHistory->status)->status_name : null;
         $data['status_comment'] = $statusHistory ? $statusHistory->comment : null;
 
-        $controller = MainController::getController() ?: new MainController;
+        $controller = MainController::getController();
         $data['reservation_view_url'] = $controller->pageUrl('account/reservations', [
             'reservationId' => $model->reservation_id,
         ]);

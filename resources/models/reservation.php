@@ -190,7 +190,6 @@ $config['form']['tabs'] = [
             'type' => 'relation',
             'relationFrom' => 'tables',
             'nameFrom' => 'name',
-            'scope' => 'whereHasReservationLocation',
             'span' => 'left',
         ],
         'guest_num' => [
