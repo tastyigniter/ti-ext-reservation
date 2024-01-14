@@ -3,10 +3,11 @@
 namespace Igniter\Reservation\BulkActionWidgets;
 
 use Igniter\Admin\Classes\BaseBulkActionWidget;
+use Illuminate\Support\Collection;
 
 class AssignTable extends BaseBulkActionWidget
 {
-    public function handleAction($requestData, $records)
+    public function handleAction(array $requestData, Collection $records)
     {
         $noTablesFound = [];
         $tablesAssigned = [];

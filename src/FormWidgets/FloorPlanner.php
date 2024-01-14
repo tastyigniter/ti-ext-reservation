@@ -50,7 +50,7 @@ class FloorPlanner extends BaseFormWidget
     // Object properties
     //
 
-    protected $defaultAlias = 'floorplanner';
+    protected string $defaultAlias = 'floorplanner';
 
     public function initialize()
     {
@@ -114,7 +114,7 @@ class FloorPlanner extends BaseFormWidget
         });
     }
 
-    public function getSaveValue($value)
+    public function getSaveValue(mixed $value): int
     {
         return FormField::NO_SAVE_DATA;
     }
