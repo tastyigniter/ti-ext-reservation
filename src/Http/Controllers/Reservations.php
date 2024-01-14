@@ -14,7 +14,7 @@ use Igniter\Reservation\Models\Reservation;
 
 class Reservations extends \Igniter\Admin\Classes\AdminController
 {
-    public $implement = [
+    public array $implement = [
         \Igniter\Admin\Http\Actions\ListController::class,
         \Igniter\Admin\Http\Actions\CalendarController::class,
         \Igniter\Admin\Http\Actions\FormController::class,
@@ -22,7 +22,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         \Igniter\Local\Http\Actions\LocationAwareController::class,
     ];
 
-    public $listConfig = [
+    public array $listConfig = [
         'list' => [
             'model' => \Igniter\Reservation\Models\Reservation::class,
             'title' => 'lang:igniter.reservation::default.text_title',
@@ -50,7 +50,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         ],
     ];
 
-    public $formConfig = [
+    public array $formConfig = [
         'name' => 'lang:igniter.reservation::default.text_form_name',
         'model' => \Igniter\Reservation\Models\Reservation::class,
         'request' => \Igniter\Reservation\Requests\ReservationRequest::class,
@@ -76,7 +76,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         'configFile' => 'reservation',
     ];
 
-    protected $requiredPermissions = [
+    protected null|string|array $requiredPermissions = [
         'Admin.Reservations',
         'Admin.AssignReservations',
         'Admin.DeleteReservations',

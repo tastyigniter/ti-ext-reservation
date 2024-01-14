@@ -108,7 +108,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         });
     }
 
-    public function registerMailTemplates()
+    public function registerMailTemplates(): array
     {
         return [
             'igniter.reservation::mail.reservation' => 'lang:igniter.reservation::default.text_mail_reservation',
@@ -133,7 +133,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         ];
     }
 
-    public function registerPermissions()
+    public function registerPermissions(): array
     {
         return [
             'Admin.Tables' => [
@@ -159,7 +159,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         ];
     }
 
-    public function registerNavigation()
+    public function registerNavigation(): array
     {
         return [
             'restaurant' => [
@@ -187,7 +187,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         ];
     }
 
-    public function registerFormWidgets()
+    public function registerFormWidgets(): array
     {
         return [
             \Igniter\Reservation\FormWidgets\FloorPlanner::class => [

@@ -12,13 +12,13 @@ use Igniter\Reservation\Models\DiningTable;
  */
 class DiningAreas extends AdminController
 {
-    public $implement = [
+    public array $implement = [
         \Igniter\Admin\Http\Actions\ListController::class,
         \Igniter\Admin\Http\Actions\FormController::class,
         \Igniter\Local\Http\Actions\LocationAwareController::class,
     ];
 
-    public $listConfig = [
+    public array $listConfig = [
         'list' => [
             'model' => \Igniter\Reservation\Models\DiningArea::class,
             'title' => 'lang:igniter.reservation::default.dining_areas.text_title',
@@ -28,7 +28,7 @@ class DiningAreas extends AdminController
         ],
     ];
 
-    public $formConfig = [
+    public array $formConfig = [
         'name' => 'lang:igniter.reservation::default.dining_areas.text_form_name',
         'model' => \Igniter\Reservation\Models\DiningArea::class,
         'create' => [
@@ -53,7 +53,7 @@ class DiningAreas extends AdminController
         'configFile' => 'dining_area',
     ];
 
-    protected $requiredPermissions = 'Admin.Tables';
+    protected null|string|array $requiredPermissions = 'Admin.Tables';
 
     public static function getSlug()
     {
