@@ -82,7 +82,7 @@ class DiningAreas extends AdminController
     {
         $checked = (array)post('DiningArea._select_dining_tables', []);
         throw_if(!$checked || count($checked) < 2,
-            FlashException::error(lang('igniter.reservation::default.dining_areas.alert_tables_not_checked'))
+            new FlashException(lang('igniter.reservation::default.dining_areas.alert_tables_not_checked'))
         );
 
         $model = $this->asExtension('FormController')->formFindModelObject($recordId);
