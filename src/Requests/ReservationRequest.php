@@ -17,6 +17,7 @@ class ReservationRequest extends FormRequest
             'reserve_date' => lang('igniter.reservation::default.label_reservation_date'),
             'reserve_time' => lang('igniter.reservation::default.label_reservation_time'),
             'guest_num' => lang('igniter.reservation::default.label_guest'),
+            'comment' => lang('igniter.reservation::default.column_comment'),
         ];
     }
 
@@ -33,6 +34,7 @@ class ReservationRequest extends FormRequest
             'guest_num' => ['required', 'integer'],
             'duration' => ['integer', 'min:1'],
             'tables' => ['nullable', 'array'],
+            'comment' => ['nullable', 'string'],
         ];
     }
 }
