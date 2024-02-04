@@ -23,6 +23,7 @@ return [
     'text_view_calendar' => 'Calendar View',
     'text_view_list' => 'List View',
     'text_view_floor_plan' => 'Floor Plan View',
+    'text_title_cancel' => 'Cancel Order',
 
     'button_assign_table' => 'Assign Table',
     'text_heading' => 'Recent Reservations',
@@ -93,6 +94,7 @@ return [
     'label_confirmed_reservation_status' => 'Confirmed Reservation Status',
     'label_canceled_reservation_status' => 'Canceled Reservation Status',
     'label_reservation_email' => 'Send Reservation Confirmation/Alert Email',
+    'label_cancel_reason' => 'Reason for cancellation',
 
     'label_email' => 'Email Address',
     'label_confirm_email' => 'Confirm Email Address',
@@ -141,7 +143,7 @@ return [
     'help_limit_guests_count' => 'Set the number of guests that can be booked between each time slot.',
     'help_default_reservation_status' => 'Select the default reservation status when new reservation received',
     'help_canceled_reservation_status' => 'Select the reservation status when a reservation is marked as canceled or suspected of fraudulent activity',
-    'help_confirmed_reservation_status' => 'Select the reservation status to mark a reservation as confirmed before table is reserved',
+    'help_confirmed_reservation_status' => 'Select the reservation status when a reservation is confirmed and table marked as reserved',
     'help_reservation_email' => 'Send a confirmation mail to the customer, admin and/or location email when a new reservation is received',
 
     'button_find_table' => 'Find Table',

@@ -2,6 +2,7 @@
 
 namespace Igniter\Reservation\AutomationRules\Conditions;
 
+use Igniter\Admin\Models\Status;
 use Igniter\Automation\AutomationException;
 use Igniter\Automation\Classes\BaseModelAttributesCondition;
 
@@ -41,7 +42,8 @@ class ReservationStatusAttribute extends BaseModelAttributesCondition
      */
     public function isTrue(&$params)
     {
-        if (!$status = array_get($params, 'status')) {
+        $status = array_get($params, 'status');
+        if (!$status instanceof Status) {
             throw new AutomationException('Error evaluating the status attribute condition: the status object is not found in the condition parameters.');
         }
 

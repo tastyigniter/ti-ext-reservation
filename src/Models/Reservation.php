@@ -196,10 +196,10 @@ class Reservation extends Model
         return $this->reservation_datetime->diffInRealMinutes() > $timeout;
     }
 
-    public function markAsCanceled()
+    public function markAsCanceled(array $statusData = [])
     {
         $canceled = false;
-        if ($this->addStatusHistory(setting('canceled_reservation_status'))) {
+        if ($this->addStatusHistory(setting('canceled_reservation_status'), $statusData)) {
             $canceled = true;
             ReservationCanceledEvent::dispatch($this);
         }
@@ -215,7 +215,7 @@ class Reservation extends Model
             })
             ->whereLocationId($locationId)
             ->whereBetweenStayTime($dateTime)
-            ->whereNotIn('status_id', [0, setting('canceled_reservation_status')])
+            ->where('status_id', setting('confirmed_reservation_status'))
             ->get()
             ->pluck('tables')
             ->flatten()

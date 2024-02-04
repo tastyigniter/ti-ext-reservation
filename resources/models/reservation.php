@@ -125,6 +125,16 @@ $config['list']['columns'] = [
         'label' => 'lang:admin::lang.statuses.label_comment',
         'invisible' => true,
     ],
+    'telephone' => [
+        'label' => 'lang:igniter.cart::default.orders.label_telephone',
+        'invisible' => true,
+        'searchable' => true,
+    ],
+    'email' => [
+        'label' => 'lang:igniter::admin.label_email',
+        'invisible' => true,
+        'searchable' => true,
+    ],
 ];
 
 $config['calendar']['toolbar'] = [
