@@ -85,11 +85,13 @@ $config['list']['columns'] = [
         'label' => 'lang:igniter::admin.label_name',
         'select' => "concat(first_name, ' ', last_name)",
         'searchable' => true,
+        'sortable' => true
     ],
     'guest_num' => [
         'label' => 'lang:igniter.reservation::default.column_guest',
         'type' => 'number',
         'searchable' => true,
+        'sortable' => true
     ],
     'table_name' => [
         'label' => 'lang:igniter.reservation::default.column_table',
