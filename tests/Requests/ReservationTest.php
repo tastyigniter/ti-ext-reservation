@@ -80,10 +80,10 @@ it('has max characters rule for inputs', function () {
         ->and('max:96')->toBeIn(array_get((new ReservationRequest)->rules(), 'email'));
 });
 
-it('has valid_date rule for reserve_date input', function () {
-    expect('valid_date')->toBeIn(array_get((new ReservationRequest)->rules(), 'reserve_date'));
+it('has date_format:Y-m-d rule for reserve_date input', function () {
+    expect('date_format:Y-m-d')->toBeIn(array_get((new ReservationRequest)->rules(), 'reserve_date'));
 });
 
-it('has valid_time rule for reserve_time input', function () {
-    expect('valid_time')->toBeIn(array_get((new ReservationRequest)->rules(), 'reserve_time'));
+it('has date_format:H:i rule for reserve_time input', function () {
+    expect('date_format:H:i')->toBeIn(array_get((new ReservationRequest)->rules(), 'reserve_time'));
 });
