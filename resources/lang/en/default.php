@@ -32,6 +32,7 @@ return [
     'text_setting_reservation' => 'Reservation',
     'help_setting_reservation' => 'Configure reservation settings',
 
+    'text_permission_group' => 'Reservation',
     'text_permission_reservations' => 'Manage reservations',
     'text_permission_delete_reservations' => 'Delete reservations',
     'text_permission_assign_reservations' => 'Assign reservations',
