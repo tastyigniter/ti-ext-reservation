@@ -138,23 +138,23 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         return [
             'Admin.Tables' => [
                 'label' => 'igniter.reservation::default.text_permission_dining_areas',
-                'group' => 'reservation',
+                'group' => 'igniter.reservation::default.text_permission_group',
             ],
             'Admin.Reservations' => [
                 'label' => 'igniter.reservation::default.text_permission_reservations',
-                'group' => 'reservation',
+                'group' => 'igniter.reservation::default.text_permission_group',
             ],
             'Admin.DeleteReservations' => [
                 'label' => 'igniter.reservation::default.text_permission_delete_reservations',
-                'group' => 'reservation',
+                'group' => 'igniter.reservation::default.text_permission_group',
             ],
             'Admin.AssignReservations' => [
                 'label' => 'igniter.reservation::default.text_permission_assign_reservations',
-                'group' => 'reservation',
+                'group' => 'igniter.reservation::default.text_permission_group',
             ],
             'Admin.AssignReservationTables' => [
                 'label' => 'igniter.reservation::default.text_permission_assign_reservation_tables',
-                'group' => 'reservation',
+                'group' => 'igniter.reservation::default.text_permission_group',
             ],
         ];
     }
