@@ -90,6 +90,7 @@ class Reservation extends Model
     protected array $queryModifierSorts = [
         'reservation_id asc', 'reservation_id desc',
         'reserve_date asc', 'reserve_date desc',
+        'created_at asc', 'created_at desc',
     ];
 
     protected array $queryModifierSearchableFields = ['reservation_id', 'first_name', 'last_name', 'email', 'telephone'];
