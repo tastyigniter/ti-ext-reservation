@@ -27,7 +27,6 @@ return [
 
     'button_assign_table' => 'Assign Table',
     'text_heading' => 'Recent Reservations',
-    'text_my_account' => 'My Account',
     'text_view_heading' => 'My Reservation View',
     'text_setting_reservation' => 'Reservation',
     'help_setting_reservation' => 'Configure reservation settings',
