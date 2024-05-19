@@ -105,7 +105,7 @@ class FloorPlanner extends BaseFormWidget
         $this->model->floor_plan = array_only($state, 'stage');
         $this->model->save();
 
-        collect(array_get($state, 'groups'))->each(function ($group) {
+        collect(array_get($state, 'groups'))->each(function($group) {
             $id = str_after(array_get($group, 'id'), 'group-');
             if ($table = $this->model->dining_tables()->find($id)) {
                 $table->seat_layout = $group;

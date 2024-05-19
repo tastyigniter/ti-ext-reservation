@@ -16,7 +16,7 @@ return new class extends Migration
             return;
         }
 
-        Schema::create('dining_areas', function (Blueprint $table) {
+        Schema::create('dining_areas', function(Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->unsignedBigInteger('location_id');
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('dining_sections', function (Blueprint $table) {
+        Schema::create('dining_sections', function(Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->unsignedBigInteger('location_id')->index();
@@ -40,7 +40,7 @@ return new class extends Migration
 
         $this->createLocationDiningAreas();
 
-        Schema::create('dining_tables', function (Blueprint $table) {
+        Schema::create('dining_tables', function(Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->unsignedBigInteger('dining_area_id')->index();
@@ -63,11 +63,11 @@ return new class extends Migration
         $this->copyTablesIntoDiningTables();
 
         if (!Schema::hasColumn('reservation_tables', 'dining_table_id')) {
-            rescue(fn () => Schema::table('reservation_tables', function (Blueprint $table) {
+            rescue(fn() => Schema::table('reservation_tables', function(Blueprint $table) {
                 $table->dropUnique(['reservation_id', 'table_id']);
             }));
 
-            Schema::table('reservation_tables', function (Blueprint $table) {
+            Schema::table('reservation_tables', function(Blueprint $table) {
                 $table->unsignedBigInteger('dining_table_id')->nullable()->after('reservation_id');
                 $table->unique(['reservation_id', 'dining_table_id']);
             });
@@ -91,7 +91,7 @@ return new class extends Migration
             return;
         }
 
-        DB::table('locations')->get()->each(function ($location) {
+        DB::table('locations')->get()->each(function($location) {
             DB::table('dining_areas')->insertGetId([
                 'name' => 'Default',
                 'location_id' => $location->location_id,
@@ -109,11 +109,11 @@ return new class extends Migration
 
         $diningAreas = DB::table('dining_areas')->pluck('id', 'location_id');
 
-        DB::table('tables')->get()->each(function ($table) use ($diningAreas) {
+        DB::table('tables')->get()->each(function($table) use ($diningAreas) {
             DB::table('locationables')
                 ->where('locationable_type', 'tables')
                 ->where('locationable_id', $table->table_id)
-                ->get()->each(function ($locationable) use ($diningAreas, $table) {
+                ->get()->each(function($locationable) use ($diningAreas, $table) {
                     $diningTableId = DB::table('dining_tables')->insertGetId([
                         'dining_area_id' => $diningAreaId = array_get($diningAreas, $locationable->location_id),
                         'name' => $table->table_name,
@@ -142,7 +142,7 @@ return new class extends Migration
         DB::table('reservation_tables')
             ->join('reservations', 'reservation_tables.reservation_id', '=', 'reservations.reservation_id')
             ->select('reservation_tables.reservation_id', 'reservation_tables.table_id', 'reservations.location_id')
-            ->get()->each(function ($reservationTable) {
+            ->get()->each(function($reservationTable) {
                 if (!$diningTable = $this->findDiningTable($reservationTable)) {
                     return;
                 }
@@ -156,7 +156,7 @@ return new class extends Migration
 
     protected function findDiningTable($reservationTable)
     {
-        return collect(self::$diningTables)->first(function ($diningTable) use ($reservationTable) {
+        return collect(self::$diningTables)->first(function($diningTable) use ($reservationTable) {
             return $diningTable['table_id'] == $reservationTable->table_id
                 && $diningTable['location_id'] == $reservationTable->location_id;
         });

@@ -86,7 +86,7 @@ class BookingManager
 
         return $this->getSchedule()
             ->generateTimeslot($date, $dateInterval, $leadTime)
-            ->filter(function ($dateTime, $timestamp) use ($date, $lead) {
+            ->filter(function($dateTime, $timestamp) use ($date, $lead) {
                 return $date->copy()
                     ->setTimeFromTimeString($dateTime->format('H:i'))
                     ->gte(Carbon::now()->addMinutes($lead));

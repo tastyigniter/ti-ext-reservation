@@ -176,7 +176,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
     public function formExtendQuery($query)
     {
         $query->with([
-            'status_history' => function ($q) {
+            'status_history' => function($q) {
                 $q->orderBy('created_at', 'desc');
             },
             'status_history.user',

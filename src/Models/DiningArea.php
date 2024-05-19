@@ -42,7 +42,7 @@ class DiningArea extends \Igniter\Flame\Database\Model
 
     public function getTablesForFloorPlan()
     {
-        return $this->available_tables->map(function ($diningTable) {
+        return $this->available_tables->map(function($diningTable) {
             return $diningTable->toFloorPlanArray();
         });
     }
@@ -50,8 +50,8 @@ class DiningArea extends \Igniter\Flame\Database\Model
     public function getDiningTablesWithReservation($reservations)
     {
         return $this->available_tables
-            ->map(function ($diningTable) use ($reservations) {
-                $reservation = $reservations->first(function ($reservation) use ($diningTable) {
+            ->map(function($diningTable) use ($reservations) {
+                $reservation = $reservations->first(function($reservation) use ($diningTable) {
                     return $reservation->tables->where('id', $diningTable->id)->count() > 0;
                 });
 
@@ -88,10 +88,10 @@ class DiningArea extends \Igniter\Flame\Database\Model
         $newDiningArea->save();
 
         $this->dining_tables
-            ->filter(function ($table) {
+            ->filter(function($table) {
                 return !$table->is_combo;
             })
-            ->each(function ($table) use ($newDiningArea) {
+            ->each(function($table) use ($newDiningArea) {
                 $newTable = $table->replicate();
                 $newTable->dining_area_id = $newDiningArea->getKey();
                 $newTable->save();
@@ -105,7 +105,7 @@ class DiningArea extends \Igniter\Flame\Database\Model
         $firstTable = $tables->first();
         $tableNames = $tables->pluck('name')->join('/');
 
-        if ($tables->filter(function ($table) {
+        if ($tables->filter(function($table) {
             return $table->parent !== null;
         })->isNotEmpty()) {
             throw new FlashException(lang('igniter.reservation::default.dining_areas.alert_table_already_combined'));
@@ -126,7 +126,7 @@ class DiningArea extends \Igniter\Flame\Database\Model
             'is_enabled' => true,
         ]);
 
-        $tables->each(function ($table) use ($comboTable) {
+        $tables->each(function($table) use ($comboTable) {
             $table->parent()->associate($comboTable)->saveQuietly();
         });
 

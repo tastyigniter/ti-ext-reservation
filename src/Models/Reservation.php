@@ -211,7 +211,7 @@ class Reservation extends Model
     public static function findReservedTables($locationId, $dateTime)
     {
         return self::with('tables')
-            ->whereHas('tables', function ($query) use ($locationId) {
+            ->whereHas('tables', function($query) use ($locationId) {
                 $query->whereHasLocation($locationId);
             })
             ->whereLocationId($locationId)
@@ -236,7 +236,7 @@ class Reservation extends Model
 
         $collection = $query->get();
 
-        $collection->transform(function ($reservation) {
+        $collection->transform(function($reservation) {
             return $reservation->getEventDetails();
         });
 
@@ -331,7 +331,7 @@ class Reservation extends Model
     {
         $diningTables = DiningTable::query()
             ->with(['dining_section'])
-            ->withCount(['reservations' => function ($query) {
+            ->withCount(['reservations' => function($query) {
                 $query->where('reserve_date', $this->reserve_date)
                     ->whereNotIn('status_id', [0, setting('canceled_reservation_status')]);
             }])
@@ -367,7 +367,7 @@ class Reservation extends Model
             ->has('tables')
             ->where('location_id', $this->location_id)
             ->whereDate('reserve_date', $this->reserve_date)
-            ->where(function ($query) {
+            ->where(function($query) {
                 $query->whereNotIn('status_id', [0, setting('canceled_reservation_status')])
                     ->orWhereNull('status_id');
             })
