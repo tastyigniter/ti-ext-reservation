@@ -30,7 +30,7 @@ class DiningSection extends \Igniter\Flame\Database\Model
 
     public function getPriorityOptions()
     {
-        return collect(range(0, 9))->map(function ($priority) {
+        return collect(range(0, 9))->map(function($priority) {
             return lang('igniter.reservation::default.dining_tables.text_priority_'.$priority);
         })->all();
     }

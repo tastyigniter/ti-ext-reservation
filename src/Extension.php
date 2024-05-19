@@ -64,7 +64,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
             'dining_areas' => \Igniter\Reservation\Models\DiningArea::class,
         ]);
 
-        Customers::extendFormFields(function (Form $form) {
+        Customers::extendFormFields(function(Form $form) {
             if (!$form->model instanceof Customer) {
                 return;
             }
@@ -102,7 +102,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
 
         LocationModel::implement(LocationAction::class);
 
-        Location::extend(function (Location $model) {
+        Location::extend(function(Location $model) {
             $model->relation['hasMany']['dining_areas'] = [DiningArea::class, 'delete' => true];
             $model->relation['morphedByMany']['tables'] = [DiningTable::class, 'name' => 'locationable'];
         });
@@ -222,7 +222,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
 
     protected function bindReservationEvent()
     {
-        Event::listen('admin.statusHistory.beforeAddStatus', function ($model, $object, $statusId, $previousStatus) {
+        Event::listen('admin.statusHistory.beforeAddStatus', function($model, $object, $statusId, $previousStatus) {
             if (!$object instanceof Reservation) {
                 return;
             }
@@ -234,7 +234,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
             Event::fire('igniter.reservation.beforeAddStatus', [$model, $object, $statusId, $previousStatus], true);
         });
 
-        Event::listen('admin.statusHistory.added', function ($model, $statusHistory) {
+        Event::listen('admin.statusHistory.added', function($model, $statusHistory) {
             if (!$model instanceof Reservation) {
                 return;
             }
@@ -242,7 +242,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
             Event::fire('igniter.reservation.statusAdded', [$model, $statusHistory], true);
         });
 
-        Event::listen('admin.assignable.assigned', function ($model, $assignableLog) {
+        Event::listen('admin.assignable.assigned', function($model, $assignableLog) {
             if (!$model instanceof Reservation) {
                 return;
             }
@@ -253,7 +253,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
 
     protected function registerSystemSettings()
     {
-        Settings::registerCallback(function (Settings $manager) {
+        Settings::registerCallback(function(Settings $manager) {
             $manager->registerSettingItems('core', [
                 'reservation' => [
                     'label' => 'lang:igniter.reservation::default.text_setting_reservation',

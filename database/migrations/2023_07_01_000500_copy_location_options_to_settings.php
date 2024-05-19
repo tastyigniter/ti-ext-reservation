@@ -21,7 +21,7 @@ return new class extends Migration
 
     public function up()
     {
-        DB::table('locations')->get()->each(function ($location) {
+        DB::table('locations')->get()->each(function($location) {
             foreach ($this->items as $code => $keys) {
                 $values = DB::table('location_options')
                     ->where('location_id', $location->location_id)

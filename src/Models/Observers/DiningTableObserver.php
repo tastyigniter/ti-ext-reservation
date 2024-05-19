@@ -29,7 +29,7 @@ class DiningTableObserver
         }
 
         if ($diningTable->is_combo) {
-            $diningTable->descendants()->each(function ($descendant) {
+            $diningTable->descendants()->each(function($descendant) {
                 $descendant->saveAsRoot();
             });
 
