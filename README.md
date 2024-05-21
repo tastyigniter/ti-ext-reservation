@@ -43,7 +43,7 @@ You can configure the reservation settings for each location in the admin area. 
 
 ### Global Settings
 
-You can also configure the reservation settings for all locations in the admin area. Navigate to the _System > Settings > Reservation_ admin page. You can set the following reservation settings for all locations:
+You can also configure the reservation settings for all locations in the admin area. Navigate to the _Manage > Settings > Reservation_ admin page. You can set the following reservation settings for all locations:
 
 - **Send reservation confirmation email:** Whether to send reservation confirmation emails to customers, location email and admin email.
 - **Order status workflow:** Set the reservation status workflow for all locations. For example, you can set the reservation status to _Pending_ when a reservation is received, _Confirmed_ when the reservation is being confirmed, and _Canceled_ when the reservation is canceled.
