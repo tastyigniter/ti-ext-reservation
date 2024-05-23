@@ -106,6 +106,14 @@ class Extension extends \Igniter\System\Classes\BaseExtension
             $model->relation['hasMany']['dining_areas'] = [DiningArea::class, 'delete' => true];
             $model->relation['morphedByMany']['tables'] = [DiningTable::class, 'name' => 'locationable'];
         });
+
+
+        Event::listen('igniter.reservation.statusAdded', function(Reservation $model, $statusHistory) {
+            if ($statusHistory->notify) {
+                $model->reloadRelations();
+                $model->mailSend('igniter.reservation::mail.reservation_update', 'customer');
+            }
+        });
     }
 
     public function registerMailTemplates(): array
@@ -222,32 +230,32 @@ class Extension extends \Igniter\System\Classes\BaseExtension
 
     protected function bindReservationEvent()
     {
-        Event::listen('admin.statusHistory.beforeAddStatus', function($model, $object, $statusId, $previousStatus) {
-            if (!$object instanceof Reservation) {
+        Event::listen('admin.statusHistory.beforeAddStatus', function($statusHistory, $reservation, $statusId, $previousStatus) {
+            if (!$reservation instanceof Reservation) {
                 return;
             }
 
-            if (StatusHistory::alreadyExists($object, $statusId)) {
+            if (StatusHistory::alreadyExists($reservation, $statusId)) {
                 return;
             }
 
-            Event::fire('igniter.reservation.beforeAddStatus', [$model, $object, $statusId, $previousStatus], true);
+            Event::fire('igniter.reservation.beforeAddStatus', [$statusHistory, $reservation, $statusId, $previousStatus], true);
         });
 
-        Event::listen('admin.statusHistory.added', function($model, $statusHistory) {
-            if (!$model instanceof Reservation) {
+        Event::listen('admin.statusHistory.added', function($reservation, $statusHistory) {
+            if (!$reservation instanceof Reservation) {
                 return;
             }
 
-            Event::fire('igniter.reservation.statusAdded', [$model, $statusHistory], true);
+            Event::fire('igniter.reservation.statusAdded', [$reservation, $statusHistory], true);
         });
 
-        Event::listen('admin.assignable.assigned', function($model, $assignableLog) {
-            if (!$model instanceof Reservation) {
+        Event::listen('admin.assignable.assigned', function($reservation, $assignableLog) {
+            if (!$reservation instanceof Reservation) {
                 return;
             }
 
-            Event::fire('igniter.reservation.assigned', [$model, $assignableLog], true);
+            Event::fire('igniter.reservation.assigned', [$reservation, $assignableLog], true);
         });
     }
 

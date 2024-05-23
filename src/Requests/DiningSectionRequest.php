@@ -9,15 +9,11 @@ class DiningSectionRequest extends FormRequest
     public function attributes()
     {
         return [
-            'table_name' => lang('igniter::admin.label_name'),
-            'min_capacity' => lang('igniter.reservation::default.tables.label_min_capacity'),
-            'max_capacity' => lang('igniter.reservation::default.tables.label_capacity'),
-            'extra_capacity' => lang('igniter.reservation::default.tables.label_extra_capacity'),
-            'priority' => lang('igniter.reservation::default.tables.label_priority'),
-            'is_joinable' => lang('igniter.reservation::default.tables.label_joinable'),
-            'table_status' => lang('igniter::admin.label_status'),
-            'locations' => lang('igniter::admin.label_location'),
-            'locations.*' => lang('igniter::admin.label_location'),
+            'location_id' => lang('igniter::admin.label_location'),
+            'name' => lang('igniter::admin.label_name'),
+            'priority' => lang('igniter.reservation::default.dining_tables.label_priority'),
+            'description' => lang('igniter::admin.label_description'),
+            'is_enabled' => lang('igniter.reservation::default.dining_tables.label_is_enabled'),
         ];
     }
 
@@ -28,6 +24,7 @@ class DiningSectionRequest extends FormRequest
             'name' => ['required', 'string'],
             'priority' => ['required', 'integer'],
             'description' => ['string'],
+            'is_enabled' => ['is_enabled', 'boolean'],
             'color' => ['nullable', 'string'],
         ];
     }

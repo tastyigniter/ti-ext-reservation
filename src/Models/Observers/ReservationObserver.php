@@ -25,7 +25,7 @@ class ReservationObserver
 
         $reservation->reloadRelations('location');
 
-        if ($reservation->location->shouldAutoAllocateTable() && !$reservation->tables()->count()) {
+        if ($reservation->location?->shouldAutoAllocateTable() && !$reservation->tables()->count()) {
             $reservation->assignTable();
         }
     }

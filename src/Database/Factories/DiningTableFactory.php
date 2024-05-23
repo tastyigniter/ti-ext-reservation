@@ -11,13 +11,11 @@ class DiningTableFactory extends Factory
     public function definition(): array
     {
         return [
-            'table_name' => $this->faker->sentence(2),
+            'name' => $this->faker->sentence(2),
             'min_capacity' => $this->faker->randomDigitNotNull(),
-            'max_capacity' => $this->faker->numberBetween(10, 99),
-            'extra_capacity' => $this->faker->numberBetween(1, 999),
+            'max_capacity' => $this->faker->numberBetween(10, 20),
             'priority' => $this->faker->randomDigit(),
-            'is_joinable' => $this->faker->boolean(),
-            'table_status' => $this->faker->boolean(),
+            'is_enabled' => $this->faker->boolean(),
         ];
     }
 }
