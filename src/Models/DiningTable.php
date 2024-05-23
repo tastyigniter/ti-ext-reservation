@@ -2,6 +2,7 @@
 
 namespace Igniter\Reservation\Models;
 
+use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Traits\NestedTree;
 use Igniter\Flame\Database\Traits\Sortable;
 use Igniter\Local\Models\Concerns\Locationable;
@@ -9,6 +10,7 @@ use Igniter\Local\Models\Location;
 
 class DiningTable extends \Igniter\Flame\Database\Model
 {
+    use HasFactory;
     use Locationable;
     use NestedTree;
     use Sortable;

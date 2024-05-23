@@ -10,6 +10,8 @@ use Igniter\System\Models\Concerns\Switchable;
 
 /**
  * Tables Model Class
+ *
+ * @deprecated Use the DiningTable model instead
  */
 class Table extends Model
 {
