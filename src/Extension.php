@@ -107,7 +107,6 @@ class Extension extends \Igniter\System\Classes\BaseExtension
             $model->relation['morphedByMany']['tables'] = [DiningTable::class, 'name' => 'locationable'];
         });
 
-
         Event::listen('igniter.reservation.statusAdded', function(Reservation $model, $statusHistory) {
             if ($statusHistory->notify) {
                 $model->reloadRelations();
