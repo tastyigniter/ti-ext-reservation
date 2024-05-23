@@ -5,13 +5,12 @@ namespace Tests\Requests;
 use Igniter\Reservation\Requests\DiningTableRequest;
 
 it('has required rule for inputs', function() {
-    expect('required')->toBeIn(array_get((new DiningTableRequest)->rules(), 'table_name'))
+    expect('required')->toBeIn(array_get((new DiningTableRequest)->rules(), 'name'))
         ->and('required')->toBeIn(array_get((new DiningTableRequest)->rules(), 'min_capacity'))
         ->and('required')->toBeIn(array_get((new DiningTableRequest)->rules(), 'max_capacity'))
         ->and('required')->toBeIn(array_get((new DiningTableRequest)->rules(), 'extra_capacity'))
         ->and('required')->toBeIn(array_get((new DiningTableRequest)->rules(), 'priority'))
-        ->and('required')->toBeIn(array_get((new DiningTableRequest)->rules(), 'is_joinable'))
-        ->and('required')->toBeIn(array_get((new DiningTableRequest)->rules(), 'table_status'))
+        ->and('required')->toBeIn(array_get((new DiningTableRequest)->rules(), 'is_enabled'))
         ->and('required')->toBeIn(array_get((new DiningTableRequest)->rules(), 'locations'));
 });
 

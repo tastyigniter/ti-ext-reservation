@@ -31,8 +31,6 @@ class DiningTable extends \Igniter\Flame\Database\Model
         'seat_layout' => 'array',
     ];
 
-    protected $guarded = [];
-
     /**
      * @var array Relations
      */
