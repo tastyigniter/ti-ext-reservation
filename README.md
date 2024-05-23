@@ -40,7 +40,6 @@ You can configure the reservation settings for each location in the admin area. 
 - **Reservation lead time:** Set the minimum and maximum time required to make a reservation.
 - **Reservation cancellation time:** Set the minimum time required to cancel a reservation.
 
-
 ### Global Settings
 
 You can also configure the reservation settings for all locations in the admin area. Navigate to the _Manage > Settings > Reservation_ admin page. You can set the following reservation settings for all locations:
@@ -237,7 +236,6 @@ extensions.
 | `igniter.reservation.isFullyBookedOn` | When a reservation is fully booked on a specific date. | The `DataTime` instance and the number of guests |
 | `igniter.reservation.beforeAddStatus` | Before a reservation status is updated. | The `Reservation` model instance, the `StatusHistory` model instance, `$statusId` status ID and the `$previousStatus` previous status ID |
 | `igniter.reservation.statusAdded` | When a reservation status is updated. | The `Reservation` model instance and the `StatusHistory` model instance |
-Here is an example of hooking an event:
 | `igniter.reservation.assigned` | When a reservation is assigned to a staff member. | The `Reservation` model instance and the `AssignableLog` model instance |
 
 Here is an example of hooking an event in the `boot` method of an extension class:
