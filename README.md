@@ -234,7 +234,7 @@ extensions.
 | `igniter.reservation.beforeSaveReservation` |    When a reservation is being created.    |      The `Reservation` model instance and the reservation form attributes     |
 | `igniter.reservation.confirmed` |      When a reservation has been placed.       |      The `Reservation` model instance     |
 | `igniter.reservation.isFullyBookedOn` | When a reservation is fully booked on a specific date. | The `DataTime` instance and the number of guests |
-| `igniter.reservation.beforeAddStatus` | Before a reservation status is updated. | The `Reservation` model instance, the `StatusHistory` model instance, `$statusId` status ID and the `$previousStatus` previous status ID |
+| `igniter.reservation.beforeAddStatus` | Before a reservation status is updated. | The `StatusHistory` model instance, the `Reservation` model instance, `$statusId` status ID and the `$previousStatus` previous status ID |
 | `igniter.reservation.statusAdded` | When a reservation status is updated. | The `Reservation` model instance and the `StatusHistory` model instance |
 | `igniter.reservation.assigned` | When a reservation is assigned to a staff member. | The `Reservation` model instance and the `AssignableLog` model instance |
 
