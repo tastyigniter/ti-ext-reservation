@@ -7,6 +7,7 @@ use Igniter\Admin\Widgets\Form;
 use Igniter\Local\Models\Location;
 use Igniter\Local\Models\Location as LocationModel;
 use Igniter\Reservation\Classes\BookingManager;
+use Igniter\Reservation\Http\Requests\ReservationSettingsRequest;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
 use Igniter\Reservation\Listeners\SendReservationConfirmation;
 use Igniter\Reservation\Models\Concerns\LocationAction;
@@ -17,7 +18,6 @@ use Igniter\Reservation\Models\Observers\ReservationObserver;
 use Igniter\Reservation\Models\Reservation;
 use Igniter\Reservation\Models\Scopes\DiningTableScope;
 use Igniter\Reservation\Models\Scopes\ReservationScope;
-use Igniter\Reservation\Requests\ReservationSettingsRequest;
 use Igniter\System\Models\Settings;
 use Igniter\User\Http\Controllers\Customers;
 use Igniter\User\Models\Customer;
@@ -222,7 +222,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
                 'icon' => 'fa fa-sliders',
                 'priority' => 0,
                 'form' => 'igniter.reservation::/models/bookingsettings',
-                'request' => \Igniter\Reservation\Requests\BookingSettingsRequest::class,
+                'request' => \Igniter\Reservation\Http\Requests\BookingSettingsRequest::class,
             ],
         ];
     }
