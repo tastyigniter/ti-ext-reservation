@@ -2,7 +2,7 @@
 
 namespace Tests\Requests;
 
-use Igniter\Reservation\Requests\DiningTableRequest;
+use Igniter\Reservation\Http\Requests\DiningTableRequest;
 
 it('has required rule for inputs', function() {
     expect('required')->toBeIn(array_get((new DiningTableRequest)->rules(), 'name'))

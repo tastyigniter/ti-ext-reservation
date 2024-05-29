@@ -1,6 +1,6 @@
 <?php
 
-namespace Igniter\Reservation\Requests;
+namespace Igniter\Reservation\Http\Requests;
 
 use Igniter\System\Classes\FormRequest;
 

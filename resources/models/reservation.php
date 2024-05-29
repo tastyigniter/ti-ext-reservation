@@ -190,7 +190,7 @@ $config['form']['fields'] = [
         'span' => 'right',
         'context' => ['edit', 'preview'],
         'form' => 'reservationstatus',
-        'request' => \Igniter\Reservation\Requests\ReservationStatusRequest::class,
+        'request' => \Igniter\Reservation\Http\Requests\ReservationStatusRequest::class,
     ],
 ];
 
