@@ -38,4 +38,9 @@ class ReservationCreatedNotification extends Notification
     {
         return 'fa-chair';
     }
+
+    public function getAlias(): string
+    {
+        return 'reservation-created';
+    }
 }
