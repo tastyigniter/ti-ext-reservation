@@ -171,9 +171,9 @@ return [
     'help_reservation_duration' => 'Stay time in minutes. Leave blank to use the default stay time',
 
     'notify_status_updated_title' => 'Reservation status updated',
-    'notify_event_log_assigned_title' => 'Reservation assigned',
-    'notify_status_updated' => 'updated reservation (#:properties.reservation_id) status to <b>:properties.status_name</b>',
-    'notify_assigned' => 'assigned reservation (#:properties.reservation_id) to',
+    'notify_assigned_title' => 'Reservation assigned',
+    'notify_status_updated' => '%s updated reservation (#%d) status to <b>%s</b>',
+    'notify_assigned' => '%s assigned reservation (#%d) to <b>%s</b>',
 
     'alert_no_reservation_found' => 'No matching reservation found.',
     'alert_no_assignable_table' => 'No table available for the reservation.',

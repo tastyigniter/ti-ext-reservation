@@ -33,4 +33,14 @@ class ReservationCreatedNotification extends Notification
     {
         return sprintf(lang('igniter.reservation::default.notify_reservation_created'), $this->subject->customer_name);
     }
+
+    public function getIcon(): ?string
+    {
+        return 'fa-chair';
+    }
+
+    public function getAlias(): string
+    {
+        return 'reservation-created';
+    }
 }
