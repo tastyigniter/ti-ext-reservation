@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Call to an undefined method Illuminate\\\\Support\\\\Carbon\\:\\:diffInRealHours\\(\\)\\.$#"
+			count: 1
+			path: src/AutomationRules/Conditions/ReservationAttribute.php
+
+		-
 			message: "#^Access to an undefined property DateTime\\:\\:\\$timestamp\\.$#"
 			count: 1
 			path: src/Classes/BookingManager.php
