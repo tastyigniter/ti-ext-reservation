@@ -272,7 +272,7 @@ class Reservation extends Model
 
     public function isReservedAllDay()
     {
-        $diffInMinutes = $this->reservation_datetime->diffInMinutes($this->reservation_end_datetime);
+        $diffInMinutes = (int)floor($this->reservation_datetime->diffInMinutes($this->reservation_end_datetime));
 
         return $diffInMinutes >= (60 * 23) || $diffInMinutes == 0;
     }

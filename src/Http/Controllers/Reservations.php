@@ -161,7 +161,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         $startAt = make_carbon($startAt);
         $endAt = make_carbon($endAt);
 
-        $reservation->duration = $startAt->diffInMinutes($endAt);
+        $reservation->duration = (int)floor($startAt->diffInMinutes($endAt));
         $reservation->reserve_date = $startAt->toDateString();
         $reservation->reserve_time = $startAt->toTimeString();
 
