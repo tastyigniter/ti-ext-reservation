@@ -63,7 +63,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
         $currentDateTime = now();
 
         return $currentDateTime->isAfter($reservation->reservation_datetime)
-            ? $reservation->reservation_datetime->diffInRealHours($currentDateTime)
+            ? floor($reservation->reservation_datetime->diffInRealHours($currentDateTime))
             : 0;
     }
 
@@ -81,7 +81,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
         $currentDateTime = now();
 
         return $currentDateTime->isAfter($reservation->reservation_datetime)
-            ? $reservation->reservation_datetime->diffInDays($currentDateTime)
+            ? floor($reservation->reservation_datetime->diffInDays($currentDateTime))
             : 0;
     }
 
@@ -90,7 +90,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
         $currentDateTime = now();
 
         return $currentDateTime->isBefore($reservation->reservation_datetime)
-            ? $currentDateTime->diffInDays($reservation->reservation_datetime)
+            ? floor($currentDateTime->diffInDays($reservation->reservation_datetime))
             : 0;
     }
 
