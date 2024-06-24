@@ -9,9 +9,7 @@ class ReservationCanceledEvent
 {
     use EventDispatchable;
 
-    public function __construct(public Reservation $reservation)
-    {
-    }
+    public function __construct(public Reservation $reservation) {}
 
     public static function eventName()
     {
