@@ -2,6 +2,8 @@
 
 namespace Igniter\Reservation;
 
+use Igniter\Admin\DashboardWidgets\Charts;
+use Igniter\Admin\DashboardWidgets\Statistics;
 use Igniter\Admin\Models\StatusHistory;
 use Igniter\Admin\Widgets\Form;
 use Igniter\Local\Models\Location;
@@ -9,6 +11,7 @@ use Igniter\Local\Models\Location as LocationModel;
 use Igniter\Reservation\Classes\BookingManager;
 use Igniter\Reservation\Http\Requests\ReservationSettingsRequest;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
+use Igniter\Reservation\Listeners\RegistersDashboardCards;
 use Igniter\Reservation\Listeners\SendReservationConfirmation;
 use Igniter\Reservation\Models\Concerns\LocationAction;
 use Igniter\Reservation\Models\DiningArea;
@@ -112,6 +115,12 @@ class Extension extends \Igniter\System\Classes\BaseExtension
                 $model->reloadRelations();
                 $model->mailSend('igniter.reservation::mail.reservation_update', 'customer');
             }
+        });
+
+        $this->extendDashboardChartsDatasets();
+
+        Statistics::registerCards(function() {
+            return (new RegistersDashboardCards())();
         });
     }
 
@@ -273,6 +282,25 @@ class Extension extends \Igniter\System\Classes\BaseExtension
                     'request' => ReservationSettingsRequest::class,
                 ],
             ]);
+        });
+    }
+
+    protected function extendDashboardChartsDatasets()
+    {
+        Charts::extend(function($charts) {
+            $charts->bindEvent('charts.extendDatasets', function() use ($charts) {
+                $charts->addDataset('reports', [
+                    'sets' => [
+                        'reservations' => [
+                            'label' => 'lang:igniter.reservation::default.text_charts_reservations',
+                            'color' => '#BA68C8',
+                            'model' => Reservation::class,
+                            'column' => 'reserve_date',
+                            'priority' => 30,
+                        ],
+                    ],
+                ]);
+            });
         });
     }
 }

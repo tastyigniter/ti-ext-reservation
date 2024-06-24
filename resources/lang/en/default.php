@@ -24,6 +24,11 @@ return [
     'text_view_list' => 'List View',
     'text_view_floor_plan' => 'Floor Plan View',
     'text_title_cancel' => 'Cancel Order',
+    'text_charts_reservations' => 'Reservations',
+    'text_total_reservation' => 'Total Reservations',
+    'text_total_reserved_guest' => 'Total Guests',
+    'text_total_completed_reservation' => 'Total Reservations Completed',
+    'text_total_reserved_table' => 'Total Table(s) Reserved',
 
     'button_assign_table' => 'Assign Table',
     'text_heading' => 'Recent Reservations',

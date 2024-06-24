@@ -80,6 +80,11 @@ class Reservation extends Model
 
     public $appends = ['customer_name', 'duration', 'table_name', 'reservation_datetime', 'reservation_end_datetime'];
 
+    protected $attributes = [
+        'table_id' => 0,
+        'status_id' => 0,
+    ];
+
     protected array $queryModifierFilters = [
         'customer' => 'applyCustomer',
         'location' => 'whereHasLocation',
