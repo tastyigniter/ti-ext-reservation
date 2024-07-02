@@ -199,7 +199,7 @@ class Reservation extends Model
             return false;
         }
 
-        return $this->reservation_datetime->diffInRealMinutes() > $timeout;
+        return now()->diffInRealMinutes($this->reservation_datetime) > $timeout;
     }
 
     public function markAsCanceled(array $statusData = [])

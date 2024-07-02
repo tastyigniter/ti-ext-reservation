@@ -3,6 +3,7 @@
 namespace Igniter\Reservation\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
+use Igniter\Local\Models\Location;
 
 class ReservationFactory extends Factory
 {
@@ -18,6 +19,7 @@ class ReservationFactory extends Factory
             'reserve_date' => $this->faker->date(),
             'reserve_time' => $this->faker->time(),
             'guest_num' => $this->faker->numberBetween(0, 99),
+            'location_id' => Location::factory(),
         ];
     }
 }
