@@ -28,11 +28,11 @@ class ReservationRequest extends FormRequest
             'first_name' => ['required', 'string', 'between:1,48'],
             'last_name' => ['required', 'string', 'between:1,48'],
             'email' => ['email:filter', 'max:96'],
-            'telephone' => ['sometimes', 'string'],
+            'telephone' => ['nullable', 'sometimes', 'string'],
             'reserve_date' => ['required', 'date_format:Y-m-d'],
             'reserve_time' => ['required', 'date_format:H:i'],
             'guest_num' => ['required', 'integer'],
-            'duration' => ['integer', 'min:1'],
+            'duration' => ['nullable', 'integer', 'min:0'],
             'tables' => ['nullable', 'array'],
             'comment' => ['nullable', 'string'],
         ];

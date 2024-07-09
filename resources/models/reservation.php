@@ -1,5 +1,23 @@
 <?php
 
+$listButtonItems = [
+    'index' => [
+        'label' => 'igniter.reservation::default.text_view_list',
+        'class' => 'dropdown-item',
+        'href' => 'reservations',
+    ],
+    'calendar' => [
+        'label' => 'igniter.reservation::default.text_view_calendar',
+        'class' => 'dropdown-item',
+        'href' => 'reservations/calendar',
+    ],
+    'floor_plan' => [
+        'label' => 'igniter.reservation::default.text_view_floor_plan',
+        'class' => 'dropdown-item',
+        'href' => 'reservations/floor_plan',
+    ],
+];
+
 $config['list']['filter'] = [
     'search' => [
         'prompt' => 'lang:igniter.reservation::default.text_filter_search',
@@ -40,9 +58,9 @@ $config['list']['toolbar'] = [
         ],
         'calendar' => [
             'label' => 'lang:igniter.reservation::default.text_view_list',
-            'partial' => 'lists/switch_to_button',
             'class' => 'btn btn-default',
-            'href' => 'reservations/calendar',
+            'type' => 'dropdown',
+            'menuItems' => $listButtonItems,
             'context' => 'index',
         ],
     ],
@@ -149,8 +167,9 @@ $config['calendar']['toolbar'] = [
         'list' => [
             'label' => 'lang:igniter.reservation::default.text_view_calendar',
             'class' => 'btn btn-default',
+            'type' => 'dropdown',
             'context' => 'calendar',
-            'partial' => 'lists/switch_to_button',
+            'menuItems' => $listButtonItems
         ],
     ],
 ];

@@ -1,6 +1,6 @@
 <div class="floorplan row g-0">
     @if($this->alias === 'floor_plan')
-        <div class="col-md-8">
+        <div class="col-md-8 border-end">
             {!! $this->makePartial('lists/floor_plan_view') !!}
         </div>
         <div class="col-md-4" style="background-color: var(--bs-gray-400)">

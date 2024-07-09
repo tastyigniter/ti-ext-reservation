@@ -69,11 +69,6 @@ return [
     'form' => [
         'toolbar' => [
             'buttons' => [
-                'back' => [
-                    'label' => 'admin::lang.button_icon_back',
-                    'class' => 'btn btn-outline-secondary',
-                    'href' => 'dining_areas',
-                ],
                 'save' => [
                     'label' => 'lang:admin::lang.button_save',
                     'context' => ['create', 'edit'],

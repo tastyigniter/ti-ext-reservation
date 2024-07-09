@@ -20,17 +20,15 @@
         <div
             class="tab-pane p-3 {{ (('#'.$tabs->section.'tab-'.$loop->iteration) == $activeTab) ? 'active' : '' }}"
             id="{{ $tabs->section.'tab-'.$loop->iteration }}">
-            <div class="form-fields">
+            <div class="form-fields py-3">
                 @if ($name === 'igniter.reservation::default.dining_areas.text_tab_tables')
                     <div class="row w-100">
+                        <div class="col-md-4">
+                            <h5 class="mb-3">@lang($fields['_dining_sections']->label)</h5>
+                            {!! $this->renderFieldElement($fields['_dining_sections']) !!}
+                        </div>
                         <div class="col-md-8">
                             {!! $this->renderFieldElement($fields['dining_table_solos']) !!}
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card shadow-sm mb-2 p-3">
-                                <h5 class="card-title mb-3">@lang($fields['_dining_sections']->label)</h5>
-                                {!! $this->renderFieldElement($fields['_dining_sections']) !!}
-                            </div>
                         </div>
                     </div>
                 @else

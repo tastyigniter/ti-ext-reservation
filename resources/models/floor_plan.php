@@ -42,6 +42,7 @@ return [
             ],
         ],
         'toolbar' => [
+            'context' => 'floor_plan',
             'buttons' => [
                 'create' => [
                     'label' => 'lang:admin::lang.button_new',
@@ -50,9 +51,26 @@ return [
                 ],
                 'list' => [
                     'label' => 'lang:igniter.reservation::default.text_view_floor_plan',
-                    'context' => 'floor_plan',
-                    'partial' => 'lists/switch_to_button',
                     'class' => 'btn btn-default',
+                    'type' => 'dropdown',
+                    'context' => 'floor_plan',
+                    'menuItems' => [
+                        'list' => [
+                            'label' => 'igniter.reservation::default.text_view_list',
+                            'class' => 'dropdown-item',
+                            'href' => 'reservations',
+                        ],
+                        'calendar' => [
+                            'label' => 'igniter.reservation::default.text_view_calendar',
+                            'class' => 'dropdown-item',
+                            'href' => 'reservations/calendar',
+                        ],
+                        'floor_plan' => [
+                            'label' => 'igniter.reservation::default.text_view_floor_plan',
+                            'class' => 'dropdown-item',
+                            'href' => 'reservations/floor_plan',
+                        ],
+                    ]
                 ],
             ],
         ],
