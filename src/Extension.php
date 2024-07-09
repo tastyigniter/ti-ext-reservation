@@ -178,6 +178,14 @@ class Extension extends \Igniter\System\Classes\BaseExtension
     public function registerNavigation(): array
     {
         return [
+            'reservations' => [
+                'priority' => 20,
+                'class' => 'reservations',
+                'icon' => 'fa-calendar-check',
+                'href' => admin_url('reservations'),
+                'title' => lang('igniter.reservation::default.text_side_menu_reservation'),
+                'permission' => 'Admin.Reservations',
+            ],
             'restaurant' => [
                 'child' => [
                     'dining_areas' => [
@@ -186,17 +194,6 @@ class Extension extends \Igniter\System\Classes\BaseExtension
                         'href' => admin_url('dining_areas'),
                         'title' => lang('igniter.reservation::default.text_side_menu_tables'),
                         'permission' => 'Admin.Tables',
-                    ],
-                ],
-            ],
-            'sales' => [
-                'child' => [
-                    'reservations' => [
-                        'priority' => 20,
-                        'class' => 'reservations',
-                        'href' => admin_url('reservations'),
-                        'title' => lang('igniter.reservation::default.text_side_menu_reservation'),
-                        'permission' => 'Admin.Reservations',
                     ],
                 ],
             ],
@@ -289,15 +286,13 @@ class Extension extends \Igniter\System\Classes\BaseExtension
     {
         Charts::extend(function($charts) {
             $charts->bindEvent('charts.extendDatasets', function() use ($charts) {
-                $charts->addDataset('reports', [
-                    'sets' => [
-                        'reservations' => [
-                            'label' => 'lang:igniter.reservation::default.text_charts_reservations',
-                            'color' => '#BA68C8',
-                            'model' => Reservation::class,
-                            'column' => 'reserve_date',
-                            'priority' => 30,
-                        ],
+                $charts->mergeDataset('reports', 'sets', [
+                    'reservations' => [
+                        'label' => 'lang:igniter.reservation::default.text_charts_reservations',
+                        'color' => '#BA68C8',
+                        'model' => Reservation::class,
+                        'column' => 'reserve_date',
+                        'priority' => 30,
                     ],
                 ]);
             });

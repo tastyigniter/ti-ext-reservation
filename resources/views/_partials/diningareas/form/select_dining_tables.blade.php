@@ -35,7 +35,7 @@
     </div>
     <button
         type="button"
-        class="btn btn-light text-default"
+        class="btn btn-light"
         data-request="onCreateCombo"
     ><i class="fa fa-plus"></i>&nbsp;&nbsp;@lang('igniter.reservation::default.dining_areas.button_new_combo')</button>
 </div>

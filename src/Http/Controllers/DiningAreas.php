@@ -31,6 +31,7 @@ class DiningAreas extends AdminController
     public array $formConfig = [
         'name' => 'lang:igniter.reservation::default.dining_areas.text_form_name',
         'model' => \Igniter\Reservation\Models\DiningArea::class,
+        'request' => \Igniter\Reservation\Http\Requests\DiningAreaRequest::class,
         'create' => [
             'title' => 'lang:admin::lang.form.create_title',
             'redirect' => 'dining_areas/edit/{id}',
