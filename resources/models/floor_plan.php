@@ -70,7 +70,7 @@ return [
                             'class' => 'dropdown-item',
                             'href' => 'reservations/floor_plan',
                         ],
-                    ]
+                    ],
                 ],
             ],
         ],
