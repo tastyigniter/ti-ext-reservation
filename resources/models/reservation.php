@@ -169,7 +169,7 @@ $config['calendar']['toolbar'] = [
             'class' => 'btn btn-default',
             'type' => 'dropdown',
             'context' => 'calendar',
-            'menuItems' => $listButtonItems
+            'menuItems' => $listButtonItems,
         ],
     ],
 ];
