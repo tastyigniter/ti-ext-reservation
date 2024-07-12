@@ -221,6 +221,11 @@ parameters:
 			path: src/Models/DiningTable.php
 
 		-
+			message: "#^Access to an undefined property Illuminate\\\\Support\\\\Optional\\:\\:\\$name\\.$#"
+			count: 1
+			path: src/Models/DiningTable.php
+
+		-
 			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\DiningSection\\:\\:where\\(\\)\\.$#"
 			count: 1
 			path: src/Models/DiningTable.php
@@ -246,7 +251,7 @@ parameters:
 			path: src/Models/Observers/DiningTableObserver.php
 
 		-
-			message: "#^Call to an undefined method Kalnoy\\\\Nestedset\\\\DescendantsRelation\\:\\:each\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:saveAsRoot\\(\\)\\.$#"
 			count: 1
 			path: src/Models/Observers/DiningTableObserver.php
 
@@ -371,6 +376,11 @@ parameters:
 			path: src/Models/Reservation.php
 
 		-
+			message: "#^Access to an undefined property Illuminate\\\\Support\\\\Optional\\:\\:\\$status_name\\.$#"
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
 			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:location\\(\\)\\.$#"
 			count: 1
 			path: src/Models/Reservation.php
@@ -386,12 +396,22 @@ parameters:
 			path: src/Models/Reservation.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:reservable\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Igniter\\\\Reservation\\\\Models\\\\DiningTable\\>\\:\\:reservable\\(\\)\\.$#"
 			count: 1
 			path: src/Models/Reservation.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:whereLocationId\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<static\\(Igniter\\\\Reservation\\\\Models\\\\Reservation\\)\\>\\:\\:whereLocationId\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Support\\\\Carbon\\:\\:diffInRealMinutes\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Support\\\\Optional\\:\\:getReservationStayTime\\(\\)\\.$#"
 			count: 1
 			path: src/Models/Reservation.php
 
@@ -456,7 +476,7 @@ parameters:
 			path: src/Models/Scopes/DiningTableScope.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:fireEvent\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:fireEvent\\(\\)\\.$#"
 			count: 1
 			path: src/Models/Scopes/DiningTableScope.php
 
@@ -486,6 +506,6 @@ parameters:
 			path: src/Notifications/ReservationCreatedNotification.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:isEnabled\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Igniter\\\\User\\\\Models\\\\User\\>\\:\\:isEnabled\\(\\)\\.$#"
 			count: 1
 			path: src/Notifications/ReservationCreatedNotification.php

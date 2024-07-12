@@ -23,8 +23,8 @@ it('has nullable rule for inputs: tables and comment', function() {
         ->and('nullable')->toBeIn(array_get((new ReservationRequest)->rules(), 'comment'));
 });
 
-it('has min:1 rule for duration input', function() {
-    expect('min:1')->toBeIn(array_get((new ReservationRequest)->rules(), 'duration'));
+it('has min:0 rule for duration input', function() {
+    expect('min:0')->toBeIn(array_get((new ReservationRequest)->rules(), 'duration'));
 });
 
 it('has array rule for tables input', function() {
