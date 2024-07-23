@@ -232,8 +232,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
 
     public function formBeforeSave($model)
     {
-        $registeredCustomerId = post('Reservation.registered_customer_id');
-        if ($registeredCustomerId) {
+        if ($registeredCustomerId = post('Reservation.registered_customer_id')) {
             $registeredCustomer = Customer::findOrFail($registeredCustomerId);
             $model->first_name = $registeredCustomer->first_name;
             $model->last_name = $registeredCustomer->last_name;

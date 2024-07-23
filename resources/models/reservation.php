@@ -225,7 +225,6 @@ $config['form']['tabs'] = [
             'label' => 'lang:igniter.reservation::default.text_customer',
             'type' => 'select',
             'options' => [Igniter\User\Models\Customer::class, 'getDropdownOptions'],
-            'span' => 'left',
             'placeholder' => 'lang:igniter.reservation::default.text_guest',
         ],
         'first_name' => [
