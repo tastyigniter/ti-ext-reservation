@@ -120,7 +120,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         $this->extendDashboardChartsDatasets();
 
         Statistics::registerCards(function() {
-            return (new RegistersDashboardCards())();
+            return (new RegistersDashboardCards)();
         });
     }
 
