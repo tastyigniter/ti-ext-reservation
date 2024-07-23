@@ -6,11 +6,14 @@ use Igniter\Reservation\Http\Requests\ReservationRequest;
 
 it('has required rule for inputs: location_id, first_name, last_name, reserve_date, reserve_time, guest_num', function() {
     expect('required')->toBeIn(array_get((new ReservationRequest)->rules(), 'location_id'))
-        ->and('required')->toBeIn(array_get((new ReservationRequest)->rules(), 'first_name'))
-        ->and('required')->toBeIn(array_get((new ReservationRequest)->rules(), 'last_name'))
         ->and('required')->toBeIn(array_get((new ReservationRequest)->rules(), 'reserve_date'))
         ->and('required')->toBeIn(array_get((new ReservationRequest)->rules(), 'reserve_time'))
         ->and('required')->toBeIn(array_get((new ReservationRequest)->rules(), 'guest_num'));
+});
+
+it('has required_without:registered_customer_id rule for inputs: first_name, last_name', function() {
+    expect('required_without:registered_customer_id')->toBeIn(array_get((new ReservationRequest)->rules(), 'first_name'))
+        ->and('required_without:registered_customer_id')->toBeIn(array_get((new ReservationRequest)->rules(), 'last_name'));
 });
 
 it('has sometimes rule for inputs: location_id and telephone', function() {

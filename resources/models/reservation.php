@@ -240,25 +240,51 @@ $config['form']['tabs'] = [
             'mode' => 'time',
             'span' => 'right',
         ],
+        'registered_customer_id' => [
+            'label' => 'lang:igniter.reservation::default.text_customer',
+            'type' => 'select',
+            'options' => [Igniter\User\Models\Customer::class, 'getDropdownOptions'],
+            'placeholder' => 'lang:igniter.reservation::default.text_guest',
+        ],
         'first_name' => [
             'label' => 'lang:igniter.reservation::default.label_first_name',
             'type' => 'text',
             'span' => 'left',
+            'trigger' => [
+                'action' => 'show',
+                'field' => 'registered_customer_id',
+                'condition' => 'value[]',
+            ],
         ],
         'last_name' => [
             'label' => 'lang:igniter.reservation::default.label_last_name',
             'type' => 'text',
             'span' => 'right',
+            'trigger' => [
+                'action' => 'show',
+                'field' => 'registered_customer_id',
+                'condition' => 'value[]',
+            ],
         ],
         'email' => [
             'label' => 'lang:igniter::admin.label_email',
             'type' => 'text',
             'span' => 'left',
+            'trigger' => [
+                'action' => 'show',
+                'field' => 'registered_customer_id',
+                'condition' => 'value[]',
+            ],
         ],
         'telephone' => [
             'label' => 'lang:igniter.reservation::default.label_customer_telephone',
             'type' => 'text',
             'span' => 'right',
+            'trigger' => [
+                'action' => 'show',
+                'field' => 'registered_customer_id',
+                'condition' => 'value[]',
+            ],
         ],
         'location_id' => [
             'label' => 'lang:igniter.reservation::default.text_tab_restaurant',
