@@ -11,7 +11,6 @@ use Igniter\Flame\Exception\FlashException;
 use Igniter\Local\Facades\Location as LocationFacade;
 use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\Reservation;
-use Igniter\User\Models\Customer;
 
 class Reservations extends \Igniter\Admin\Classes\AdminController
 {
@@ -228,16 +227,5 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         }
 
         return $items;
-    }
-
-    public function formBeforeSave($model)
-    {
-        if ($registeredCustomerId = post('Reservation.registered_customer_id')) {
-            $registeredCustomer = Customer::findOrFail($registeredCustomerId);
-            $model->first_name = $registeredCustomer->first_name;
-            $model->last_name = $registeredCustomer->last_name;
-            $model->email = $registeredCustomer->email;
-            $model->telephone = $registeredCustomer->telephone;
-        }
     }
 }

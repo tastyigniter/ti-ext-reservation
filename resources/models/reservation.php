@@ -240,7 +240,7 @@ $config['form']['tabs'] = [
             'mode' => 'time',
             'span' => 'right',
         ],
-        'registered_customer_id' => [
+        'customer_id' => [
             'label' => 'lang:igniter.reservation::default.text_customer',
             'type' => 'select',
             'options' => [Igniter\User\Models\Customer::class, 'getDropdownOptions'],
@@ -252,7 +252,7 @@ $config['form']['tabs'] = [
             'span' => 'left',
             'trigger' => [
                 'action' => 'show',
-                'field' => 'registered_customer_id',
+                'field' => 'customer_id',
                 'condition' => 'value[]',
             ],
         ],
@@ -262,7 +262,7 @@ $config['form']['tabs'] = [
             'span' => 'right',
             'trigger' => [
                 'action' => 'show',
-                'field' => 'registered_customer_id',
+                'field' => 'customer_id',
                 'condition' => 'value[]',
             ],
         ],
@@ -272,7 +272,7 @@ $config['form']['tabs'] = [
             'span' => 'left',
             'trigger' => [
                 'action' => 'show',
-                'field' => 'registered_customer_id',
+                'field' => 'customer_id',
                 'condition' => 'value[]',
             ],
         ],
@@ -282,7 +282,7 @@ $config['form']['tabs'] = [
             'span' => 'right',
             'trigger' => [
                 'action' => 'show',
-                'field' => 'registered_customer_id',
+                'field' => 'customer_id',
                 'condition' => 'value[]',
             ],
         ],

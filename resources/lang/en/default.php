@@ -120,7 +120,7 @@ return [
     'label_limit_guests_count' => 'Maximum Guests Per Interval',
 
     'column_location' => 'Location',
-    'column_customer_name' => 'Name',
+    'column_customer_name' => 'Guest',
     'column_guest' => 'Guest(s)',
     'column_table' => 'Table',
     'column_staff' => 'User',

@@ -11,9 +11,11 @@ it('has required rule for inputs: location_id, first_name, last_name, reserve_da
         ->and('required')->toBeIn(array_get((new ReservationRequest)->rules(), 'guest_num'));
 });
 
-it('has required_without:registered_customer_id rule for inputs: first_name, last_name', function() {
-    expect('required_without:registered_customer_id')->toBeIn(array_get((new ReservationRequest)->rules(), 'first_name'))
-        ->and('required_without:registered_customer_id')->toBeIn(array_get((new ReservationRequest)->rules(), 'last_name'));
+it('has required_without:customer_id for inputs', function() {
+    expect('required_without:customer_id')->toBeIn(array_get((new ReservationRequest)->rules(), 'first_name'))
+        ->and('required_without:customer_id')->toBeIn(array_get((new ReservationRequest)->rules(), 'last_name'))
+        ->and('required_without:customer_id')->toBeIn(array_get((new ReservationRequest)->rules(), 'email'))
+        ->and('required_without:customer_id')->toBeIn(array_get((new ReservationRequest)->rules(), 'telephone'));
 });
 
 it('has sometimes rule for inputs: location_id and telephone', function() {
@@ -21,8 +23,13 @@ it('has sometimes rule for inputs: location_id and telephone', function() {
         ->and('sometimes')->toBeIn(array_get((new ReservationRequest)->rules(), 'telephone'));
 });
 
-it('has nullable rule for inputs: tables and comment', function() {
-    expect('nullable')->toBeIn(array_get((new ReservationRequest)->rules(), 'tables'))
+it('has nullable rule for inputs', function() {
+    expect('nullable')->toBeIn(array_get((new ReservationRequest)->rules(), 'customer_id'))
+        ->and('nullable')->toBeIn(array_get((new ReservationRequest)->rules(), 'first_name'))
+        ->and('nullable')->toBeIn(array_get((new ReservationRequest)->rules(), 'last_name'))
+        ->and('nullable')->toBeIn(array_get((new ReservationRequest)->rules(), 'email'))
+        ->and('nullable')->toBeIn(array_get((new ReservationRequest)->rules(), 'telephone'))
+        ->and('nullable')->toBeIn(array_get((new ReservationRequest)->rules(), 'tables'))
         ->and('nullable')->toBeIn(array_get((new ReservationRequest)->rules(), 'comment'));
 });
 
