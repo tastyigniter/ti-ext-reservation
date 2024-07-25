@@ -8,6 +8,13 @@ class ReservationObserver
 {
     public function creating(Reservation $reservation)
     {
+        if ($reservation->customer_id) {
+            $reservation->first_name = $reservation->first_name ?: $reservation->customer->first_name;
+            $reservation->last_name = $reservation->last_name ?: $reservation->customer->last_name;
+            $reservation->email = $reservation->email ?: $reservation->customer->email;
+            $reservation->telephone = $reservation->telephone ?: $reservation->customer->telephone;
+        }
+
         $reservation->forceFill([
             'hash' => $reservation->generateHash(),
             'ip_address' => request()->getClientIp(),

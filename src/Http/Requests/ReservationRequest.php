@@ -25,11 +25,11 @@ class ReservationRequest extends FormRequest
     {
         return [
             'location_id' => ['sometimes', 'required', 'integer'],
-            'registered_customer_id' => ['nullable', 'integer'],
-            'first_name' => ['required_without:registered_customer_id', 'string', 'between:1,48'],
-            'last_name' => ['required_without:registered_customer_id', 'string', 'between:1,48'],
-            'email' => ['email:filter', 'max:96'],
-            'telephone' => ['nullable', 'sometimes', 'string'],
+            'customer_id' => ['nullable', 'integer'],
+            'first_name' => ['required_without:customer_id', 'nullable', 'string', 'between:1,48'],
+            'last_name' => ['required_without:customer_id', 'nullable', 'string', 'between:1,48'],
+            'email' => ['required_without:customer_id', 'nullable', 'email:filter', 'max:96'],
+            'telephone' => ['required_without:customer_id', 'nullable', 'sometimes', 'string'],
             'reserve_date' => ['required', 'date_format:Y-m-d'],
             'reserve_time' => ['required', 'date_format:H:i'],
             'guest_num' => ['required', 'integer'],

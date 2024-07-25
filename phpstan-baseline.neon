@@ -126,6 +126,11 @@ parameters:
 			path: src/Http/Controllers/Reservations.php
 
 		-
+			message: "#^Call to an undefined static method Igniter\\\\User\\\\Models\\\\Customer\\:\\:findOrFail\\(\\)\\.$#"
+			count: 1
+			path: src/Http/Controllers/Reservations.php
+
+		-
 			message: "#^Call to an undefined static method Igniter\\\\Local\\\\Facades\\\\Location\\:\\:current\\(\\)\\.$#"
 			count: 1
 			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
