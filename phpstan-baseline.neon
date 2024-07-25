@@ -126,11 +126,6 @@ parameters:
 			path: src/Http/Controllers/Reservations.php
 
 		-
-			message: "#^Call to an undefined static method Igniter\\\\User\\\\Models\\\\Customer\\:\\:findOrFail\\(\\)\\.$#"
-			count: 1
-			path: src/Http/Controllers/Reservations.php
-
-		-
 			message: "#^Call to an undefined static method Igniter\\\\Local\\\\Facades\\\\Location\\:\\:current\\(\\)\\.$#"
 			count: 1
 			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
@@ -266,7 +261,37 @@ parameters:
 			path: src/Models/Observers/DiningTableObserver.php
 
 		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$customer\\.$#"
+			count: 4
+			path: src/Models/Observers/ReservationObserver.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$customer_id\\.$#"
+			count: 1
+			path: src/Models/Observers/ReservationObserver.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$email\\.$#"
+			count: 1
+			path: src/Models/Observers/ReservationObserver.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$first_name\\.$#"
+			count: 1
+			path: src/Models/Observers/ReservationObserver.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$last_name\\.$#"
+			count: 1
+			path: src/Models/Observers/ReservationObserver.php
+
+		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$location\\.$#"
+			count: 1
+			path: src/Models/Observers/ReservationObserver.php
+
+		-
+			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$telephone\\.$#"
 			count: 1
 			path: src/Models/Observers/ReservationObserver.php
 
