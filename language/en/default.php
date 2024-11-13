@@ -62,7 +62,7 @@ return [
     'help_min_reservation_guest_num' => 'Set the minimum number of guests required to book a table.',
     'help_max_reservation_guest_num' => 'Set the maximum number of guests allowed to book a table.',
     'help_reservation_cancellation_timeout' => 'Set when a customer can no longer cancel a booking. Number of minutes before booking time. Leave as 0, to disable customer booking cancellation.',
-    'help_limit_guests_count' => 'Set the number of guests that can be booked between each time slot.',
+    'help_limit_guests_count' => 'Set the maximum number of guests allowed per time slot',
 
     'button_find_table' => 'Find Table',
     'button_select_time' => 'Select Time',
