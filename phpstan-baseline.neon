@@ -1,7 +1,7 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Support\\\\Carbon\\:\\:diffInRealHours\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Support\\\\Carbon\\:\\:diffInUTCHour\\(\\)\\.$#"
 			count: 1
 			path: src/AutomationRules/Conditions/ReservationAttribute.php
 
@@ -53,16 +53,6 @@ parameters:
 		-
 			message: "#^Call to an undefined static method Igniter\\\\User\\\\Facades\\\\Auth\\:\\:customer\\(\\)\\.$#"
 			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to an undefined static method Igniter\\\\User\\\\Facades\\\\Auth\\:\\:getUser\\(\\)\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to an undefined static method Illuminate\\\\Support\\\\Facades\\\\Event\\:\\:fire\\(\\)\\.$#"
-			count: 3
 			path: src/Classes/BookingManager.php
 
 		-
@@ -221,11 +211,6 @@ parameters:
 			path: src/Models/DiningTable.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Support\\\\Optional\\:\\:\\$name\\.$#"
-			count: 1
-			path: src/Models/DiningTable.php
-
-		-
 			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\DiningSection\\:\\:where\\(\\)\\.$#"
 			count: 1
 			path: src/Models/DiningTable.php
@@ -252,11 +237,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:saveAsRoot\\(\\)\\.$#"
-			count: 1
-			path: src/Models/Observers/DiningTableObserver.php
-
-		-
-			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\Observers\\\\DiningTableObserver\\:\\:fixBrokenTreeQuietly\\(\\)\\.$#"
 			count: 1
 			path: src/Models/Observers/DiningTableObserver.php
 
@@ -462,11 +442,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:whereBetween\\(\\)\\.$#"
-			count: 1
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Method Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:addReservationTables\\(\\) should return bool but return statement is missing\\.$#"
 			count: 1
 			path: src/Models/Reservation.php
 
