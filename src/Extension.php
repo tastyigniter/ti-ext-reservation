@@ -65,6 +65,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
             'reservations' => \Igniter\Reservation\Models\Reservation::class,
             'tables' => \Igniter\Reservation\Models\DiningTable::class,
             'dining_areas' => \Igniter\Reservation\Models\DiningArea::class,
+            'dining_sections' => \Igniter\Reservation\Models\DiningSection::class,
         ]);
 
         Customers::extendFormFields(function(Form $form) {

@@ -24,8 +24,8 @@ class ReservationAssigned extends BaseEvent
             $params = $reservation->mailGetData();
         }
 
-        $params['status'] = $reservation->status;
-        $params['assignee'] = $reservation->assignee;
+        $params['status'] = $reservation?->status;
+        $params['assignee'] = $reservation?->assignee;
 
         return $params;
     }

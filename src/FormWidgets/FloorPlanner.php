@@ -90,7 +90,7 @@ class FloorPlanner extends BaseFormWidget
 
     public function onSaveState()
     {
-        $state = json_decode(post('state'), true);
+        $state = json_decode(input('state'), true);
 
         $this->validate($state, [
             'stage.x' => ['required', 'numeric'],
@@ -131,8 +131,8 @@ class FloorPlanner extends BaseFormWidget
 
     protected function getConnectorWidgetAlias()
     {
-        $form = $this->controller->widgets['form'];
+        $formAlias = $this->controller->widgets['form']->alias ?? 'form';
 
-        return $form->alias.studly_case(name_to_id($this->connectorField));
+        return $formAlias.studly_case(name_to_id($this->connectorField));
     }
 }

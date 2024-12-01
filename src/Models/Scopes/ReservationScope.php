@@ -12,8 +12,8 @@ class ReservationScope extends Scope
     {
         return function(Builder $builder, $range) {
             return $builder->whereBetweenReservationDateTime(
-                Carbon::parse(array_get($range, 'startAt', false))->format('Y-m-d H:i:s'),
-                Carbon::parse(array_get($range, 'endAt', false))->format('Y-m-d H:i:s')
+                Carbon::parse(array_get($range, 'startAt'))->format('Y-m-d H:i:s'),
+                Carbon::parse(array_get($range, 'endAt'))->format('Y-m-d H:i:s'),
             );
         };
     }
@@ -39,7 +39,7 @@ class ReservationScope extends Scope
                 ->whereRaw(
                     '? between DATE_SUB(ADDTIME(reserve_date, reserve_time), INTERVAL 2 MINUTE)'.
                     ' and DATE_ADD(ADDTIME(reserve_date, reserve_time), INTERVAL duration MINUTE)',
-                    [$dateTime]
+                    [$dateTime],
                 );
         };
     }
@@ -50,7 +50,7 @@ class ReservationScope extends Scope
             return $builder->whereRaw(
                 '? not between DATE_SUB(ADDTIME(reserve_date, reserve_time), INTERVAL (duration - 2) MINUTE)'.
                 ' and DATE_ADD(ADDTIME(reserve_date, reserve_time), INTERVAL duration MINUTE)',
-                [$dateTime]
+                [$dateTime],
             );
         };
     }

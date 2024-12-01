@@ -2,6 +2,7 @@
 
 namespace Igniter\Reservation\Models;
 
+use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Exception\FlashException;
 use Igniter\Local\Models\Concerns\Locationable;
 use Igniter\Local\Models\Location;
@@ -9,6 +10,7 @@ use Illuminate\Support\Collection;
 
 class DiningArea extends \Igniter\Flame\Database\Model
 {
+    use HasFactory;
     use Locationable;
 
     public $table = 'dining_areas';

@@ -115,7 +115,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
     public function index_onDelete()
     {
         throw_unless($this->authorize('Admin.DeleteReservations'),
-            new FlashException(lang('igniter::admin.alert_user_restricted'))
+            new FlashException(lang('igniter::admin.alert_user_restricted')),
         );
 
         return $this->asExtension(\Igniter\Admin\Http\Actions\ListController::class)->index_onDelete();
@@ -136,26 +136,26 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         return $this->redirectBack();
     }
 
-    public function edit_onDelete()
+    public function edit_onDelete(?string $context = null, mixed $recordId = null)
     {
         throw_unless($this->authorize('Admin.DeleteReservations'),
-            new FlashException(lang('igniter::admin.alert_user_restricted'))
+            new FlashException(lang('igniter::admin.alert_user_restricted')),
         );
 
-        return $this->asExtension(\Igniter\Admin\Http\Actions\FormController::class)->edit_onDelete();
+        return $this->asExtension(\Igniter\Admin\Http\Actions\FormController::class)->edit_onDelete($context, $recordId);
     }
 
     public function calendarGenerateEvents($startAt, $endAt)
     {
         return Reservation::listCalendarEvents(
-            $startAt, $endAt, LocationFacade::getId()
+            $startAt, $endAt, LocationFacade::getId(),
         );
     }
 
     public function calendarUpdateEvent($eventId, $startAt, $endAt)
     {
         throw_unless($reservation = Reservation::find($eventId),
-            new FlashException(lang('igniter.reservation::default.alert_no_reservation_found'))
+            new FlashException(lang('igniter.reservation::default.alert_no_reservation_found')),
         );
 
         $startAt = make_carbon($startAt);

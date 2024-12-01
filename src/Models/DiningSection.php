@@ -2,11 +2,13 @@
 
 namespace Igniter\Reservation\Models;
 
+use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Local\Models\Concerns\Locationable;
 use Igniter\Local\Models\Location;
 
 class DiningSection extends \Igniter\Flame\Database\Model
 {
+    use HasFactory;
     use Locationable;
 
     public $table = 'dining_sections';

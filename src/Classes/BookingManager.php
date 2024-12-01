@@ -98,7 +98,7 @@ class BookingManager
      */
     public function saveReservation($reservation, $data)
     {
-        Event::fire('igniter.reservation.beforeSaveReservation', [$reservation, $data]);
+        Event::dispatch('igniter.reservation.beforeSaveReservation', [$reservation, $data]);
 
         $reservation->guest_num = (int)array_get($data, 'guest', 1);
         $reservation->first_name = array_get($data, 'first_name', $reservation->first_name);
@@ -117,7 +117,7 @@ class BookingManager
         $status = Status::find(setting('default_reservation_status'));
         $reservation->addStatusHistory($status, ['notify' => false]);
 
-        Event::fire('igniter.reservation.confirmed', [$reservation]);
+        Event::dispatch('igniter.reservation.confirmed', [$reservation]);
 
         return $reservation;
     }
@@ -147,7 +147,7 @@ class BookingManager
             return $this->fullyBookedCache[$index];
         }
 
-        $isFullyBooked = Event::fire('igniter.reservation.isFullyBookedOn', [$dateTime, $noOfGuests], true);
+        $isFullyBooked = Event::dispatch('igniter.reservation.isFullyBookedOn', [$dateTime, $noOfGuests], true);
         if (!is_bool($isFullyBooked)) {
             $isFullyBooked = $this->getNextBookableTable($dateTime, $noOfGuests)->isEmpty();
         }
@@ -173,14 +173,12 @@ class BookingManager
 
     protected function getRequiredAttributes()
     {
-        $customer = Auth::getUser();
-
         return [
-            'customer_id' => $customer->customer_id ?? null,
-            'first_name' => $customer->first_name ?? null,
-            'last_name' => $customer->last_name ?? null,
-            'email' => $customer->email ?? null,
-            'telephone' => $customer->telephone ?? null,
+            'customer_id' => $this->customer->customer_id ?? null,
+            'first_name' => $this->customer->first_name ?? null,
+            'last_name' => $this->customer->last_name ?? null,
+            'email' => $this->customer->email ?? null,
+            'telephone' => $this->customer->telephone ?? null,
         ];
     }
 }

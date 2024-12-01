@@ -27,9 +27,11 @@
                             <h5 class="mb-3">@lang($fields['_dining_sections']->label)</h5>
                             {!! $this->renderFieldElement($fields['_dining_sections']) !!}
                         </div>
-                        <div class="col-md-8">
-                            {!! $this->renderFieldElement($fields['dining_table_solos']) !!}
-                        </div>
+                        @isset($fields['dining_table_solos'])
+                            <div class="col-md-8">
+                                {!! $this->renderFieldElement($fields['dining_table_solos']) !!}
+                            </div>
+                        @endisset
                     </div>
                 @else
                     {!! $this->makePartial('form/form_fields', ['fields' => $fields]) !!}

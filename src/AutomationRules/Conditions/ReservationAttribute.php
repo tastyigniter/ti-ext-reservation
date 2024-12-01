@@ -63,7 +63,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
         $currentDateTime = now();
 
         return $currentDateTime->isAfter($reservation->reservation_datetime)
-            ? floor($reservation->reservation_datetime->diffInRealHours($currentDateTime))
+            ? floor($reservation->reservation_datetime->diffInUTCHour($currentDateTime))
             : 0;
     }
 
@@ -72,7 +72,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
         $currentDateTime = now();
 
         return $currentDateTime->isBefore($reservation->reservation_datetime)
-            ? $currentDateTime->diffInRealHours($reservation->reservation_datetime)
+            ? $currentDateTime->diffInUTCHour($reservation->reservation_datetime)
             : 0;
     }
 

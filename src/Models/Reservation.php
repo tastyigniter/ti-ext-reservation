@@ -327,6 +327,7 @@ class Reservation extends Model
         }
 
         $this->tables()->sync($tableIds);
+        return true;
     }
 
     /**

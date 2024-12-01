@@ -26,7 +26,7 @@ class AssignTable extends BaseBulkActionWidget
 
         if ($noTablesFound) {
             flash()->warning(
-                sprintf(lang('igniter.reservation::default.alert_no_assignable_table'), implode(', ', $noTablesFound))
+                lang('igniter.reservation::default.alert_no_assignable_table').' '.implode(', ', $noTablesFound),
             )->important();
         }
 

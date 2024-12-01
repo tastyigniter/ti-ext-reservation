@@ -15,7 +15,7 @@ class DiningTable extends \Igniter\Flame\Database\Model
     use NestedTree;
     use Sortable;
 
-    const SORT_ORDER = 'priority';
+    public const SORT_ORDER = 'priority';
 
     public $table = 'dining_tables';
 
@@ -77,7 +77,7 @@ class DiningTable extends \Igniter\Flame\Database\Model
 
     public function getSectionNameAttribute()
     {
-        return optional($this->dining_section)->name;
+        return $this->dining_section?->name;
     }
 
     //

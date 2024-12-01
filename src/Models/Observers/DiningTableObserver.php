@@ -33,7 +33,7 @@ class DiningTableObserver
                 $descendant->saveAsRoot();
             });
 
-            self::fixBrokenTreeQuietly();
+            DiningTable::fixBrokenTreeQuietly();
 
             $diningTable->refreshNode();
         }

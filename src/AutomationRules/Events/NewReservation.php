@@ -24,7 +24,7 @@ class NewReservation extends BaseEvent
             $params = $reservation->mailGetData();
         }
 
-        $params['status'] = $reservation->status;
+        $params['status'] = $reservation?->status;
 
         return $params;
     }
