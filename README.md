@@ -1,3 +1,10 @@
+<p align="center">
+    <a href="https://github.com/tastyigniter/ti-ext-reservation/actions"><img src="https://github.com/tastyigniter/ti-ext-reservation/actions/workflows/pipeline.yml/badge.svg" alt="Build Status"></a>
+    <a href="https://packagist.org/packages/tastyigniter/ti-ext-reservation"><img src="https://img.shields.io/packagist/dt/tastyigniter/ti-ext-reservation" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/tastyigniter/ti-ext-reservation"><img src="https://img.shields.io/packagist/v/tastyigniter/ti-ext-reservation" alt="Latest Stable Version"></a>
+    <a href="https://packagist.org/packages/tastyigniter/ti-ext-reservation"><img src="https://img.shields.io/packagist/l/tastyigniter/ti-ext-reservation" alt="License"></a>
+</p>
+
 ## Introduction
 
 The TastyIgniter reservation extension provides a comprehensive reservation management system. It allows customers to make table reservations, and administrators to manage these reservations effectively.
