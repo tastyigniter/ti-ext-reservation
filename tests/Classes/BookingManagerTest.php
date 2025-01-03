@@ -47,6 +47,7 @@ it('returns time slots with default interval and lead time', function() {
 
     $location->shouldReceive('getReservationInterval')->andReturn(30);
     $location->shouldReceive('getReservationLeadTime')->andReturn(15);
+    $location->shouldReceive('getMinReservationAdvanceTime')->andReturn(2);
     $location->shouldReceive('getMaxReservationAdvanceTime')->andReturn(90);
     $location->shouldReceive('getSettings')->with('booking.include_start_time', 1)->andReturn(1);
     $schedule->shouldReceive('generateTimeslot')->andReturn(collect([Carbon::now()->addMinutes(30)]));
@@ -64,6 +65,7 @@ it('returns time slots with custom interval and lead time', function() {
     $schedule = Mockery::mock(WorkingSchedule::class)->makePartial();
 
     $location->shouldReceive('getSettings')->with('booking.include_start_time', 1)->andReturn(1);
+    $location->shouldReceive('getMinReservationAdvanceTime')->andReturn(2);
     $location->shouldReceive('getMaxReservationAdvanceTime')->andReturn(90);
     $schedule->shouldReceive('generateTimeslot')->andReturn(collect([Carbon::now()->addMinutes(45)]));
     $location->shouldReceive('newWorkingSchedule')->andReturn($schedule);
@@ -84,6 +86,7 @@ it('filters out past time slots based on lead time', function() {
     $location->shouldReceive('getReservationInterval')->andReturn(30);
     $location->shouldReceive('getReservationLeadTime')->andReturn(15);
     $location->shouldReceive('getSettings')->with('booking.include_start_time', 1)->andReturn(1);
+    $location->shouldReceive('getMinReservationAdvanceTime')->andReturn(2);
     $location->shouldReceive('getMaxReservationAdvanceTime')->andReturn(90);
     $schedule->shouldReceive('generateTimeslot')->andReturn(collect([Carbon::now()->subMinutes(10), Carbon::now()->addMinutes(30)]));
     $location->shouldReceive('newWorkingSchedule')->andReturn($schedule);
