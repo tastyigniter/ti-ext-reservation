@@ -133,7 +133,10 @@ class BookingManager
     public function getSchedule($days = null)
     {
         if (is_null($days)) {
-            $days = $this->location->getMaxReservationAdvanceTime();
+            $days = [
+                $this->location->getMinReservationAdvanceTime(),
+                $this->location->getMaxReservationAdvanceTime(),
+            ];
         }
 
         return $this->location->newWorkingSchedule('opening', $days);

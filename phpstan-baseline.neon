@@ -31,11 +31,6 @@ parameters:
 			path: src/Classes/BookingManager.php
 
 		-
-			message: "#^Result of static method Igniter\\\\User\\\\Facades\\\\Auth\\:\\:customer\\(\\) \\(void\\) is used\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
 			message: "#^Call to an undefined static method Igniter\\\\User\\\\Http\\\\Controllers\\\\Customers\\:\\:extendFormFields\\(\\)\\.$#"
 			count: 1
 			path: src/Extension.php
@@ -166,11 +161,6 @@ parameters:
 			path: src/Models/Observers/ReservationObserver.php
 
 		-
-			message: "#^Access to an undefined property Igniter\\\\Admin\\\\Models\\\\StatusHistory\\:\\:\\$status\\.$#"
-			count: 1
-			path: src/Models/Reservation.php
-
-		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$location\\.$#"
 			count: 7
 			path: src/Models/Reservation.php
@@ -183,6 +173,11 @@ parameters:
 		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$tables\\.$#"
 			count: 2
+			path: src/Models/Reservation.php
+
+		-
+			message: "#^Call to an undefined method Igniter\\\\Admin\\\\Models\\\\StatusHistory\\|Igniter\\\\Flame\\\\Database\\\\Builder\\<Igniter\\\\Admin\\\\Models\\\\StatusHistory\\>\\:\\:whereStatusIsLatest\\(\\)\\.$#"
+			count: 1
 			path: src/Models/Reservation.php
 
 		-
