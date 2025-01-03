@@ -17,7 +17,7 @@ class BookingManager
     protected $customer;
 
     /**
-     * @var \Igniter\Local\Models\Location
+     * @var \Igniter\Local\Models\Location|\Igniter\Reservation\Models\Concerns\LocationAction
      */
     protected $location;
 

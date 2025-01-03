@@ -11,26 +11,6 @@ parameters:
 			path: src/Classes/BookingManager.php
 
 		-
-			message: "#^Call to an undefined method Igniter\\\\Local\\\\Models\\\\Location\\:\\:getMaxReservationAdvanceTime\\(\\)\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Local\\\\Models\\\\Location\\:\\:getReservationInterval\\(\\)\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Local\\\\Models\\\\Location\\:\\:getReservationLeadTime\\(\\)\\.$#"
-			count: 1
-			path: src/Classes/BookingManager.php
-
-		-
-			message: "#^Call to an undefined method Igniter\\\\Local\\\\Models\\\\Location\\:\\:getReservationStayTime\\(\\)\\.$#"
-			count: 2
-			path: src/Classes/BookingManager.php
-
-		-
 			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:customer\\(\\)\\.$#"
 			count: 1
 			path: src/Classes/BookingManager.php
@@ -51,7 +31,7 @@ parameters:
 			path: src/Classes/BookingManager.php
 
 		-
-			message: "#^Call to an undefined static method Igniter\\\\User\\\\Facades\\\\Auth\\:\\:customer\\(\\)\\.$#"
+			message: "#^Result of static method Igniter\\\\User\\\\Facades\\\\Auth\\:\\:customer\\(\\) \\(void\\) is used\\.$#"
 			count: 1
 			path: src/Classes/BookingManager.php
 
@@ -81,27 +61,12 @@ parameters:
 			path: src/FormWidgets/FloorPlanner.php
 
 		-
-			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Facades\\\\AdminMenu\\:\\:setContext\\(\\)\\.$#"
-			count: 1
-			path: src/Http/Controllers/DiningAreas.php
-
-		-
 			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:isBroken\\(\\)\\.$#"
 			count: 1
 			path: src/Http/Controllers/DiningAreas.php
 
 		-
-			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Facades\\\\AdminMenu\\:\\:setContext\\(\\)\\.$#"
-			count: 1
-			path: src/Http/Controllers/Reservations.php
-
-		-
 			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Models\\\\Status\\:\\:find\\(\\)\\.$#"
-			count: 1
-			path: src/Http/Controllers/Reservations.php
-
-		-
-			message: "#^Call to an undefined static method Igniter\\\\Local\\\\Facades\\\\Location\\:\\:getId\\(\\)\\.$#"
 			count: 1
 			path: src/Http/Controllers/Reservations.php
 
@@ -116,13 +81,8 @@ parameters:
 			path: src/Http/Controllers/Reservations.php
 
 		-
-			message: "#^Call to an undefined static method Igniter\\\\Local\\\\Facades\\\\Location\\:\\:current\\(\\)\\.$#"
-			count: 1
-			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
-
-		-
-			message: "#^Call to an undefined static method Igniter\\\\Local\\\\Facades\\\\Location\\:\\:getId\\(\\)\\.$#"
-			count: 1
+			message: "#^Call to an undefined method Igniter\\\\Local\\\\Contracts\\\\LocationInterface\\:\\:getSettings\\(\\)\\.$#"
+			count: 2
 			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
 
 		-
@@ -147,11 +107,6 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningArea\\:\\:\\$dining_tables\\.$#"
-			count: 1
-			path: src/Models/DiningArea.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningArea\\:\\:\\$name\\.$#"
 			count: 1
 			path: src/Models/DiningArea.php
 
@@ -181,54 +136,9 @@ parameters:
 			path: src/Models/DiningTable.php
 
 		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$id\\.$#"
-			count: 1
-			path: src/Models/DiningTable.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$max_capacity\\.$#"
-			count: 2
-			path: src/Models/DiningTable.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$min_capacity\\.$#"
-			count: 1
-			path: src/Models/DiningTable.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$name\\.$#"
-			count: 1
-			path: src/Models/DiningTable.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$seat_layout\\.$#"
-			count: 1
-			path: src/Models/DiningTable.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$shape\\.$#"
-			count: 1
-			path: src/Models/DiningTable.php
-
-		-
 			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\DiningSection\\:\\:where\\(\\)\\.$#"
 			count: 1
 			path: src/Models/DiningTable.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$is_combo\\.$#"
-			count: 1
-			path: src/Models/Observers/DiningTableObserver.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$parent\\.$#"
-			count: 1
-			path: src/Models/Observers/DiningTableObserver.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:\\$parent_id\\.$#"
-			count: 2
-			path: src/Models/Observers/DiningTableObserver.php
 
 		-
 			message: "#^Call to an undefined method Igniter\\\\Reservation\\\\Models\\\\DiningTable\\:\\:fixTree\\(\\)\\.$#"
@@ -246,32 +156,7 @@ parameters:
 			path: src/Models/Observers/ReservationObserver.php
 
 		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$customer_id\\.$#"
-			count: 1
-			path: src/Models/Observers/ReservationObserver.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$email\\.$#"
-			count: 1
-			path: src/Models/Observers/ReservationObserver.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$first_name\\.$#"
-			count: 1
-			path: src/Models/Observers/ReservationObserver.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$last_name\\.$#"
-			count: 1
-			path: src/Models/Observers/ReservationObserver.php
-
-		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$location\\.$#"
-			count: 1
-			path: src/Models/Observers/ReservationObserver.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$telephone\\.$#"
 			count: 1
 			path: src/Models/Observers/ReservationObserver.php
 
@@ -281,38 +166,8 @@ parameters:
 			path: src/Models/Observers/ReservationObserver.php
 
 		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$comment\\.$#"
+			message: "#^Access to an undefined property Igniter\\\\Admin\\\\Models\\\\StatusHistory\\:\\:\\$status\\.$#"
 			count: 1
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$customer_name\\.$#"
-			count: 2
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$duration\\.$#"
-			count: 3
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$email\\.$#"
-			count: 4
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$first_name\\.$#"
-			count: 3
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$guest_num\\.$#"
-			count: 4
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$last_name\\.$#"
-			count: 3
 			path: src/Models/Reservation.php
 
 		-
@@ -321,73 +176,13 @@ parameters:
 			path: src/Models/Reservation.php
 
 		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$location_id\\.$#"
-			count: 3
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$occasion_id\\.$#"
-			count: 1
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$reservation_datetime\\.$#"
-			count: 6
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$reservation_end_datetime\\.$#"
-			count: 2
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$reservation_id\\.$#"
-			count: 3
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$reserve_date\\.$#"
-			count: 4
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$reserve_end_time\\.$#"
-			count: 2
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$reserve_time\\.$#"
-			count: 2
-			path: src/Models/Reservation.php
-
-		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$status\\.$#"
-			count: 1
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$status_id\\.$#"
-			count: 1
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$table_name\\.$#"
 			count: 1
 			path: src/Models/Reservation.php
 
 		-
 			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$tables\\.$#"
 			count: 2
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Igniter\\\\Reservation\\\\Models\\\\Reservation\\:\\:\\$telephone\\.$#"
-			count: 2
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Support\\\\Optional\\:\\:\\$status_name\\.$#"
-			count: 1
 			path: src/Models/Reservation.php
 
 		-
@@ -422,11 +217,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Illuminate\\\\Support\\\\Optional\\:\\:getReservationStayTime\\(\\)\\.$#"
-			count: 1
-			path: src/Models/Reservation.php
-
-		-
-			message: "#^Call to an undefined static method Igniter\\\\Admin\\\\Models\\\\StatusHistory\\:\\:applyRelated\\(\\)\\.$#"
 			count: 1
 			path: src/Models/Reservation.php
 
