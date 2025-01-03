@@ -8,6 +8,19 @@ use Igniter\Local\Models\Concerns\Locationable;
 use Igniter\Local\Models\Location;
 use Illuminate\Support\Collection;
 
+/**
+ * DiningArea Model Class
+ *
+ * @property int $id
+ * @property int $location_id
+ * @property string $name
+ * @property string|null $description
+ * @property array|null $floor_plan
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $dining_table_count
+ * @mixin \Igniter\Flame\Database\Model
+ */
 class DiningArea extends \Igniter\Flame\Database\Model
 {
     use HasFactory;

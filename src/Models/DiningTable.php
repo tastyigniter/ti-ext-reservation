@@ -8,6 +8,32 @@ use Igniter\Flame\Database\Traits\Sortable;
 use Igniter\Local\Models\Concerns\Locationable;
 use Igniter\Local\Models\Location;
 
+/**
+ * DiningTable Model Class
+ *
+ * @property int $id
+ * @property int $dining_area_id
+ * @property int|null $dining_section_id
+ * @property int|null $parent_id
+ * @property string $name
+ * @property string|null $shape
+ * @property int $min_capacity
+ * @property int $max_capacity
+ * @property int $extra_capacity
+ * @property bool $is_combo
+ * @property bool $is_enabled
+ * @property int|null $nest_left
+ * @property int|null $nest_right
+ * @property int $priority
+ * @property array|null $seat_layout
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Kalnoy\Nestedset\Collection<int, DiningTable> $children
+ * @property-read int|null $children_count
+ * @property-read mixed $section_name
+ * @property-read DiningTable|null $parent
+ * @mixin \Igniter\Flame\Database\Model
+ */
 class DiningTable extends \Igniter\Flame\Database\Model
 {
     use HasFactory;

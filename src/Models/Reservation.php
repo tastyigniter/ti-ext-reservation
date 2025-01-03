@@ -18,6 +18,42 @@ use Igniter\User\Models\Concerns\HasCustomer;
 
 /**
  * Reservation Model Class
+ *
+ * @property int $reservation_id
+ * @property int $location_id
+ * @property int $table_id
+ * @property int $guest_num
+ * @property int|null $occasion_id
+ * @property int|null $customer_id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $email
+ * @property string $telephone
+ * @property string|null $comment
+ * @property mixed $reserve_time
+ * @property \Illuminate\Support\Carbon $reserve_date
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property int|null $assignee_id
+ * @property int|null $assignee_group_id
+ * @property bool|null $notify
+ * @property string $ip_address
+ * @property string $user_agent
+ * @property int $status_id
+ * @property string|null $hash
+ * @property int|null $duration
+ * @property bool|null $processed
+ * @property \Illuminate\Support\Carbon|null $status_updated_at
+ * @property \Illuminate\Support\Carbon|null $assignee_updated_at
+ * @property-read mixed $customer_name
+ * @property-read mixed $occasion
+ * @property-read mixed $reservation_datetime
+ * @property-read mixed $reservation_end_datetime
+ * @property-read mixed $reserve_end_time
+ * @property-read string|null $status_color
+ * @property-read string|null $status_name
+ * @property-read mixed $table_name
+ * @mixin \Igniter\Flame\Database\Model
  */
 class Reservation extends Model
 {
@@ -506,9 +542,10 @@ class Reservation extends Model
             $data['location_telephone'] = $model->location->location_telephone;
         }
 
+        /** @var StatusHistory $statusHistory */
         $statusHistory = StatusHistory::applyRelated($model)->whereStatusIsLatest($model->status_id)->first();
-        $data['status_name'] = $statusHistory ? optional($statusHistory->status)->status_name : null;
-        $data['status_comment'] = $statusHistory ? $statusHistory->comment : null;
+        $data['status_name'] = $statusHistory?->status?->status_name;
+        $data['status_comment'] = $statusHistory?->comment;
 
         $controller = MainController::getController();
         $data['reservation_view_url'] = $controller->pageUrl('account/reservations', [

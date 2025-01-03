@@ -6,6 +6,20 @@ use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Local\Models\Concerns\Locationable;
 use Igniter\Local\Models\Location;
 
+/**
+ * DiningSection Model Class
+ *
+ * @property int $id
+ * @property int $location_id
+ * @property string $name
+ * @property string|null $description
+ * @property string|null $color
+ * @property int $priority
+ * @property int $is_enabled
+ * @property string|null $created_at
+ * @property string|null $updated_at
+ * @mixin \Igniter\Flame\Database\Model
+ */
 class DiningSection extends \Igniter\Flame\Database\Model
 {
     use HasFactory;
