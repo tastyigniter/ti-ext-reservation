@@ -75,7 +75,7 @@ return new class extends Migration
 
         $this->setDiningTableIdOnReservationTables();
 
-        DiningTable::fixBrokenTreeQuietly();
+        DiningTable::make()->fixBrokenTreeQuietly();
     }
 
     public function down()
