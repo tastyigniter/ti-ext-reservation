@@ -50,7 +50,7 @@ it('returns correct reservation cancellation timeout', function() {
 
 it('returns true when auto allocate table is enabled', function() {
     $location = Mockery::mock(Location::class)->makePartial();
-    $location->shouldReceive('getSettings')->with('booking.auto_allocate_table', 1)->andReturn(true);
+    $location->shouldReceive('getSettings')->with('booking.auto_allocate_table', 0)->andReturn(true);
 
     expect((new LocationAction($location))->shouldAutoAllocateTable())->toBeTrue();
 });

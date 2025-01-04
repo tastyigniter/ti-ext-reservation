@@ -43,6 +43,16 @@ it('applies where between reservation date time', function() {
     $whereBetweenReservationDateTime($this->builder, '2023-10-10 12:00:00', '2023-10-10 14:00:00');
 });
 
+it('applies where between date time', function() {
+    $this->builder->shouldReceive('whereRaw')
+        ->with('? between DATE_SUB(ADDTIME(reserve_date, reserve_time), INTERVAL 2 MINUTE) and DATE_ADD(ADDTIME(reserve_date, reserve_time), INTERVAL duration MINUTE)', ['2023-10-10 12:00:00'])
+        ->once()
+        ->andReturnSelf();
+
+    $whereBetweenStayTime = $this->scope->addWhereBetweenDate();
+    $whereBetweenStayTime($this->builder, '2023-10-10 12:00:00');
+});
+
 it('applies where between stay time', function() {
     $this->builder->shouldReceive('whereRaw')
         ->with('? between DATE_SUB(ADDTIME(reserve_date, reserve_time), INTERVAL 2 MINUTE) and DATE_ADD(ADDTIME(reserve_date, reserve_time), INTERVAL duration MINUTE)', ['2023-10-10 12:00:00'])

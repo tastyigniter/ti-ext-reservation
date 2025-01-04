@@ -2,9 +2,14 @@
 
 namespace Igniter\Reservation\Models;
 
+use Igniter\Flame\Database\Builder;
 use Igniter\Flame\Database\Factories\HasFactory;
+use Igniter\Flame\Database\Model;
+use Igniter\Flame\Database\Relations\BelongsTo;
+use Igniter\Flame\Database\Relations\HasMany;
 use Igniter\Local\Models\Concerns\Locationable;
 use Igniter\Local\Models\Location;
+use Illuminate\Support\Collection;
 
 /**
  * DiningSection Model Class
@@ -18,9 +23,17 @@ use Igniter\Local\Models\Location;
  * @property int $is_enabled
  * @property string|null $created_at
  * @property string|null $updated_at
- * @mixin \Igniter\Flame\Database\Model
+ * @property-read Location $location
+ * @property-read Collection<int, DiningArea> $dining_areas
+ * @method static Builder<static>|DiningSection query()
+ * @method static Builder<static>|DiningSection dropdown(string $column, string $key = null)
+ * @method static BelongsTo<static>|DiningSection location()
+ * @method static HasMany<static>|DiningSection dining_areas()
+ * @method static Builder<static>|DiningSection whereHasLocation(int|string|Model $locationId)
+ * @method static Builder<static>|DiningSection whereIsReservable()
+ * @mixin Model
  */
-class DiningSection extends \Igniter\Flame\Database\Model
+class DiningSection extends Model
 {
     use HasFactory;
     use Locationable;

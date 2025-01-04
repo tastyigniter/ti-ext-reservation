@@ -83,7 +83,7 @@ class DiningAreas extends AdminController
     {
         $checked = (array)post('DiningArea._select_dining_tables', []);
         throw_if(!$checked || count($checked) < 2,
-            new FlashException(lang('igniter.reservation::default.dining_areas.alert_tables_not_checked'))
+            new FlashException(lang('igniter.reservation::default.dining_areas.alert_tables_not_checked')),
         );
 
         $model = $this->asExtension('FormController')->formFindModelObject($recordId);
@@ -111,8 +111,9 @@ class DiningAreas extends AdminController
 
     public function formBeforeSave($model)
     {
-        if (DiningTable::isBroken()) {
-            DiningTable::fixBrokenTreeQuietly();
+        $diningTable = resolve(DiningTable::class);
+        if ($diningTable->isBroken()) {
+            $diningTable->fixBrokenTreeQuietly();
         }
     }
 }

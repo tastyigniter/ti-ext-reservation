@@ -29,11 +29,11 @@ class DiningTableObserver
         }
 
         if ($diningTable->is_combo) {
-            $diningTable->descendants()->each(function($descendant) {
+            $diningTable->descendants()->each(function(DiningTable $descendant) {
                 $descendant->saveAsRoot();
             });
 
-            DiningTable::fixBrokenTreeQuietly();
+            (new DiningTable)->fixBrokenTreeQuietly();
 
             $diningTable->refreshNode();
         }

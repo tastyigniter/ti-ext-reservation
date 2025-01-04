@@ -3,6 +3,7 @@
 namespace Igniter\Reservation\Tests\Http\Controllers;
 
 use Igniter\Reservation\Models\DiningArea;
+use Igniter\Reservation\Models\DiningTable;
 
 it('loads dining areas page', function() {
     actingAsSuperUser()
@@ -32,6 +33,21 @@ it('loads dining area preview page', function() {
         ->assertOk();
 });
 
+it('duplicates dining area', function() {
+    $diningArea = DiningArea::factory()->create();
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas'), [
+            'id' => $diningArea->getKey(),
+        ], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'onDuplicate',
+        ])
+        ->assertOk();
+
+    expect(DiningArea::where('name', $diningArea->name.' (copy)')->exists())->toBeTrue();
+});
+
 it('creates dining area', function() {
     actingAsSuperUser()
         ->post(route('igniter.reservation.dining_areas', ['slug' => 'create']), [
@@ -46,6 +62,26 @@ it('creates dining area', function() {
     expect(DiningArea::where('name', 'Created Dining Area')->exists())->toBeTrue();
 });
 
+it('creates a dining table combo', function() {
+    $diningArea = DiningArea::factory()->create();
+    $tables = $diningArea->dining_tables()->saveMany(DiningTable::factory(3)->make());
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [
+            'DiningArea' => [
+                '_select_dining_tables' => $tables->pluck('id')->all(),
+            ],
+        ], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'onCreateCombo',
+        ]);
+
+    $this->assertDatabaseHas('dining_tables', [
+        'name' => $tables->pluck('name')->join('/'),
+        'is_combo' => 1,
+    ]);
+});
+
 it('updates dining area', function() {
     $diningArea = DiningArea::factory()->create();
 
@@ -58,6 +94,27 @@ it('updates dining area', function() {
             'X-Requested-With' => 'XMLHttpRequest',
             'X-IGNITER-REQUEST-HANDLER' => 'onSave',
         ]);
+
+    expect(DiningArea::find($diningArea->getKey()))->name->toBe('Updated Dining Area');
+});
+
+it('updates dining area fixes broken tree', function() {
+    $diningArea = DiningArea::factory()->create();
+    $diningTableMock = mock(DiningTable::class)->makePartial();
+    $diningTableMock->shouldReceive('isBroken')->andReturnTrue();
+    $diningTableMock->shouldReceive('fixBrokenTreeQuietly')->once();
+    app()->instance(DiningTable::class, $diningTableMock);
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [
+            'DiningArea' => [
+                'name' => 'Updated Dining Area',
+            ],
+        ], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'onSave',
+        ])
+        ->assertOk();
 
     expect(DiningArea::find($diningArea->getKey()))->name->toBe('Updated Dining Area');
 });

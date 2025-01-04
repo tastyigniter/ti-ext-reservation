@@ -8,6 +8,26 @@ use Igniter\Reservation\AutomationRules\Conditions\ReservationAttribute;
 use Igniter\Reservation\Models\Reservation;
 use Mockery;
 
+it('returns correct condition details', function() {
+    $result = (new ReservationAttribute())->conditionDetails();
+
+    expect($result)->toBe([
+        'name' => 'Reservation attribute',
+        'description' => 'Reservation attributes',
+    ]);
+});
+
+it('defines model attributes correctly', function() {
+    $reservationAttribute = new ReservationAttribute;
+
+    $attributes = $reservationAttribute->defineModelAttributes();
+
+    expect($attributes)->toHaveKeys([
+        'first_name', 'last_name', 'email', 'location_id', 'status_id',
+        'guest_num', 'hours_since', 'hours_until', 'days_since', 'days_until', 'history_status_id',
+    ]);
+});
+
 it('returns model attribute correctly', function($carbonMethod, $carbonValue, $conditionMethod, $expected) {
     $this->travelTo(Carbon::now()->setHour(8)->setMinute(0)->setSecond(0));
 

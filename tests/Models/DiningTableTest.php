@@ -34,6 +34,16 @@ it('returns empty dining section id options when dining area does not exist', fu
     expect($diningTable->getDiningSectionIdOptions())->toBe([]);
 });
 
+it('returns priority options as an array of strings', function() {
+    $diningTable = new DiningTable();
+
+    $options = $diningTable->getPriorityOptions();
+
+    expect($options)->toBeArray()
+        ->and($options)->toHaveCount(10)
+        ->and($options[0])->toBeString();
+});
+
 it('returns correct section name attribute', function() {
     $diningSection = Mockery::mock(DiningSection::class)->makePartial();
     $diningSection->shouldReceive('getAttribute')->with('name')->andReturn('Main Section');

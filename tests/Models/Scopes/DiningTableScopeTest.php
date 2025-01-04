@@ -89,7 +89,7 @@ it('adds where is available for date scope', function() {
 
 it('adds where is available on scope', function() {
     $duration = 15;
-    $dateTime = Carbon::parse('2023-10-10 12:30:00');
+    $dateTime = Carbon::parse('2023-10-10 12:30:00')->toDateTimeString();
     $this->builder->shouldReceive('whereDoesntHave')->with('reservations', Mockery::on(function($callback) use ($duration, $dateTime) {
         $subBuilder = Mockery::mock(Builder::class);
         $subBuilder->shouldReceive('where')->with(Mockery::on(function($callback) use ($dateTime) {

@@ -5,6 +5,11 @@ namespace Igniter\Reservation\Notifications;
 use Igniter\User\Classes\Notification;
 use Igniter\User\Models\User;
 
+/**
+ * ReservationCreatedNotification Class
+ *
+ * @property \Igniter\Reservation\Models\Reservation|null $subject
+ */
 class ReservationCreatedNotification extends Notification
 {
     public function getRecipients(): array

@@ -6,10 +6,13 @@ use Igniter\Admin\Classes\BaseFormWidget;
 use Igniter\Admin\Classes\FormField;
 use Igniter\Admin\Traits\FormModelWidget;
 use Igniter\Admin\Traits\ValidatesForm;
+use Igniter\Reservation\Models\DiningTable;
 
 /**
  * Floor planner
  * Renders a floor planner field.
+ *
+ * @property \Igniter\Reservation\Models\DiningArea $model
  */
 class FloorPlanner extends BaseFormWidget
 {
@@ -107,6 +110,7 @@ class FloorPlanner extends BaseFormWidget
 
         collect(array_get($state, 'groups'))->each(function($group) {
             $id = str_after(array_get($group, 'id'), 'group-');
+            /** @var DiningTable $table */
             if ($table = $this->model->dining_tables()->find($id)) {
                 $table->seat_layout = $group;
                 $table->save();

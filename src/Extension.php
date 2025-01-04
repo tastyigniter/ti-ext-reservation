@@ -5,11 +5,11 @@ namespace Igniter\Reservation;
 use Igniter\Admin\DashboardWidgets\Charts;
 use Igniter\Admin\DashboardWidgets\Statistics;
 use Igniter\Admin\Models\StatusHistory;
-use Igniter\Admin\Widgets\Form;
 use Igniter\Local\Models\Location;
 use Igniter\Local\Models\Location as LocationModel;
 use Igniter\Reservation\Classes\BookingManager;
 use Igniter\Reservation\Http\Requests\ReservationSettingsRequest;
+use Igniter\Reservation\Listeners\AddsCustomerReservationsTabFields;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
 use Igniter\Reservation\Listeners\RegistersDashboardCards;
 use Igniter\Reservation\Listeners\SendReservationConfirmation;
@@ -23,7 +23,6 @@ use Igniter\Reservation\Models\Scopes\DiningTableScope;
 use Igniter\Reservation\Models\Scopes\ReservationScope;
 use Igniter\System\Models\Settings;
 use Igniter\User\Http\Controllers\Customers;
-use Igniter\User\Models\Customer;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 
@@ -68,54 +67,13 @@ class Extension extends \Igniter\System\Classes\BaseExtension
             'dining_sections' => \Igniter\Reservation\Models\DiningSection::class,
         ]);
 
-        Customers::extendFormFields(function(Form $form) {
-            if (!$form->model instanceof Customer) {
-                return;
-            }
-
-            $form->addTabFields([
-                'reservations' => [
-                    'tab' => 'lang:igniter.reservation::default.text_tab_reservations',
-                    'type' => 'datatable',
-                    'context' => ['edit', 'preview'],
-                    'useAjax' => true,
-                    'defaultSort' => ['reservation_id', 'desc'],
-                    'columns' => [
-                        'reservation_id' => [
-                            'title' => 'lang:igniter::admin.column_id',
-                        ],
-                        'customer_name' => [
-                            'title' => 'lang:igniter::admin.label_name',
-                        ],
-                        'status_name' => [
-                            'title' => 'lang:igniter::admin.label_status',
-                        ],
-                        'table_name' => [
-                            'title' => 'lang:igniter.reservation::default.column_table',
-                        ],
-                        'reserve_time' => [
-                            'title' => 'lang:igniter.reservation::default.column_time',
-                        ],
-                        'reserve_date' => [
-                            'title' => 'lang:igniter.reservation::default.column_date',
-                        ],
-                    ],
-                ],
-            ], 'primary');
-        });
+        Customers::extendFormFields(new AddsCustomerReservationsTabFields());
 
         LocationModel::implement(LocationAction::class);
 
         Location::extend(function(Location $model) {
             $model->relation['hasMany']['dining_areas'] = [DiningArea::class, 'delete' => true];
             $model->relation['morphedByMany']['tables'] = [DiningTable::class, 'name' => 'locationable'];
-        });
-
-        Event::listen('igniter.reservation.statusAdded', function(Reservation $model, $statusHistory) {
-            if ($statusHistory->notify) {
-                $model->reloadRelations();
-                $model->mailSend('igniter.reservation::mail.reservation_update', 'customer');
-            }
         });
 
         $this->extendDashboardChartsDatasets();
@@ -236,32 +194,29 @@ class Extension extends \Igniter\System\Classes\BaseExtension
 
     protected function bindReservationEvent()
     {
+        Event::listen('igniter.reservation.statusAdded', function(Reservation $model, $statusHistory) {
+            if ($statusHistory->notify) {
+                $model->reloadRelations();
+                $model->mailSend('igniter.reservation::mail.reservation_update', 'customer');
+            }
+        });
+
         Event::listen('admin.statusHistory.beforeAddStatus', function($statusHistory, $reservation, $statusId, $previousStatus) {
-            if (!$reservation instanceof Reservation) {
-                return;
+            if ($reservation instanceof Reservation && !StatusHistory::alreadyExists($reservation, $statusId)) {
+                Event::dispatch('igniter.reservation.beforeAddStatus', [$statusHistory, $reservation, $statusId, $previousStatus], true);
             }
-
-            if (StatusHistory::alreadyExists($reservation, $statusId)) {
-                return;
-            }
-
-            Event::fire('igniter.reservation.beforeAddStatus', [$statusHistory, $reservation, $statusId, $previousStatus], true);
         });
 
         Event::listen('admin.statusHistory.added', function($reservation, $statusHistory) {
-            if (!$reservation instanceof Reservation) {
-                return;
+            if ($reservation instanceof Reservation) {
+                Event::dispatch('igniter.reservation.statusAdded', [$reservation, $statusHistory], true);
             }
-
-            Event::fire('igniter.reservation.statusAdded', [$reservation, $statusHistory], true);
         });
 
         Event::listen('admin.assignable.assigned', function($reservation, $assignableLog) {
-            if (!$reservation instanceof Reservation) {
-                return;
+            if ($reservation instanceof Reservation) {
+                Event::dispatch('igniter.reservation.assigned', [$reservation, $assignableLog], true);
             }
-
-            Event::fire('igniter.reservation.assigned', [$reservation, $assignableLog], true);
         });
     }
 

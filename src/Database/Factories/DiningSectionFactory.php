@@ -15,7 +15,7 @@ class DiningSectionFactory extends Factory
             'name' => $this->faker->sentence(2),
             'description' => $this->faker->sentence(5),
             'priority' => $this->faker->randomDigit(),
-            'is_enabled' => $this->faker->boolean(),
+            'is_enabled' => 1,
             'created_at' => $this->faker->dateTime(),
             'updated_at' => $this->faker->dateTime(),
         ];

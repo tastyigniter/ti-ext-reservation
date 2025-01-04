@@ -4,6 +4,11 @@ namespace Igniter\Reservation\Models\Concerns;
 
 use Igniter\System\Actions\ModelAction;
 
+/**
+ * LocationAction Trait
+ *
+ * @property \Igniter\Local\Models\Location $model
+ */
 class LocationAction extends ModelAction
 {
     public function getReservationInterval(): int
@@ -38,6 +43,6 @@ class LocationAction extends ModelAction
 
     public function shouldAutoAllocateTable(): bool
     {
-        return (bool)$this->model->getSettings('booking.auto_allocate_table', 1);
+        return (bool)$this->model->getSettings('booking.auto_allocate_table', 0);
     }
 }

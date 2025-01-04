@@ -4,17 +4,24 @@ namespace Igniter\Reservation\Models;
 
 use Carbon\Carbon;
 use Igniter\Admin\Models\Concerns\GeneratesHash;
+use Igniter\Admin\Models\Status;
 use Igniter\Admin\Models\StatusHistory;
 use Igniter\Admin\Traits\LogsStatusHistory;
+use Igniter\Flame\Database\Builder;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
+use Igniter\Flame\Database\Relations\BelongsTo;
 use Igniter\Flame\Database\Traits\Purgeable;
 use Igniter\Local\Models\Concerns\Locationable;
+use Igniter\Local\Models\Location;
 use Igniter\Main\Classes\MainController;
 use Igniter\Reservation\Events\ReservationCanceledEvent;
+use Igniter\Reservation\Models\Concerns\LocationAction;
 use Igniter\System\Traits\SendsMailTemplate;
 use Igniter\User\Models\Concerns\Assignable;
 use Igniter\User\Models\Concerns\HasCustomer;
+use Igniter\User\Models\Customer;
+use Illuminate\Support\Collection;
 
 /**
  * Reservation Model Class
@@ -31,9 +38,9 @@ use Igniter\User\Models\Concerns\HasCustomer;
  * @property string $telephone
  * @property string|null $comment
  * @property mixed $reserve_time
- * @property \Illuminate\Support\Carbon $reserve_date
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon|string $reserve_date
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property int|null $assignee_id
  * @property int|null $assignee_group_id
  * @property bool|null $notify
@@ -53,7 +60,23 @@ use Igniter\User\Models\Concerns\HasCustomer;
  * @property-read string|null $status_color
  * @property-read string|null $status_name
  * @property-read mixed $table_name
- * @mixin \Igniter\Flame\Database\Model
+ * @property-read Customer|null $customer
+ * @property-read Location|LocationAction|null $location
+ * @property-read Status|null $status
+ * @property-read Collection<int, DiningTable> $tables
+ * @method static Builder<static>|Reservation query()
+ * @method static array pluckDates(string $column, string $keyFormat = 'Y-m', string $valueFormat = 'F Y')
+ * @method static BelongsTo<static> customer()
+ * @method static BelongsTo<static>|Location location()
+ * @method static BelongsTo<static>|Reservation status()
+ * @method static BelongsTo<static>|DiningTable tables()
+ * @method static Builder<static>|Reservation whereHash($value)
+ * @method static Builder<static>|Reservation whereBetween($column, $values, $boolean = 'and')
+ * @method static Builder<static>|Reservation whereHasLocation(int|string|Model $locationId)
+ * @method static Builder<static>|Reservation whereBetweenStayTime($dateTime)
+ * @method static Builder<static>|Reservation whereBetweenReservationDateTime($start, $end)
+ * @mixin Builder
+ * @mixin Model
  */
 class Reservation extends Model
 {
@@ -104,8 +127,8 @@ class Reservation extends Model
 
     public $relation = [
         'belongsTo' => [
-            'customer' => \Igniter\User\Models\Customer::class,
-            'location' => \Igniter\Local\Models\Location::class,
+            'customer' => Customer::class,
+            'location' => Location::class,
         ],
         'belongsToMany' => [
             'tables' => [\Igniter\Reservation\Models\DiningTable::class, 'table' => 'reservation_tables'],
@@ -173,14 +196,7 @@ class Reservation extends Model
 
     public function getReservationDatetimeAttribute($value)
     {
-        if (!isset($this->attributes['reserve_date'])
-            && !isset($this->attributes['reserve_time'])
-        ) {
-            return null;
-        }
-
-        return make_carbon($this->attributes['reserve_date'])
-            ->setTimeFromTimeString($this->attributes['reserve_time']);
+        return $this->reserve_date ? make_carbon($this->reserve_date)->setTimeFromTimeString($this->reserve_time) : null;
     }
 
     public function getReservationEndDatetimeAttribute($value)
@@ -197,7 +213,7 @@ class Reservation extends Model
 
     public function getTableNameAttribute()
     {
-        return ($this->tables && $this->tables->isNotEmpty())
+        return ($this->tables->isNotEmpty())
             ? implode(', ', $this->tables->pluck('name')->all())
             : '';
     }
@@ -205,7 +221,7 @@ class Reservation extends Model
     public function setDurationAttribute($value)
     {
         if (empty($value)) {
-            $value = optional($this->location()->first())->getReservationStayTime();
+            $value = $this->location?->getReservationStayTime();
         }
 
         $this->attributes['duration'] = $value;
@@ -231,7 +247,7 @@ class Reservation extends Model
             return false;
         }
 
-        if (!$this->reservation_datetime->isFuture()) {
+        if ($this->reservation_datetime->isPast()) {
             return false;
         }
 
@@ -251,22 +267,22 @@ class Reservation extends Model
 
     public static function findReservedTables($locationId, $dateTime)
     {
-        return self::with('tables')
-            ->whereHas('tables', function($query) use ($locationId) {
+        return self::query()->with('tables')
+            ->whereHas('tables', function(Builder|DiningTable $query) use ($locationId) {
                 $query->whereHasLocation($locationId);
             })
-            ->whereLocationId($locationId)
+            ->where('location_id', $locationId)
             ->whereBetweenStayTime($dateTime)
             ->where('status_id', setting('confirmed_reservation_status'))
             ->get()
             ->pluck('tables')
             ->flatten()
-            ->keyBy('table_id');
+            ->keyBy('id');
     }
 
     public static function listCalendarEvents($startAt, $endAt, $locationId = null)
     {
-        $query = self::whereBetween('reserve_date', [
+        $query = self::query()->whereBetween('reserve_date', [
             date('Y-m-d H:i:s', strtotime($startAt)),
             date('Y-m-d H:i:s', strtotime($endAt)),
         ]);
@@ -275,9 +291,10 @@ class Reservation extends Model
             $query->whereHasLocation($locationId);
         }
 
+        /** @var Collection<int, Reservation> $collection */
         $collection = $query->get();
 
-        $collection->transform(function($reservation) {
+        $collection->transform(function(Reservation $reservation) {
             return $reservation->getEventDetails();
         });
 
@@ -287,7 +304,9 @@ class Reservation extends Model
     public function getEventDetails()
     {
         $status = $this->status;
-        $tables = $this->tables;
+        $tables = $this->tables->map(function($table) {
+            return $table->toArray();
+        });
 
         return [
             'id' => $this->getKey(),
@@ -295,7 +314,7 @@ class Reservation extends Model
             'start' => $this->reservation_datetime->toIso8601String(),
             'end' => $this->reservation_end_datetime->toIso8601String(),
             'allDay' => $this->isReservedAllDay(),
-            'color' => $status ? $status->status_color : null,
+            'color' => $status?->status_color,
             'location_name' => ($location = $this->location) ? $location->location_name : null,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -306,8 +325,8 @@ class Reservation extends Model
             'reserve_time' => $this->reserve_time,
             'reserve_end_time' => $this->reserve_end_time->toTimeString(),
             'duration' => $this->duration,
-            'status' => $status ? $status->toArray() : [],
-            'tables' => $tables ? $tables->toArray() : [],
+            'status' => $status->toArray(),
+            'tables' => $tables->toArray(),
         ];
     }
 
@@ -336,13 +355,11 @@ class Reservation extends Model
             return [];
         }
 
-        return DiningTable::whereHasLocation($location)->pluck('name', 'id');
+        return DiningTable::query()->whereHasLocation($location)->pluck('name', 'id');
     }
 
     /**
      * Return the dates of all reservations
-     *
-     * @return array
      */
     public function getReservationDates()
     {
@@ -410,8 +427,7 @@ class Reservation extends Model
             ->where('location_id', $this->location_id)
             ->whereDate('reserve_date', $this->reserve_date)
             ->where(function($query) {
-                $query->whereNotIn('status_id', [0, setting('canceled_reservation_status')])
-                    ->orWhereNull('status_id');
+                $query->whereNotIn('status_id', [0, setting('canceled_reservation_status')]);
             })
             ->orderBy('reservation_id', 'desc')
             ->first();
@@ -430,7 +446,7 @@ class Reservation extends Model
             return null;
         }
 
-        $diningSectionsIds = DiningSection::whereHasLocation($this->location_id)
+        $diningSectionsIds = DiningSection::query()->whereHasLocation($this->location_id)
             ->whereIsReservable()->orderBy('priority')->pluck('id');
 
         if ($diningSectionsIds->isEmpty()) {
@@ -457,14 +473,6 @@ class Reservation extends Model
             if ($tables && $tables->isNotEmpty()) {
                 $diningTable = $tables->sortBy('reservations_count')->first();
                 break;
-            }
-
-            if (!count($diningSections)) {
-                break;
-            }
-
-            if ($i == count($diningSectionsIds) - 1) {
-                $i = -1;
             }
         }
 
@@ -542,7 +550,7 @@ class Reservation extends Model
             $data['location_telephone'] = $model->location->location_telephone;
         }
 
-        /** @var StatusHistory $statusHistory */
+        /** @var StatusHistory|null $statusHistory */
         $statusHistory = StatusHistory::applyRelated($model)->whereStatusIsLatest($model->status_id)->first();
         $data['status_name'] = $statusHistory?->status?->status_name;
         $data['status_comment'] = $statusHistory?->comment;

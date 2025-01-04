@@ -6,6 +6,23 @@ use Igniter\Admin\Models\Status;
 use Igniter\Reservation\AutomationRules\Conditions\ReservationStatusAttribute;
 use Mockery;
 
+it('returns correct condition details', function() {
+    $result = (new ReservationStatusAttribute())->conditionDetails();
+
+    expect($result)->toBe([
+        'name' => 'Reservation status attribute',
+        'description' => 'Reservation status attributes',
+    ]);
+});
+
+it('defines model attributes correctly', function() {
+    $reservationStatusAttribute = new ReservationStatusAttribute;
+
+    $attributes = $reservationStatusAttribute->defineModelAttributes();
+
+    expect($attributes)->toHaveKeys(['status_id', 'status_name', 'notify_customer']);
+});
+
 it('returns true if status attribute condition is met', function() {
     $status = Mockery::mock(Status::class);
     $condition = Mockery::mock(ReservationStatusAttribute::class)->makePartial();

@@ -123,11 +123,21 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
 
     public function onUpdateStatus()
     {
-        $model = Reservation::find((int)post('recordId'));
-        $status = Status::find((int)post('statusId'));
-        if (!$model || !$status) {
+        $recordId = (int)post('recordId');
+        $statusId = (int)post('statusId');
+        if (!$recordId || !$statusId) {
             return;
         }
+
+        /** @var Reservation $model */
+        throw_unless($model = Reservation::query()->find($recordId),
+            new FlashException(lang('igniter.reservation::default.alert_no_reservation_found')),
+        );
+
+        /** @var Status $status */
+        throw_unless($status = Status::query()->find($statusId),
+            new FlashException(lang('igniter.reservation::default.alert_no_status_found')),
+        );
 
         $model->addStatusHistory($status);
 
@@ -154,7 +164,8 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
 
     public function calendarUpdateEvent($eventId, $startAt, $endAt)
     {
-        throw_unless($reservation = Reservation::find($eventId),
+        /** @var Reservation $reservation */
+        throw_unless($reservation = Reservation::query()->find($eventId),
             new FlashException(lang('igniter.reservation::default.alert_no_reservation_found')),
         );
 
@@ -186,11 +197,9 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
 
     public function listFilterExtendScopesBefore($filter)
     {
-        if ($filter->alias !== 'floor_plan_filter') {
-            return;
+        if ($filter->alias === 'floor_plan_filter') {
+            $filter->scopes['reserve_date']['default'] = now()->toDateString();
         }
-
-        $filter->scopes['reserve_date']['default'] = now()->toDateString();
     }
 
     public function listFilterExtendScopes($filter)
@@ -199,9 +208,8 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
             return;
         }
 
-        if ($diningAreaId = $filter->getScopeValue('dining_area')) {
-            $this->vars['diningArea'] = DiningArea::find($diningAreaId);
-        }
+        $diningAreaId = $filter->getScopeValue('dining_area');
+        $this->vars['diningArea'] = $diningAreaId ? DiningArea::query()->find($diningAreaId) : null;
 
         $reserveDateScope = $filter->getScope('reserve_date');
         $reserveTimeScope = $filter->getScope('reserve_time');

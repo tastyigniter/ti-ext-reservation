@@ -52,6 +52,7 @@ class Table extends Model
 
     public $timestamps = true;
 
+    // @codeCoverageIgnoreStart
     public static function getDropdownOptions()
     {
         return self::selectRaw('table_id, concat(table_name, " (", min_capacity, " - ", max_capacity, ")") AS display_name')
@@ -63,4 +64,5 @@ class Table extends Model
         return $query->where('min_capacity', '<=', $noOfGuests)
             ->where('max_capacity', '>=', $noOfGuests);
     }
+    // @codeCoverageIgnoreEnd
 }

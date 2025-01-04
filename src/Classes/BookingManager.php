@@ -5,21 +5,19 @@ namespace Igniter\Reservation\Classes;
 use Carbon\Carbon;
 use DateInterval;
 use Igniter\Admin\Models\Status;
+use Igniter\Local\Models\Location;
+use Igniter\Reservation\Models\Concerns\LocationAction;
 use Igniter\Reservation\Models\Reservation;
 use Igniter\User\Facades\Auth;
+use Igniter\User\Models\Customer;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Event;
 
 class BookingManager
 {
-    /**
-     * @var \Igniter\User\Models\Customer
-     */
-    protected $customer;
+    protected Customer|Authenticatable|null $customer;
 
-    /**
-     * @var \Igniter\Local\Models\Location|\Igniter\Reservation\Models\Concerns\LocationAction
-     */
-    protected $location;
+    protected Location|LocationAction|null $location;
 
     protected $availableTables;
 
@@ -42,6 +40,7 @@ class BookingManager
 
     public function loadReservation()
     {
+        /** @var Reservation $reservation */
         $reservation = Reservation::make($this->getRequiredAttributes());
 
         $reservation->customer()->associate($this->customer);
@@ -52,7 +51,7 @@ class BookingManager
 
     public function getReservationByHash($hash, $customer = null)
     {
-        $query = Reservation::whereHash($hash);
+        $query = Reservation::query()->whereHash($hash);
 
         if (!is_null($customer)) {
             $query->where('customer_id', $customer->getKey());
@@ -144,12 +143,14 @@ class BookingManager
 
     public function isFullyBookedOn(\DateTime $dateTime, $noOfGuests = null)
     {
+        /** @var Carbon $dateTime */
         $index = $dateTime->timestamp.'-'.$noOfGuests;
 
         if (array_key_exists($index, $this->fullyBookedCache)) {
             return $this->fullyBookedCache[$index];
         }
 
+        /** @var string|array|bool|null $isFullyBooked */
         $isFullyBooked = Event::dispatch('igniter.reservation.isFullyBookedOn', [$dateTime, $noOfGuests], true);
         if (!is_bool($isFullyBooked)) {
             $isFullyBooked = $this->getNextBookableTable($dateTime, $noOfGuests)->isEmpty();

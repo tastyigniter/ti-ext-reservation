@@ -15,7 +15,7 @@ class DiningTableFactory extends Factory
             'min_capacity' => $this->faker->randomDigitNotNull(),
             'max_capacity' => $this->faker->numberBetween(10, 20),
             'priority' => $this->faker->randomDigit(),
-            'is_enabled' => $this->faker->boolean(),
+            'is_enabled' => 1,
         ];
     }
 }

@@ -2,10 +2,15 @@
 
 namespace Igniter\Reservation\Models;
 
+use Igniter\Flame\Database\Builder;
 use Igniter\Flame\Database\Factories\HasFactory;
+use Igniter\Flame\Database\Model;
+use Igniter\Flame\Database\Relations\BelongsTo;
+use Igniter\Flame\Database\Relations\HasMany;
 use Igniter\Flame\Exception\FlashException;
 use Igniter\Local\Models\Concerns\Locationable;
 use Igniter\Local\Models\Location;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 /**
@@ -16,12 +21,26 @@ use Illuminate\Support\Collection;
  * @property string $name
  * @property string|null $description
  * @property array|null $floor_plan
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read mixed $dining_table_count
- * @mixin \Igniter\Flame\Database\Model
+ * @property-read Location $location
+ * @property-read Collection<int, DiningSection> $dining_sections
+ * @property-read Collection<int, DiningTable> $dining_tables
+ * @property-read Collection<int, DiningTable> $dining_table_solos
+ * @property-read Collection<int, DiningTable> $dining_table_combos
+ * @property-read Collection<int, DiningTable> $available_tables
+ * @method static Builder<static>|DiningArea query()
+ * @method static Builder<static>|DiningArea dropdown(string $column, string $key = null)
+ * @method static BelongsTo<static>|DiningArea location()
+ * @method static HasMany<static>|DiningArea dining_sections()
+ * @method static HasMany<static>|DiningArea dining_tables()
+ * @method static HasMany<static>|DiningArea dining_table_solos()
+ * @method static HasMany<static>|DiningArea dining_table_combos()
+ * @method static HasMany<static>|DiningArea available_tables()
+ * @mixin Model
  */
-class DiningArea extends \Igniter\Flame\Database\Model
+class DiningArea extends Model
 {
     use HasFactory;
     use Locationable;
@@ -57,7 +76,7 @@ class DiningArea extends \Igniter\Flame\Database\Model
 
     public function getTablesForFloorPlan()
     {
-        return $this->available_tables->map(function($diningTable) {
+        return $this->available_tables->map(function(DiningTable $diningTable, int $key) {
             return $diningTable->toFloorPlanArray();
         });
     }
@@ -65,8 +84,8 @@ class DiningArea extends \Igniter\Flame\Database\Model
     public function getDiningTablesWithReservation($reservations)
     {
         return $this->available_tables
-            ->map(function($diningTable) use ($reservations) {
-                $reservation = $reservations->first(function($reservation) use ($diningTable) {
+            ->map(function(DiningTable $diningTable) use ($reservations) {
+                $reservation = $reservations->first(function(Reservation $reservation) use ($diningTable) {
                     return $reservation->tables->where('id', $diningTable->id)->count() > 0;
                 });
 
@@ -87,26 +106,23 @@ class DiningArea extends \Igniter\Flame\Database\Model
         return $this->available_tables->count();
     }
 
-    public function scopeWhereIsActive($query)
-    {
-        return $query->whereIsRoot()->where('is_active', 1);
-    }
-
     //
     // Helpers
     //
 
     public function duplicate()
     {
+        /** @var DiningTable $newDiningArea */
         $newDiningArea = $this->replicate();
         $newDiningArea->name .= ' (copy)';
         $newDiningArea->save();
 
         $this->dining_tables
-            ->filter(function($table) {
+            ->filter(function(DiningTable $table) {
                 return !$table->is_combo;
             })
-            ->each(function($table) use ($newDiningArea) {
+            ->each(function(DiningTable $table) use ($newDiningArea) {
+                /** @var DiningTable $newTable */
                 $newTable = $table->replicate();
                 $newTable->dining_area_id = $newDiningArea->getKey();
                 $newTable->save();
@@ -117,10 +133,11 @@ class DiningArea extends \Igniter\Flame\Database\Model
 
     public function createCombo(Collection $tables)
     {
+        /** @var DiningTable $firstTable */
         $firstTable = $tables->first();
         $tableNames = $tables->pluck('name')->join('/');
 
-        if ($tables->filter(function($table) {
+        if ($tables->filter(function(DiningTable $table) {
             return $table->parent !== null;
         })->isNotEmpty()) {
             throw new FlashException(lang('igniter.reservation::default.dining_areas.alert_table_already_combined'));
@@ -130,6 +147,7 @@ class DiningArea extends \Igniter\Flame\Database\Model
             throw new FlashException(lang('igniter.reservation::default.dining_areas.alert_table_combo_section_mismatch'));
         }
 
+        /** @var DiningTable $comboTable */
         $comboTable = $this->dining_tables()->create([
             'name' => $tableNames,
             'shape' => $firstTable->shape,
@@ -145,7 +163,7 @@ class DiningArea extends \Igniter\Flame\Database\Model
             $table->parent()->associate($comboTable)->saveQuietly();
         });
 
-        $comboTable::fixBrokenTreeQuietly();
+        $comboTable->fixBrokenTreeQuietly();
 
         return $comboTable;
     }

@@ -183,6 +183,7 @@ return [
     'notify_assigned' => '%s assigned reservation (#%d) to <b>%s</b>',
 
     'alert_no_reservation_found' => 'No matching reservation found.',
+    'alert_no_status_found' => 'No matching status found.',
     'alert_no_assignable_table' => 'No table available for the reservation.',
     'alert_no_selected_dining_area' => 'No dining area selected. Please select a dining area filter to view the tables.',
     'alert_table_assigned' => 'Table(s) has been assigned to the selected reservation(s).',

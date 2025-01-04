@@ -143,6 +143,7 @@ it('returns false if not fully booked on given date and time', function() {
     $manager = new BookingManager();
     $manager->useLocation($location);
 
+    $manager->isFullyBookedOn($dateTime);
     expect($manager->isFullyBookedOn($dateTime))->toBeFalse();
 
     Event::assertDispatched('igniter.reservation.isFullyBookedOn');

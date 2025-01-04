@@ -2,14 +2,15 @@
 
 namespace Igniter\Reservation\Models\Scopes;
 
+use Igniter\Flame\Database\Builder;
 use Igniter\Flame\Database\Scope;
-use Illuminate\Database\Eloquent\Builder;
+use Igniter\Reservation\Models\DiningTable;
 
 class DiningTableScope extends Scope
 {
     public function addReservable()
     {
-        return function(Builder $builder, $options) {
+        return function(Builder|DiningTable $builder, $options) {
             $builder->whereIsReservable();
 
             if ($dateTime = array_get($options, 'dateTime')) {
@@ -40,7 +41,7 @@ class DiningTableScope extends Scope
 
     public function addWhereIsReservable()
     {
-        return function(Builder $builder) {
+        return function(Builder|DiningTable $builder) {
             return $builder
                 ->whereIsRoot()
                 ->where('dining_tables.is_enabled', 1)
@@ -53,21 +54,21 @@ class DiningTableScope extends Scope
 
     public function addWhereIsCombo()
     {
-        return function(Builder $builder) {
+        return function(Builder|DiningTable $builder) {
             return $builder->where('is_combo', 1);
         };
     }
 
     public function addWhereIsNotCombo()
     {
-        return function(Builder $builder) {
+        return function(Builder|DiningTable $builder) {
             return $builder->where('is_combo', '!=', 1);
         };
     }
 
     public function addWhereIsAvailableAt()
     {
-        return function(Builder $builder, $locationId) {
+        return function(Builder|DiningTable $builder, $locationId) {
             return $builder->join('dining_areas', function($join) use ($locationId) {
                 $join->on('dining_areas.id', '=', 'dining_tables.dining_area_id')
                     ->where('dining_areas.location_id', $locationId);
@@ -77,7 +78,7 @@ class DiningTableScope extends Scope
 
     public function addWhereIsAvailableForDate()
     {
-        return function(Builder $builder, $date) {
+        return function(Builder|DiningTable $builder, $date) {
             return $builder->whereDoesntHave('reservations', function($builder) use ($date) {
                 $builder->where('reserve_date', $date)
                     ->whereNotIn('status_id', [0, setting('canceled_reservation_status')]);
@@ -87,7 +88,7 @@ class DiningTableScope extends Scope
 
     public function addWhereIsAvailableOn()
     {
-        return function(Builder $builder, $dateTime, $duration = 15) {
+        return function(Builder|DiningTable $builder, $dateTime, $duration = 15) {
             if (is_string($dateTime)) {
                 $dateTime = make_carbon($dateTime);
             }
@@ -107,7 +108,7 @@ class DiningTableScope extends Scope
 
     public function addWhereCanAccommodate()
     {
-        return function(Builder $builder, $guestNumber) {
+        return function(Builder|DiningTable $builder, $guestNumber) {
             return $builder
                 ->where('min_capacity', '<=', $guestNumber)
                 ->where('max_capacity', '>=', $guestNumber);
@@ -116,7 +117,7 @@ class DiningTableScope extends Scope
 
     public function addWhereHasReservationLocation()
     {
-        return function(Builder $builder, $model) {
+        return function(Builder|DiningTable $builder, $model) {
             return $builder->whereHasLocation($model->location_id);
         };
     }

@@ -2,6 +2,12 @@
 
 namespace Igniter\Reservation\Tests;
 
+use Igniter\Admin\DashboardWidgets\Charts;
+use Igniter\Admin\DashboardWidgets\Statistics;
+use Igniter\Admin\Http\Controllers\Dashboard;
+use Igniter\Admin\Models\StatusHistory;
+use Igniter\Admin\Widgets\Form;
+use Igniter\Flame\Database\Model;
 use Igniter\Reservation\AutomationRules\Conditions\ReservationAttribute;
 use Igniter\Reservation\AutomationRules\Conditions\ReservationStatusAttribute;
 use Igniter\Reservation\BulkActionWidgets\AssignTable;
@@ -9,8 +15,14 @@ use Igniter\Reservation\Extension;
 use Igniter\Reservation\FormWidgets\FloorPlanner;
 use Igniter\Reservation\Http\Requests\BookingSettingsRequest;
 use Igniter\Reservation\Models\DiningSection;
+use Igniter\Reservation\Models\Reservation;
+use Igniter\System\Mail\AnonymousTemplateMailable;
+use Igniter\System\Models\Settings;
+use Igniter\User\Http\Controllers\Customers;
+use Igniter\User\Models\Customer;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use Mockery;
 
 beforeEach(function() {
@@ -92,4 +104,75 @@ it('registers correct location settings', function() {
     expect($locationSettings)->toHaveKey('booking')
         ->and($locationSettings['booking']['form'])->toBe('igniter.reservation::/models/bookingsettings')
         ->and($locationSettings['booking']['request'])->toBe(BookingSettingsRequest::class);
+});
+
+it('does not add reservations tab to customer edit form when model is invalid', function() {
+    $model = mock(Model::class)->makePartial();
+    $form = new Form(resolve(Customers::class), ['model' => $model, 'context' => 'edit']);
+    $form->bindToController();
+    $fields = $form->getFields();
+
+    expect($fields)->not->toHaveKey('reservations');
+});
+
+it('adds reservations tab to customer edit form', function() {
+    $customer = mock(Customer::class)->makePartial();
+    $form = new Form(resolve(Customers::class), ['model' => $customer, 'context' => 'edit']);
+    $form->bindToController();
+    $fields = $form->getFields();
+
+    expect($fields['reservations']->tab)->toBe('lang:igniter.reservation::default.text_tab_reservations');
+});
+
+it('sends reservation update after status is updated', function() {
+    Mail::fake();
+    $reservation = Reservation::factory()->create();
+    $statusHistory = StatusHistory::factory()->create([
+        'object_id' => $reservation->getKey(),
+        'object_type' => 'reservations',
+        'notify' => true,
+    ]);
+
+    event('igniter.reservation.statusAdded', [$reservation, $statusHistory]);
+
+    Mail::assertQueued(AnonymousTemplateMailable::class, function($mail) use ($reservation) {
+        return $mail->getTemplateCode() === 'igniter.reservation::mail.reservation_update';
+    });
+});
+
+it('returns registered dashboard charts', function() {
+    $charts = new class(resolve(Dashboard::class)) extends Charts
+    {
+        public function testDatasets()
+        {
+            return $this->listSets();
+        }
+    };
+    $datasets = $charts->testDatasets();
+
+    expect($datasets['reports']['sets']['reservations']['model'])->toBe(Reservation::class);
+});
+
+it('returns registered dashboard statistic widgets', function() {
+    $statistics = new class(resolve(Dashboard::class)) extends Statistics
+    {
+        public function testCards()
+        {
+            return $this->listCards();
+        }
+    };
+    $cards = $statistics->testCards();
+
+    expect(array_keys($cards))->toContain(
+        'reserved_table',
+        'reserved_guest',
+        'reservation',
+        'completed_reservation',
+    );
+});
+
+it('returns registered core settings', function() {
+    $items = (new Settings)->listSettingItems();
+
+    expect(collect($items['core'])->firstWhere('code', 'reservation'))->not->toBeNull();
 });

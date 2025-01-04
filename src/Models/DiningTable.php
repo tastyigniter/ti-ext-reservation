@@ -2,11 +2,20 @@
 
 namespace Igniter\Reservation\Models;
 
+use Igniter\Flame\Database\Builder;
 use Igniter\Flame\Database\Factories\HasFactory;
+use Igniter\Flame\Database\Model;
+use Igniter\Flame\Database\Relations\BelongsTo;
+use Igniter\Flame\Database\Relations\BelongsToMany;
+use Igniter\Flame\Database\Relations\HasOneThrough;
 use Igniter\Flame\Database\Traits\NestedTree;
 use Igniter\Flame\Database\Traits\Sortable;
 use Igniter\Local\Models\Concerns\Locationable;
 use Igniter\Local\Models\Location;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Kalnoy\Nestedset\Collection as NestedSetCollection;
+use Kalnoy\Nestedset\QueryBuilder;
 
 /**
  * DiningTable Model Class
@@ -26,15 +35,36 @@ use Igniter\Local\Models\Location;
  * @property int|null $nest_right
  * @property int $priority
  * @property array|null $seat_layout
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Kalnoy\Nestedset\Collection<int, DiningTable> $children
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read NestedSetCollection<int, DiningTable> $children
  * @property-read int|null $children_count
  * @property-read mixed $section_name
  * @property-read DiningTable|null $parent
- * @mixin \Igniter\Flame\Database\Model
+ * @property-read Location $location
+ * @property-read DiningArea $dining_area
+ * @property-read DiningSection|null $dining_section
+ * @property-read Collection<int, Reservation> $reservations
+ * @method static Collection<int, DiningTable> descendants()
+ * @method static Builder<static>|DiningTable sync($relations, $deleting = true)
+ * @method static Builder<static>|DiningTable query()
+ * @method static HasOneThrough<static>|DiningTable location()
+ * @method static BelongsTo<static>|DiningTable dining_area()
+ * @method static BelongsTo<static>|DiningTable dining_section()
+ * @method static BelongsToMany<static>|DiningTable reservations()
+ * @method static Builder<static>|DiningTable whereIsReservable()
+ * @method static Builder<static>|DiningTable whereIsAvailableOn($dateTime, $duration)
+ * @method static Builder<static>|DiningTable whereIsAvailableForDate($date)
+ * @method static Builder<static>|DiningTable whereIsAvailableAt($locationId)
+ * @method static Builder<static>|DiningTable whereCanAccommodate($guestNumber)
+ * @method static Builder<static>|DiningTable whereIsRoot()
+ * @method static Builder<static>|DiningTable whereHasLocation(int|string|Model $locationId)
+ * @method static Builder<static>|DiningTable reservable(array $options)
+ * @mixin Model
+ * @mixin Model
+ * @mixin QueryBuilder
  */
-class DiningTable extends \Igniter\Flame\Database\Model
+class DiningTable extends Model
 {
     use HasFactory;
     use Locationable;
@@ -87,7 +117,7 @@ class DiningTable extends \Igniter\Flame\Database\Model
 
     public function getDiningSectionIdOptions()
     {
-        return $this->exists ? DiningSection::where('location_id', $this->dining_area->location_id)->dropdown('name') : [];
+        return $this->exists ? DiningSection::query()->where('location_id', $this->dining_area->location_id)->dropdown('name') : [];
     }
 
     public function getPriorityOptions()
