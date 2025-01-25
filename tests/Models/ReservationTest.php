@@ -4,8 +4,8 @@ namespace Igniter\Reservation\Tests\Models;
 
 use Carbon\Carbon;
 use Igniter\Admin\Models\Concerns\GeneratesHash;
+use Igniter\Admin\Models\Concerns\LogsStatusHistory;
 use Igniter\Admin\Models\Status;
-use Igniter\Admin\Traits\LogsStatusHistory;
 use Igniter\Flame\Database\Traits\Purgeable;
 use Igniter\Local\Models\Concerns\Locationable;
 use Igniter\Local\Models\Location;
@@ -14,7 +14,7 @@ use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\DiningSection;
 use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Reservation;
-use Igniter\System\Traits\SendsMailTemplate;
+use Igniter\System\Models\Concerns\SendsMailTemplate;
 use Igniter\User\Models\Concerns\Assignable;
 use Igniter\User\Models\User;
 use Igniter\User\Models\UserGroup;
