@@ -435,9 +435,18 @@ class Booking extends BaseComponent
         if (!is_null($this->startDate))
             return $this->startDate;
 
-        return $this->startDate = now()->addDays(
-            $this->getLocation()->getMinReservationAdvanceTime()
-        )->startOfDay();
+        if (today() != $this->page['nextOpen'])
+        {
+                return $this->startDate = now()->addDays(
+                        $this->getLocation()->getMinReservationAdvanceTime() + 1
+                        )->startOfDay();
+        }
+        else
+        {
+                return $this->startDate = now()->addDays(
+                        $this->getLocation()->getMinReservationAdvanceTime()
+                        )->startOfDay();
+        }
     }
 
     public function getEndDate()
