@@ -12,9 +12,7 @@ use Igniter\System\Facades\Assets;
 use Mockery;
 
 beforeEach(function(): void {
-    $controller = new class extends AdminController
-    {
-    };
+    $controller = new class extends AdminController {};
     $this->floorPlanner = new FloorPlanner($controller, new FormField('test_field', 'Floor planner'), []);
 });
 

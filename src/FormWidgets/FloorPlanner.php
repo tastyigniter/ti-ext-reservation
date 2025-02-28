@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\FormWidgets;
 
-use Override;
-use Igniter\Reservation\Models\DiningArea;
 use Igniter\Admin\Classes\BaseFormWidget;
 use Igniter\Admin\Classes\FormField;
 use Igniter\Admin\Traits\FormModelWidget;
 use Igniter\Admin\Traits\ValidatesForm;
+use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\DiningTable;
+use Override;
 
 /**
  * Floor planner

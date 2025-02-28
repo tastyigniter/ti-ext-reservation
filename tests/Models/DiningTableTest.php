@@ -37,7 +37,7 @@ it('returns empty dining section id options when dining area does not exist', fu
 });
 
 it('returns priority options as an array of strings', function(): void {
-    $diningTable = new DiningTable();
+    $diningTable = new DiningTable;
 
     $options = $diningTable->getPriorityOptions();
 
@@ -118,7 +118,7 @@ it('returns correct floor plan array with reservation', function(): void {
 });
 
 it('configures dining table model correctly', function(): void {
-    $diningTable = new DiningTable();
+    $diningTable = new DiningTable;
 
     expect(class_uses_recursive($diningTable))
         ->toContain(Locationable::class)

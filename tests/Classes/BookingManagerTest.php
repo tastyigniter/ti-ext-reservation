@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\Tests\Classes;
 
-use DateTime;
 use Carbon\Carbon;
+use DateTime;
 use Igniter\Local\Classes\WorkingSchedule;
 use Igniter\Local\Models\Location;
 use Igniter\Reservation\Classes\BookingManager;
@@ -21,7 +21,7 @@ it('loads reservation with associated customer and location', function(): void {
     Auth::shouldReceive('customer')->andReturn($customer);
     Auth::shouldReceive('getUser')->andReturn($customer);
 
-    $manager = new BookingManager();
+    $manager = new BookingManager;
     $manager->useLocation($location);
 
     $reservation = $manager->loadReservation();
@@ -37,11 +37,11 @@ it('returns reservation by hash for specific customer', function(): void {
         'customer_id' => $customer->customer_id,
     ]);
 
-    expect((new BookingManager())->getReservationByHash($reservation->hash, $customer))->hash->toBe($reservation->hash);
+    expect((new BookingManager)->getReservationByHash($reservation->hash, $customer))->hash->toBe($reservation->hash);
 });
 
 it('returns empty collection if location is not set when making time slots', function(): void {
-    expect((new BookingManager())->makeTimeSlots(now()))->toBeEmpty();
+    expect((new BookingManager)->makeTimeSlots(now()))->toBeEmpty();
 });
 
 it('returns time slots with default interval and lead time', function(): void {
@@ -57,7 +57,7 @@ it('returns time slots with default interval and lead time', function(): void {
     $schedule->shouldReceive('generateTimeslot')->andReturn(collect([Carbon::now()->addMinutes(30)]));
     $location->shouldReceive('newWorkingSchedule')->andReturn($schedule);
 
-    $manager = new BookingManager();
+    $manager = new BookingManager;
     $manager->useLocation($location);
 
     expect($manager->makeTimeSlots(now())->count())->toBe(1);
@@ -74,7 +74,7 @@ it('returns time slots with custom interval and lead time', function(): void {
     $schedule->shouldReceive('generateTimeslot')->andReturn(collect([Carbon::now()->addMinutes(45)]));
     $location->shouldReceive('newWorkingSchedule')->andReturn($schedule);
 
-    $manager = new BookingManager();
+    $manager = new BookingManager;
     $manager->useLocation($location);
 
     $result = $manager->makeTimeSlots(Carbon::now(), 45, 10);
@@ -96,7 +96,7 @@ it('filters out past time slots based on lead time', function(): void {
     $schedule->shouldReceive('generateTimeslot')->andReturn(collect([Carbon::now()->subMinutes(10), Carbon::now()->addMinutes(30)]));
     $location->shouldReceive('newWorkingSchedule')->andReturn($schedule);
 
-    $manager = new BookingManager();
+    $manager = new BookingManager;
     $manager->useLocation($location);
 
     $result = $manager->makeTimeSlots(Carbon::now());
@@ -114,7 +114,7 @@ it('saves reservation with provided data', function(): void {
     $customer->email = 'john@example.com';
     Auth::shouldReceive('customer')->andReturn($customer);
     $location->shouldReceive('getReservationStayTime')->andReturn(60);
-    $manager = new BookingManager();
+    $manager = new BookingManager;
     $manager->useLocation($location);
 
     $data = [
@@ -147,7 +147,7 @@ it('returns false if not fully booked on given date and time', function(): void 
     $dateTime = Carbon::now();
     $location = Mockery::mock(Location::class)->makePartial();
     $location->shouldReceive('getReservationStayTime')->andReturn(60);
-    $manager = new BookingManager();
+    $manager = new BookingManager;
     $manager->useLocation($location);
 
     $manager->isFullyBookedOn($dateTime);
@@ -166,7 +166,7 @@ it('returns next bookable table for given date and time and number of guests', f
     $reservation->shouldReceive('getNextBookableTable')->andReturn(collect(['table1', 'table2']));
     $manager->shouldReceive('getReservation')->andReturn($reservation);
 
-    $dateTime = new DateTime();
+    $dateTime = new DateTime;
     $manager->useLocation($location);
     $result = $manager->getNextBookableTable($dateTime, 4);
 

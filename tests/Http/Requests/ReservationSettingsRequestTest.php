@@ -7,7 +7,7 @@ namespace Igniter\Reservation\Tests\Http\Requests;
 use Igniter\Reservation\Http\Requests\ReservationSettingsRequest;
 
 it('returns correct attribute labels for reservation settings', function(): void {
-    $attributes = (new ReservationSettingsRequest())->attributes();
+    $attributes = (new ReservationSettingsRequest)->attributes();
 
     expect($attributes['default_reservation_status'])->toBe(lang('igniter.reservation::default.label_default_reservation_status'))
         ->and($attributes['confirmed_reservation_status'])->toBe(lang('igniter.reservation::default.label_confirmed_reservation_status'))
@@ -15,7 +15,7 @@ it('returns correct attribute labels for reservation settings', function(): void
 });
 
 it('validates rules correctly for reservation settings', function(): void {
-    $rules = (new ReservationSettingsRequest())->rules();
+    $rules = (new ReservationSettingsRequest)->rules();
 
     expect($rules['reservation_email.*'])->toBe(['required', 'alpha'])
         ->and($rules['default_reservation_status'])->toBe(['required', 'integer'])

@@ -9,7 +9,7 @@ use Igniter\Reservation\Models\Scopes\ReservationScope;
 use Mockery;
 
 beforeEach(function(): void {
-    $this->scope = new ReservationScope();
+    $this->scope = new ReservationScope;
     $this->builder = Mockery::mock(Builder::class);
 });
 
@@ -83,6 +83,7 @@ it('applies where has dining area', function(): void {
                 ->with('dining_tables.dining_area_id', 1)
                 ->once();
             $callback($query);
+
             return true;
         }))
         ->once()

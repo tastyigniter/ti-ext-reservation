@@ -11,7 +11,7 @@ use Igniter\Reservation\Models\Reservation;
 use Mockery;
 
 it('returns correct condition details', function(): void {
-    $result = (new ReservationAttribute())->conditionDetails();
+    $result = (new ReservationAttribute)->conditionDetails();
 
     expect($result)->toBe([
         'name' => 'Reservation attribute',
@@ -38,7 +38,7 @@ it('returns model attribute correctly', function($carbonMethod, $carbonValue, $c
         ->with('reservation_datetime')
         ->andReturn(now()->$carbonMethod($carbonValue));
 
-    expect((new ReservationAttribute())->$conditionMethod(null, $reservation))->toBe($expected);
+    expect((new ReservationAttribute)->$conditionMethod(null, $reservation))->toBe($expected);
 })->with([
     ['subHours', 5, 'getHoursSinceAttribute', 5.0],
     ['addHours', 5, 'getHoursSinceAttribute', 0],
@@ -54,7 +54,7 @@ it('returns correct history status ids', function(): void {
     $reservation = Mockery::mock(Reservation::class)->makePartial();
     $reservation->shouldReceive('status_history->pluck')->with('status_id')->andReturn(collect([1, 2, 3]));
 
-    expect((new ReservationAttribute())->getHistoryStatusIdAttribute(null, $reservation))->toBe('1,2,3');
+    expect((new ReservationAttribute)->getHistoryStatusIdAttribute(null, $reservation))->toBe('1,2,3');
 });
 
 it('throws exception if reservation object is not found in parameters', function(): void {
@@ -63,7 +63,7 @@ it('throws exception if reservation object is not found in parameters', function
     $this->expectException(AutomationException::class);
     $this->expectExceptionMessage('Error evaluating the reservation attribute condition: the reservation object is not found in the condition parameters.');
 
-    (new ReservationAttribute())->isTrue($params);
+    (new ReservationAttribute)->isTrue($params);
 });
 
 it('evaluates condition as true if reservation attribute condition is met', function(): void {

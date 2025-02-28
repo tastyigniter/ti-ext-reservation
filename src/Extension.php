@@ -4,23 +4,20 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation;
 
-use Igniter\System\Classes\BaseExtension;
-use Override;
-use Igniter\Reservation\Models\DiningSection;
-use Igniter\Reservation\AutomationRules\Events\NewReservation;
-use Igniter\Reservation\AutomationRules\Events\NewReservationStatus;
-use Igniter\Reservation\AutomationRules\Events\ReservationAssigned;
-use Igniter\Reservation\AutomationRules\Conditions\ReservationAttribute;
-use Igniter\Reservation\AutomationRules\Conditions\ReservationStatusAttribute;
-use Igniter\Reservation\FormWidgets\FloorPlanner;
-use Igniter\Reservation\BulkActionWidgets\AssignTable;
-use Igniter\Reservation\Http\Requests\BookingSettingsRequest;
 use Igniter\Admin\DashboardWidgets\Charts;
 use Igniter\Admin\DashboardWidgets\Statistics;
 use Igniter\Admin\Models\StatusHistory;
 use Igniter\Local\Models\Location;
 use Igniter\Local\Models\Location as LocationModel;
+use Igniter\Reservation\AutomationRules\Conditions\ReservationAttribute;
+use Igniter\Reservation\AutomationRules\Conditions\ReservationStatusAttribute;
+use Igniter\Reservation\AutomationRules\Events\NewReservation;
+use Igniter\Reservation\AutomationRules\Events\NewReservationStatus;
+use Igniter\Reservation\AutomationRules\Events\ReservationAssigned;
+use Igniter\Reservation\BulkActionWidgets\AssignTable;
 use Igniter\Reservation\Classes\BookingManager;
+use Igniter\Reservation\FormWidgets\FloorPlanner;
+use Igniter\Reservation\Http\Requests\BookingSettingsRequest;
 use Igniter\Reservation\Http\Requests\ReservationSettingsRequest;
 use Igniter\Reservation\Listeners\AddsCustomerReservationsTabFields;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
@@ -28,16 +25,19 @@ use Igniter\Reservation\Listeners\RegistersDashboardCards;
 use Igniter\Reservation\Listeners\SendReservationConfirmation;
 use Igniter\Reservation\Models\Concerns\LocationAction;
 use Igniter\Reservation\Models\DiningArea;
+use Igniter\Reservation\Models\DiningSection;
 use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Observers\DiningTableObserver;
 use Igniter\Reservation\Models\Observers\ReservationObserver;
 use Igniter\Reservation\Models\Reservation;
 use Igniter\Reservation\Models\Scopes\DiningTableScope;
 use Igniter\Reservation\Models\Scopes\ReservationScope;
+use Igniter\System\Classes\BaseExtension;
 use Igniter\System\Models\Settings;
 use Igniter\User\Http\Controllers\Customers;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
+use Override;
 
 class Extension extends BaseExtension
 {
@@ -82,7 +82,7 @@ class Extension extends BaseExtension
             'dining_sections' => DiningSection::class,
         ]);
 
-        Customers::extendFormFields(new AddsCustomerReservationsTabFields());
+        Customers::extendFormFields(new AddsCustomerReservationsTabFields);
 
         LocationModel::implement(LocationAction::class);
 

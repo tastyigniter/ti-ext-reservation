@@ -25,7 +25,7 @@ it('returns enabled users with location', function(): void {
 });
 
 it('returns correct notification title', function(): void {
-    $notification = new ReservationCreatedNotification();
+    $notification = new ReservationCreatedNotification;
 
     expect($notification->getTitle())->toBe(lang('igniter.reservation::default.notify_reservation_created_title'));
 });
@@ -41,7 +41,7 @@ it('returns correct notification URL with subject', function(): void {
 });
 
 it('returns correct notification URL without subject', function(): void {
-    $notification = new ReservationCreatedNotification();
+    $notification = new ReservationCreatedNotification;
 
     expect($notification->getUrl())->toBe(admin_url('reservations'));
 });
@@ -57,13 +57,13 @@ it('returns correct notification message', function(): void {
 });
 
 it('returns correct notification icon', function(): void {
-    $notification = new ReservationCreatedNotification();
+    $notification = new ReservationCreatedNotification;
 
     expect($notification->getIcon())->toBe('fa-chair');
 });
 
 it('returns correct notification alias', function(): void {
-    $notification = new ReservationCreatedNotification();
+    $notification = new ReservationCreatedNotification;
 
     expect($notification->getAlias())->toBe('reservation-created');
 });

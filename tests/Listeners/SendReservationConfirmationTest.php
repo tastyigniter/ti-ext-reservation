@@ -21,5 +21,5 @@ it('sends reservation confirmation emails to customer, location, and admin', fun
     $notification->shouldReceive('broadcast')->once();
     app()->instance(ReservationCreatedNotification::class, $notification);
 
-    (new SendReservationConfirmation())->handle($model);
+    (new SendReservationConfirmation)->handle($model);
 });

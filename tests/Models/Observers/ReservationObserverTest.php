@@ -30,7 +30,7 @@ it('fills customer details when creating reservation with customer_id', function
     request()->headers->set('user-agent', 'Mozilla/5.0');
     request()->headers->set('REMOTE_ADDR', '127.0.0.1');
 
-    (new ReservationObserver())->creating($reservation);
+    (new ReservationObserver)->creating($reservation);
 
     expect($reservation->first_name)->toBe('John')
         ->and($reservation->last_name)->toBe('Doe')
@@ -51,7 +51,7 @@ it('fills default values when creating reservation without customer_id', functio
     request()->headers->set('user-agent', 'Mozilla/5.0');
     request()->headers->set('REMOTE_ADDR', '127.0.0.1');
 
-    (new ReservationObserver())->creating($reservation);
+    (new ReservationObserver)->creating($reservation);
 
     expect($reservation->first_name)->toBeNull()
         ->and($reservation->last_name)->toBeNull()
@@ -72,7 +72,7 @@ it('restores purged values and adds reservation tables when saved', function(): 
     $reservation->shouldReceive('extendableGet')->with('location')->andReturn($location);
     $location->shouldReceive('shouldAutoAllocateTable')->andReturn(true);
 
-    (new ReservationObserver())->saved($reservation);
+    (new ReservationObserver)->saved($reservation);
 });
 
 it('does not assign table if auto allocate is disabled', function(): void {
@@ -88,5 +88,5 @@ it('does not assign table if auto allocate is disabled', function(): void {
     $location->shouldReceive('shouldAutoAllocateTable')->andReturn(false);
     $reservation->shouldReceive('extendableGet')->with('location')->andReturn($location);
 
-    (new ReservationObserver())->saved($reservation);
+    (new ReservationObserver)->saved($reservation);
 });

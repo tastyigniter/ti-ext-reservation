@@ -7,7 +7,7 @@ namespace Igniter\Reservation\Tests\Http\Requests;
 use Igniter\Reservation\Http\Requests\BookingSettingsRequest;
 
 it('returns correct attribute labels', function(): void {
-    $attributes = (new BookingSettingsRequest())->attributes();
+    $attributes = (new BookingSettingsRequest)->attributes();
 
     expect($attributes['is_enabled'])->toBe(lang('igniter.reservation::default.offer_reservation'))
         ->and($attributes['limit_guests'])->toBe(lang('igniter.reservation::default.label_limit_guests'))
@@ -21,7 +21,7 @@ it('returns correct attribute labels', function(): void {
 });
 
 it('validates rules correctly', function(): void {
-    $rules = (new BookingSettingsRequest())->rules();
+    $rules = (new BookingSettingsRequest)->rules();
 
     expect($rules['is_enabled'])->toBe(['boolean'])
         ->and($rules['limit_guests'])->toBe(['boolean'])

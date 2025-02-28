@@ -7,7 +7,7 @@ namespace Igniter\Reservation\Tests\Http\Requests;
 use Igniter\Reservation\Http\Requests\ReservationRequest;
 
 it('returns correct attribute labels for reservation', function(): void {
-    $attributes = (new ReservationRequest())->attributes();
+    $attributes = (new ReservationRequest)->attributes();
 
     expect($attributes['location_id'])->toBe(lang('igniter.reservation::default.text_restaurant'))
         ->and($attributes['first_name'])->toBe(lang('igniter.reservation::default.label_first_name'))
@@ -21,7 +21,7 @@ it('returns correct attribute labels for reservation', function(): void {
 });
 
 it('validates rules correctly for reservation', function(): void {
-    $rules = (new ReservationRequest())->rules();
+    $rules = (new ReservationRequest)->rules();
 
     expect($rules['location_id'])->toBe(['sometimes', 'required', 'integer'])
         ->and($rules['customer_id'])->toBe(['nullable', 'integer'])

@@ -11,7 +11,7 @@ use Igniter\User\Models\User;
 use Mockery;
 
 it('returns event details correctly', function(): void {
-    $details = (new ReservationAssigned())->eventDetails();
+    $details = (new ReservationAssigned)->eventDetails();
 
     expect($details['name'])->toBe('Reservation Assigned Event')
         ->and($details['description'])->toBe('When a reservation is assigned to a staff')

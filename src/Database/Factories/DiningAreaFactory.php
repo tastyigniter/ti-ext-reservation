@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\Database\Factories;
 
+use Igniter\Flame\Database\Factories\Factory;
 use Igniter\Reservation\Models\DiningArea;
 use Override;
-use Igniter\Flame\Database\Factories\Factory;
 
 class DiningAreaFactory extends Factory
 {

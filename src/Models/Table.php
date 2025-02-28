@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\Models;
 
-use Igniter\Local\Models\Location;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Sortable;
 use Igniter\Local\Models\Concerns\Locationable;
+use Igniter\Local\Models\Location;
 use Igniter\System\Models\Concerns\Switchable;
 
 /**

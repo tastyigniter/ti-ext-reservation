@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\Tests\Models;
 
-use Igniter\Local\Models\Location;
-use Igniter\Reservation\Models\DiningArea;
 use Igniter\Flame\Database\Builder;
 use Igniter\Local\Models\Concerns\Locationable;
+use Igniter\Local\Models\Location;
+use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\DiningSection;
 use Mockery;
 
@@ -19,7 +19,7 @@ it('returns correct record editor options', function(): void {
 });
 
 it('returns correct priority options', function(): void {
-    $diningSection = new DiningSection();
+    $diningSection = new DiningSection;
     $expectedOptions = [
         lang('igniter.reservation::default.dining_tables.text_priority_0'),
         lang('igniter.reservation::default.dining_tables.text_priority_1'),
@@ -40,12 +40,12 @@ it('applies where is reservable scope', function(): void {
     $builder = Mockery::mock(Builder::class);
     $builder->shouldReceive('where')->with('is_enabled', 1)->once()->andReturnSelf();
 
-    $diningSection = new DiningSection();
+    $diningSection = new DiningSection;
     $diningSection->scopeWhereIsReservable($builder);
 });
 
 it('configures dining section model correctly', function(): void {
-    $diningSection = new DiningSection();
+    $diningSection = new DiningSection;
 
     expect(class_uses_recursive($diningSection))
         ->toContain(Locationable::class)

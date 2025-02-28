@@ -11,7 +11,7 @@ use Igniter\Reservation\Models\Scopes\DiningTableScope;
 use Mockery;
 
 beforeEach(function(): void {
-    $this->scope = new DiningTableScope();
+    $this->scope = new DiningTableScope;
     $this->builder = Mockery::mock(Builder::class);
 });
 
@@ -42,6 +42,7 @@ it('adds where is reservable scope', function(): void {
         $join->shouldReceive('on')->with('dining_sections.id', '=', 'dining_tables.dining_section_id')->once()->andReturnSelf();
         $join->shouldReceive('where')->with('dining_sections.is_enabled', 1)->once();
         $callback($join);
+
         return true;
     }))->once()->andReturnSelf();
 
@@ -69,6 +70,7 @@ it('adds where is available at scope', function(): void {
         $join->shouldReceive('on')->with('dining_areas.id', '=', 'dining_tables.dining_area_id')->once()->andReturnSelf();
         $join->shouldReceive('where')->with('dining_areas.location_id', 1)->once();
         $callback($join);
+
         return true;
     }))->once()->andReturnSelf();
 
@@ -82,6 +84,7 @@ it('adds where is available for date scope', function(): void {
         $subBuilder->shouldReceive('where')->with('reserve_date', '2023-10-10')->once()->andReturnSelf();
         $subBuilder->shouldReceive('whereNotIn')->with('status_id', [0, setting('canceled_reservation_status')])->once();
         $callback($subBuilder);
+
         return true;
     }))->once()->andReturnSelf();
 
@@ -92,22 +95,25 @@ it('adds where is available for date scope', function(): void {
 it('adds where is available on scope', function(): void {
     $duration = 15;
     $dateTime = Carbon::parse('2023-10-10 12:30:00')->toDateTimeString();
-    $this->builder->shouldReceive('whereDoesntHave')->with('reservations', Mockery::on(function($callback) use ($duration, $dateTime): true {
+    $this->builder->shouldReceive('whereDoesntHave')->with('reservations', Mockery::on(function($callback) use ($dateTime): true {
         $subBuilder = Mockery::mock(Builder::class);
         $subBuilder->shouldReceive('where')->with(Mockery::on(function($callback) use ($dateTime): true {
             $subBuilder = Mockery::mock(Builder::class);
             $subBuilder->shouldReceive('whereBetweenStayTime')->with(Mockery::on(fn($dateTime) => $dateTime->eq('2023-10-10 12:31:00')))->once()->andReturnSelf();
             $callback($subBuilder);
+
             return true;
         }))->andReturnSelf();
-        $subBuilder->shouldReceive('orWhere')->with(Mockery::on(function($callback) use ($duration, $dateTime): true {
+        $subBuilder->shouldReceive('orWhere')->with(Mockery::on(function($callback) use ($dateTime): true {
             $subBuilder = Mockery::mock(Builder::class);
             $subBuilder->shouldReceive('whereBetweenStayTime')->with(Mockery::on(fn($dateTime) => $dateTime->eq('2023-10-10 12:44:00')))->andReturnSelf();
             $callback($subBuilder);
+
             return true;
         }))->andReturnSelf();
         $subBuilder->shouldReceive('whereNotIn')->with('status_id', [0, setting('canceled_reservation_status')])->once();
         $callback($subBuilder);
+
         return true;
     }))->once()->andReturnSelf();
 

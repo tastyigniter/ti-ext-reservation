@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\BulkActionWidgets;
 
-use Override;
 use Igniter\Admin\Classes\BaseBulkActionWidget;
 use Illuminate\Support\Collection;
+use Override;
 
 class AssignTable extends BaseBulkActionWidget
 {

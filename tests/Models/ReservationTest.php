@@ -67,14 +67,14 @@ it('returns correct table name when tables are assigned', function(): void {
     $table1->name = 'Table1';
     $table2->name = 'Table2';
 
-    $reservation = new Reservation();
+    $reservation = new Reservation;
     $reservation->setRelation('tables', collect([$table1, $table2]));
 
     expect($reservation->table_name)->toBe('Table1, Table2');
 });
 
 it('returns empty table name when no tables are assigned', function(): void {
-    $reservation = new Reservation();
+    $reservation = new Reservation;
     $reservation->setRelation('tables', collect());
 
     expect($reservation->table_name)->toBe('');
@@ -96,7 +96,7 @@ it('sets location stay time as default duration when null', function(): void {
 });
 
 it('returns correct occasion attribute', function(): void {
-    $reservation = new Reservation();
+    $reservation = new Reservation;
     $reservation->occasion_id = 1;
 
     expect($reservation->occasion)->toBe('birthday');
@@ -543,7 +543,7 @@ it('assigns staff to reservation', function(): void {
 });
 
 it('configures reservation model correctly', function(): void {
-    $reservation = new Reservation();
+    $reservation = new Reservation;
 
     expect(class_uses_recursive($reservation))
         ->toContain(Assignable::class)

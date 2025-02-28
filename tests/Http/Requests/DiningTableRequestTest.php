@@ -7,7 +7,7 @@ namespace Igniter\Reservation\Tests\Http\Requests;
 use Igniter\Reservation\Http\Requests\DiningTableRequest;
 
 it('returns correct attribute labels for dining table', function(): void {
-    $attributes = (new DiningTableRequest())->attributes();
+    $attributes = (new DiningTableRequest)->attributes();
 
     expect($attributes['name'])->toBe(lang('igniter::admin.label_name'))
         ->and($attributes['shape'])->toBe(lang('igniter.reservation::default.dining_tables.label_table_shape'))
@@ -21,7 +21,7 @@ it('returns correct attribute labels for dining table', function(): void {
 });
 
 it('validates rules correctly for dining table', function(): void {
-    $rules = (new DiningTableRequest())->rules();
+    $rules = (new DiningTableRequest)->rules();
 
     expect($rules['name'])->toBe(['required', 'string', 'between:2,255'])
         ->and($rules['shape'])->toBe(['required', 'in:rectangle,round'])

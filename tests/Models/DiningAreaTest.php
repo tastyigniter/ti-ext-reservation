@@ -129,7 +129,7 @@ it('throws an exception when combining tables from different sections', function
 });
 
 it('configures dining area model correctly', function(): void {
-    $diningArea = new DiningArea();
+    $diningArea = new DiningArea;
 
     expect(class_uses_recursive($diningArea))
         ->toContain(Locationable::class)

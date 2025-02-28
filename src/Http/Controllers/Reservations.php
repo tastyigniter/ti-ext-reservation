@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\Http\Controllers;
 
-use Igniter\Admin\Classes\AdminController;
-use Igniter\Admin\Http\Actions\ListController;
-use Igniter\Admin\Http\Actions\CalendarController;
-use Igniter\Admin\Http\Actions\FormController;
-use Igniter\User\Http\Actions\AssigneeController;
-use Igniter\Local\Http\Actions\LocationAwareController;
-use Igniter\Reservation\Http\Requests\ReservationRequest;
-use Illuminate\Http\RedirectResponse;
 use Carbon\Carbon;
 use DateInterval;
 use DatePeriod;
+use Igniter\Admin\Classes\AdminController;
 use Igniter\Admin\Facades\AdminMenu;
+use Igniter\Admin\Http\Actions\CalendarController;
+use Igniter\Admin\Http\Actions\FormController;
+use Igniter\Admin\Http\Actions\ListController;
 use Igniter\Admin\Models\Status;
 use Igniter\Flame\Exception\FlashException;
 use Igniter\Local\Facades\Location as LocationFacade;
+use Igniter\Local\Http\Actions\LocationAwareController;
+use Igniter\Reservation\Http\Requests\ReservationRequest;
 use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\Reservation;
+use Igniter\User\Http\Actions\AssigneeController;
+use Illuminate\Http\RedirectResponse;
 
 class Reservations extends AdminController
 {

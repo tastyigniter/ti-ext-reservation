@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\AutomationRules\Events;
 
-use Override;
 use Igniter\Automation\Classes\BaseEvent;
 use Igniter\Reservation\Models\Reservation;
+use Override;
 
 class NewReservationStatus extends BaseEvent
 {

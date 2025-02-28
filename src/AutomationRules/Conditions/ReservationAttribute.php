@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\AutomationRules\Conditions;
 
-use Igniter\Reservation\Models\Reservation;
-use Override;
 use Igniter\Automation\AutomationException;
 use Igniter\Automation\Classes\BaseModelAttributesCondition;
+use Igniter\Reservation\Models\Reservation;
+use Override;
 
 class ReservationAttribute extends BaseModelAttributesCondition
 {

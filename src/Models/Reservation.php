@@ -379,6 +379,7 @@ class Reservation extends Model
         }
 
         static::tables()->sync($tableIds);
+
         return true;
     }
 

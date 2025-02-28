@@ -10,7 +10,7 @@ use Igniter\Reservation\Models\Reservation;
 use Mockery;
 
 it('returns event details correctly', function(): void {
-    $details = (new NewReservationStatus())->eventDetails();
+    $details = (new NewReservationStatus)->eventDetails();
 
     expect($details['name'])->toBe('Reservation Status Update Event')
         ->and($details['description'])->toBe('When a reservation status is updated')

@@ -15,7 +15,7 @@ it('fixes tree when saving dining table without left or right values', function(
     $diningTable->shouldReceive('getLft')->andReturn(null);
     $diningTable->shouldReceive('fixTree')->once();
 
-    (new DiningTableObserver())->saving($diningTable);
+    (new DiningTableObserver)->saving($diningTable);
 });
 
 it('updates parent name when dining table is saved', function(): void {
@@ -30,14 +30,14 @@ it('updates parent name when dining table is saved', function(): void {
     $diningTable->shouldReceive('extendableGet')->with('parent_id')->andReturn(1);
     $diningTable->shouldReceive('extendableGet')->with('parent')->andReturn($parent);
 
-    (new DiningTableObserver())->saved($diningTable);
+    (new DiningTableObserver)->saved($diningTable);
 });
 
 it('throws exception when deleting dining table with parent', function(): void {
     $diningTable = Mockery::mock(DiningTable::class)->makePartial();
     $diningTable->shouldReceive('extendableGet')->with('parent_id')->andReturn(1);
 
-    expect(fn() => (new DiningTableObserver())->deleting($diningTable))
+    expect(fn() => (new DiningTableObserver)->deleting($diningTable))
         ->toThrow(SystemException::class);
 });
 
@@ -51,5 +51,5 @@ it('saves descendants as root and fixes tree when deleting combo dining table', 
     $descendant->shouldReceive('saveAsRoot')->once();
     $diningTable->shouldReceive('refreshNode')->once();
 
-    (new DiningTableObserver())->deleting($diningTable);
+    (new DiningTableObserver)->deleting($diningTable);
 });

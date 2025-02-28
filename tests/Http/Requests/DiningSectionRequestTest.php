@@ -7,7 +7,7 @@ namespace Igniter\Reservation\Tests\Http\Requests;
 use Igniter\Reservation\Http\Requests\DiningSectionRequest;
 
 it('returns correct attribute labels for dining section', function(): void {
-    $attributes = (new DiningSectionRequest())->attributes();
+    $attributes = (new DiningSectionRequest)->attributes();
 
     expect($attributes['location_id'])->toBe(lang('igniter::admin.label_location'))
         ->and($attributes['name'])->toBe(lang('igniter::admin.label_name'))
@@ -17,7 +17,7 @@ it('returns correct attribute labels for dining section', function(): void {
 });
 
 it('validates rules correctly for dining section', function(): void {
-    $rules = (new DiningSectionRequest())->rules();
+    $rules = (new DiningSectionRequest)->rules();
 
     expect($rules['location_id'])->toBe(['required', 'integer'])
         ->and($rules['name'])->toBe(['required', 'string'])

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\Database\Factories;
 
-use Igniter\Reservation\Models\Reservation;
-use Override;
 use Igniter\Flame\Database\Factories\Factory;
 use Igniter\Local\Models\Location;
+use Igniter\Reservation\Models\Reservation;
+use Override;
 
 class ReservationFactory extends Factory
 {

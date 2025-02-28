@@ -11,7 +11,7 @@ use Igniter\Reservation\Models\Reservation;
 use Illuminate\Support\Carbon;
 
 beforeEach(function(): void {
-    (new MaxGuestSizePerTimeslotReached())->clearInternalCache();
+    (new MaxGuestSizePerTimeslotReached)->clearInternalCache();
 });
 
 it('returns null when guest limit setting is disabled', function(): void {
@@ -26,7 +26,7 @@ it('returns null when guest limit setting is disabled', function(): void {
     ]);
     LocationFacade::setModel($location);
 
-    expect((new MaxGuestSizePerTimeslotReached())->handle($timeslot, 5))->toBeNull();
+    expect((new MaxGuestSizePerTimeslotReached)->handle($timeslot, 5))->toBeNull();
 });
 
 it('returns null when guest limit count is zero', function(): void {
@@ -42,7 +42,7 @@ it('returns null when guest limit count is zero', function(): void {
     ]);
     LocationFacade::setModel($location);
 
-    expect((new MaxGuestSizePerTimeslotReached())->handle($timeslot, 5))->toBeNull();
+    expect((new MaxGuestSizePerTimeslotReached)->handle($timeslot, 5))->toBeNull();
 });
 
 it('returns null when guest limit is not exceeded', function(): void {
@@ -65,7 +65,7 @@ it('returns null when guest limit is not exceeded', function(): void {
         'guest_num' => 10,
     ]);
 
-    expect((new MaxGuestSizePerTimeslotReached())->handle($timeslot, 5))->toBeNull();
+    expect((new MaxGuestSizePerTimeslotReached)->handle($timeslot, 5))->toBeNull();
 });
 
 it('returns true when guest limit is exceeded', function(): void {
@@ -89,7 +89,7 @@ it('returns true when guest limit is exceeded', function(): void {
         'guest_num' => 5,
     ]);
 
-    $listener = new MaxGuestSizePerTimeslotReached();
+    $listener = new MaxGuestSizePerTimeslotReached;
     expect($listener->handle($timeslot, 5))->toBeTrue()
         ->and($listener->handle($timeslot, 5))->toBeTrue(); // test cache result
 });
