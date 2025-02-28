@@ -6,7 +6,22 @@ parameters:
 			path: src/Classes/BookingManager.php
 
 		-
+			message: "#^Method Igniter\\\\Flame\\\\Database\\\\Builder\\:\\:whereBetweenReservationDateTime\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			count: 1
+			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
+
+		-
 			message: "#^Call to an undefined method Illuminate\\\\Support\\\\Carbon\\:\\:diffInRealMinutes\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<int,Igniter\\\\Reservation\\\\Models\\\\Reservation\\>\\:\\:transform\\(\\) expects callable\\(Igniter\\\\Reservation\\\\Models\\\\Reservation, int\\)\\: Igniter\\\\Reservation\\\\Models\\\\Reservation, Closure\\(Igniter\\\\Reservation\\\\Models\\\\Reservation\\)\\: array given\\.$#"
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
+			message: "#^Relation 'tables' is not found in Igniter\\\\Reservation\\\\Models\\\\Reservation model\\.$#"
 			count: 1
 			path: src/Models/Reservation.php
 
@@ -16,11 +31,11 @@ parameters:
 			path: src/Models/Scopes/DiningTableScope.php
 
 		-
-			message: "#^Call to an undefined static method Igniter\\\\Reservation\\\\Models\\\\Table\\:\\:selectRaw\\(\\)\\.$#"
+			message: "#^Method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<\\*\\>\\:\\:whereIsAvailableOn\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
 			count: 1
-			path: src/Models/Table.php
+			path: src/Models/Scopes/DiningTableScope.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Igniter\\\\User\\\\Models\\\\User\\>\\:\\:isEnabled\\(\\)\\.$#"
+			message: "#^Method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:whereBetweenReservationDateTime\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
 			count: 1
-			path: src/Notifications/ReservationCreatedNotification.php
+			path: src/Models/Scopes/ReservationScope.php

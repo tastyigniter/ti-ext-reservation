@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Models\Observers;
 
 use Igniter\Reservation\Models\Reservation;
 
 class ReservationObserver
 {
-    public function creating(Reservation $reservation)
+    public function creating(Reservation $reservation): void
     {
         if ($reservation->customer_id) {
             $reservation->first_name = $reservation->first_name ?: $reservation->customer->first_name;
@@ -22,7 +24,7 @@ class ReservationObserver
         ]);
     }
 
-    public function saved(Reservation $reservation)
+    public function saved(Reservation $reservation): void
     {
         $reservation->restorePurgedValues();
 

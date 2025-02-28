@@ -1,7 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation;
 
+use Igniter\System\Classes\BaseExtension;
+use Override;
+use Igniter\Reservation\Models\DiningSection;
+use Igniter\Reservation\AutomationRules\Events\NewReservation;
+use Igniter\Reservation\AutomationRules\Events\NewReservationStatus;
+use Igniter\Reservation\AutomationRules\Events\ReservationAssigned;
+use Igniter\Reservation\AutomationRules\Conditions\ReservationAttribute;
+use Igniter\Reservation\AutomationRules\Conditions\ReservationStatusAttribute;
+use Igniter\Reservation\FormWidgets\FloorPlanner;
+use Igniter\Reservation\BulkActionWidgets\AssignTable;
+use Igniter\Reservation\Http\Requests\BookingSettingsRequest;
 use Igniter\Admin\DashboardWidgets\Charts;
 use Igniter\Admin\DashboardWidgets\Statistics;
 use Igniter\Admin\Models\StatusHistory;
@@ -26,7 +39,7 @@ use Igniter\User\Http\Controllers\Customers;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 
-class Extension extends \Igniter\System\Classes\BaseExtension
+class Extension extends BaseExtension
 {
     protected $listen = [
         'igniter.reservation.isFullyBookedOn' => [
@@ -47,7 +60,8 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         Reservation::class => ReservationScope::class,
     ];
 
-    public function register()
+    #[Override]
+    public function register(): void
     {
         parent::register();
 
@@ -56,33 +70,33 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         $this->registerSystemSettings();
     }
 
-    public function boot()
+    #[Override]
+    public function boot(): void
     {
         $this->bindReservationEvent();
 
         Relation::enforceMorphMap([
-            'reservations' => \Igniter\Reservation\Models\Reservation::class,
-            'tables' => \Igniter\Reservation\Models\DiningTable::class,
-            'dining_areas' => \Igniter\Reservation\Models\DiningArea::class,
-            'dining_sections' => \Igniter\Reservation\Models\DiningSection::class,
+            'reservations' => Reservation::class,
+            'tables' => DiningTable::class,
+            'dining_areas' => DiningArea::class,
+            'dining_sections' => DiningSection::class,
         ]);
 
         Customers::extendFormFields(new AddsCustomerReservationsTabFields());
 
         LocationModel::implement(LocationAction::class);
 
-        Location::extend(function(Location $model) {
+        Location::extend(function(Location $model): void {
             $model->relation['hasMany']['dining_areas'] = [DiningArea::class, 'delete' => true];
             $model->relation['morphedByMany']['tables'] = [DiningTable::class, 'name' => 'locationable'];
         });
 
         $this->extendDashboardChartsDatasets();
 
-        Statistics::registerCards(function() {
-            return (new RegistersDashboardCards)();
-        });
+        Statistics::registerCards(fn(): array => (new RegistersDashboardCards)());
     }
 
+    #[Override]
     public function registerMailTemplates(): array
     {
         return [
@@ -92,22 +106,23 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         ];
     }
 
-    public function registerAutomationRules()
+    public function registerAutomationRules(): array
     {
         return [
             'events' => [
-                'igniter.reservation.confirmed' => \Igniter\Reservation\AutomationRules\Events\NewReservation::class,
-                'igniter.reservation.statusAdded' => \Igniter\Reservation\AutomationRules\Events\NewReservationStatus::class,
-                'igniter.reservation.assigned' => \Igniter\Reservation\AutomationRules\Events\ReservationAssigned::class,
+                'igniter.reservation.confirmed' => NewReservation::class,
+                'igniter.reservation.statusAdded' => NewReservationStatus::class,
+                'igniter.reservation.assigned' => ReservationAssigned::class,
             ],
             'actions' => [],
             'conditions' => [
-                \Igniter\Reservation\AutomationRules\Conditions\ReservationAttribute::class,
-                \Igniter\Reservation\AutomationRules\Conditions\ReservationStatusAttribute::class,
+                ReservationAttribute::class,
+                ReservationStatusAttribute::class,
             ],
         ];
     }
 
+    #[Override]
     public function registerPermissions(): array
     {
         return [
@@ -134,6 +149,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         ];
     }
 
+    #[Override]
     public function registerNavigation(): array
     {
         return [
@@ -159,26 +175,27 @@ class Extension extends \Igniter\System\Classes\BaseExtension
         ];
     }
 
+    #[Override]
     public function registerFormWidgets(): array
     {
         return [
-            \Igniter\Reservation\FormWidgets\FloorPlanner::class => [
+            FloorPlanner::class => [
                 'label' => 'Floor planner',
                 'code' => 'floorplanner',
             ],
         ];
     }
 
-    public function registerListActionWidgets()
+    public function registerListActionWidgets(): array
     {
         return [
-            \Igniter\Reservation\BulkActionWidgets\AssignTable::class => [
+            AssignTable::class => [
                 'code' => 'assign_table',
             ],
         ];
     }
 
-    public function registerLocationSettings()
+    public function registerLocationSettings(): array
     {
         return [
             'booking' => [
@@ -187,33 +204,33 @@ class Extension extends \Igniter\System\Classes\BaseExtension
                 'icon' => 'fa fa-sliders',
                 'priority' => 0,
                 'form' => 'igniter.reservation::/models/bookingsettings',
-                'request' => \Igniter\Reservation\Http\Requests\BookingSettingsRequest::class,
+                'request' => BookingSettingsRequest::class,
             ],
         ];
     }
 
     protected function bindReservationEvent()
     {
-        Event::listen('igniter.reservation.statusAdded', function(Reservation $model, $statusHistory) {
+        Event::listen('igniter.reservation.statusAdded', function(Reservation $model, $statusHistory): void {
             if ($statusHistory->notify) {
                 $model->reloadRelations();
                 $model->mailSend('igniter.reservation::mail.reservation_update', 'customer');
             }
         });
 
-        Event::listen('admin.statusHistory.beforeAddStatus', function($statusHistory, $reservation, $statusId, $previousStatus) {
+        Event::listen('admin.statusHistory.beforeAddStatus', function($statusHistory, $reservation, $statusId, $previousStatus): void {
             if ($reservation instanceof Reservation && !StatusHistory::alreadyExists($reservation, $statusId)) {
                 Event::dispatch('igniter.reservation.beforeAddStatus', [$statusHistory, $reservation, $statusId, $previousStatus], true);
             }
         });
 
-        Event::listen('admin.statusHistory.added', function($reservation, $statusHistory) {
+        Event::listen('admin.statusHistory.added', function($reservation, $statusHistory): void {
             if ($reservation instanceof Reservation) {
                 Event::dispatch('igniter.reservation.statusAdded', [$reservation, $statusHistory], true);
             }
         });
 
-        Event::listen('admin.assignable.assigned', function($reservation, $assignableLog) {
+        Event::listen('admin.assignable.assigned', function($reservation, $assignableLog): void {
             if ($reservation instanceof Reservation) {
                 Event::dispatch('igniter.reservation.assigned', [$reservation, $assignableLog], true);
             }
@@ -222,7 +239,7 @@ class Extension extends \Igniter\System\Classes\BaseExtension
 
     protected function registerSystemSettings()
     {
-        Settings::registerCallback(function(Settings $manager) {
+        Settings::registerCallback(function(Settings $manager): void {
             $manager->registerSettingItems('core', [
                 'reservation' => [
                     'label' => 'lang:igniter.reservation::default.text_setting_reservation',
@@ -240,8 +257,8 @@ class Extension extends \Igniter\System\Classes\BaseExtension
 
     protected function extendDashboardChartsDatasets()
     {
-        Charts::extend(function($charts) {
-            $charts->bindEvent('charts.extendDatasets', function() use ($charts) {
+        Charts::extend(function($charts): void {
+            $charts->bindEvent('charts.extendDatasets', function() use ($charts): void {
                 $charts->mergeDataset('reports', 'sets', [
                     'reservations' => [
                         'label' => 'lang:igniter.reservation::default.text_charts_reservations',

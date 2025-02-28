@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Listeners;
 
 use Igniter\Reservation\Models\Reservation;
@@ -7,33 +9,33 @@ use Igniter\System\Models\Settings;
 
 class RegistersDashboardCards
 {
-    public function __invoke()
+    public function __invoke(): array
     {
         return [
             'reserved_table' => [
                 'label' => 'lang:igniter.reservation::default.text_total_reserved_table',
                 'icon' => ' text-primary fa fa-4x fa-table',
-                'valueFrom' => [$this, 'getValue'],
+                'valueFrom' => $this->getValue(...),
             ],
             'reserved_guest' => [
                 'label' => 'lang:igniter.reservation::default.text_total_reserved_guest',
                 'icon' => ' text-primary fa fa-4x fa-table',
-                'valueFrom' => [$this, 'getValue'],
+                'valueFrom' => $this->getValue(...),
             ],
             'reservation' => [
                 'label' => 'lang:igniter.reservation::default.text_total_reservation',
                 'icon' => ' text-success fa fa-4x fa-table',
-                'valueFrom' => [$this, 'getValue'],
+                'valueFrom' => $this->getValue(...),
             ],
             'completed_reservation' => [
                 'label' => 'lang:igniter.reservation::default.text_total_completed_reservation',
                 'icon' => ' text-success fa fa-4x fa-table',
-                'valueFrom' => [$this, 'getValue'],
+                'valueFrom' => $this->getValue(...),
             ],
         ];
     }
 
-    public function getValue($code, $start, $end, callable $callback)
+    public function getValue($code, $start, $end, callable $callback): int
     {
         return match ($code) {
             'reserved_table' => $this->getTotalReservedTableSum($callback),
@@ -49,8 +51,9 @@ class RegistersDashboardCards
      */
     protected function getTotalReservedTableSum(callable $callback): int
     {
-        $query = Reservation::with('tables');
-        $query->where('status_id', Settings::get('confirmed_reservation_status'));
+        $query = Reservation::query()
+            ->with('tables')
+            ->where('status_id', Settings::get('confirmed_reservation_status'));
 
         $callback($query);
 
@@ -71,7 +74,7 @@ class RegistersDashboardCards
 
         $callback($query);
 
-        return $query->sum('guest_num') ?? 0;
+        return (int)$query->sum('guest_num');
     }
 
     /**

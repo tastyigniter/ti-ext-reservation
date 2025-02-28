@@ -9,15 +9,26 @@
       "email": "sam@sampoyigi.com"
     }
   ],
+  "repositories": {
+    "core": {
+      "type": "path",
+      "url": "../../../core/"
+    },
+    "packages": {
+      "type": "path",
+      "url": "../../../packages/*/*/"
+    }
+  },
   "require": {
     "tastyigniter/core": "^v4.0@beta || ^v4.0@dev",
     "tastyigniter/ti-ext-automation": "^v4.0@beta || ^v4.0@dev",
     "tastyigniter/ti-ext-local": "^v4.0@beta || ^v4.0@dev"
   },
   "require-dev": {
-    "laravel/pint": "^1.2",
     "larastan/larastan": "^2.4.0",
+    "laravel/pint": "^1.2",
     "pestphp/pest-plugin-laravel": "^3.0",
+    "rector/rector": "^1.2",
     "sampoyigi/testbench": "dev-main as 1.0"
   },
   "autoload": {
@@ -43,10 +54,17 @@
     }
   },
   "scripts": {
-    "test": "vendor/bin/pest --coverage --exactly=100",
-    "test-coverage": "vendor/bin/pest --coverage",
+    "test": "vendor/bin/pest --compact",
+    "test-coverage": "vendor/bin/pest --coverage --exactly=100 --compact",
+    "type-coverage": "vendor/bin/pest --type-coverage --min=100",
     "format": "vendor/bin/pint",
-    "static": "vendor/bin/phpstan analyse --ansi --memory-limit 1056M"
+    "refactor": "vendor/bin/rector process --dry-run",
+    "static": "vendor/bin/phpstan analyse --ansi --memory-limit 1056M",
+    "test-suite": [
+      "@refactor",
+      "@static",
+      "@test-coverage"
+    ]
   },
   "config": {
     "allow-plugins": {

@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Listeners;
 
 use Carbon\Carbon;
+use DateTimeInterface;
 use Igniter\Local\Facades\Location as LocationFacade;
 use Igniter\Local\Models\Location;
 use Igniter\Reservation\Models\Reservation;
@@ -11,27 +14,27 @@ class MaxGuestSizePerTimeslotReached
 {
     protected static $reservationsCache = [];
 
-    public function handle(\DateTimeInterface $timeslot, int|string $guestNum)
+    public function handle(DateTimeInterface $timeslot, int|string $guestNum): ?bool
     {
         /** @var Location $locationModel */
         $locationModel = LocationFacade::current();
         if (!(bool)$locationModel->getSettings('booking.limit_guests')) {
-            return;
+            return null;
         }
 
-        if (!$limitCount = (int)$locationModel->getSettings('booking.limit_guests_count', 20)) {
-            return;
+        if (($limitCount = (int)$locationModel->getSettings('booking.limit_guests_count', 20)) === 0) {
+            return null;
         }
 
         $totalGuestNumOnThisDay = $this->getGuestNum($timeslot);
         if (!$totalGuestNumOnThisDay) {
-            return;
+            return null;
         }
 
         return ($totalGuestNumOnThisDay + $guestNum) > $limitCount || $totalGuestNumOnThisDay >= $limitCount;
     }
 
-    protected function getGuestNum($timeslot)
+    protected function getGuestNum(DateTimeInterface $timeslot)
     {
         $dateTime = Carbon::parse($timeslot)->toDateTimeString();
 
@@ -51,7 +54,7 @@ class MaxGuestSizePerTimeslotReached
         return self::$reservationsCache[$dateTime] = (int)$guestNum;
     }
 
-    public function clearInternalCache()
+    public function clearInternalCache(): void
     {
         self::$reservationsCache = [];
     }

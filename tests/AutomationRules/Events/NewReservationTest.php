@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\AutomationRules\Events;
 
 use Igniter\Admin\Models\Status;
@@ -7,7 +9,7 @@ use Igniter\Reservation\AutomationRules\Events\NewReservation;
 use Igniter\Reservation\Models\Reservation;
 use Mockery;
 
-it('returns event details correctly', function() {
+it('returns event details correctly', function(): void {
     $details = (new NewReservation())->eventDetails();
 
     expect($details['name'])->toBe('New Reservation Event')
@@ -15,7 +17,7 @@ it('returns event details correctly', function() {
         ->and($details['group'])->toBe('reservation');
 });
 
-it('makes params from event with reservation instance', function() {
+it('makes params from event with reservation instance', function(): void {
     $reservation = Mockery::mock(Reservation::class)->makePartial();
     $reservation->shouldReceive('mailGetData')->andReturn(['customer_name' => 'John Doe']);
     $reservation->status = Mockery::mock(Status::class);
@@ -26,7 +28,7 @@ it('makes params from event with reservation instance', function() {
         ->and($params['status'])->toBe($reservation->status);
 });
 
-it('makes params from event without reservation instance', function() {
+it('makes params from event without reservation instance', function(): void {
     $params = NewReservation::makeParamsFromEvent([null]);
 
     expect($params)->toHaveKey('status')

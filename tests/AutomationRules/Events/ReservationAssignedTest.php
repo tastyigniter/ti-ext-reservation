@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\AutomationRules\Events;
 
 use Igniter\Admin\Models\Status;
@@ -8,7 +10,7 @@ use Igniter\Reservation\Models\Reservation;
 use Igniter\User\Models\User;
 use Mockery;
 
-it('returns event details correctly', function() {
+it('returns event details correctly', function(): void {
     $details = (new ReservationAssigned())->eventDetails();
 
     expect($details['name'])->toBe('Reservation Assigned Event')
@@ -16,7 +18,7 @@ it('returns event details correctly', function() {
         ->and($details['group'])->toBe('reservation');
 });
 
-it('makes params from event with reservation, status & assignee instance', function() {
+it('makes params from event with reservation, status & assignee instance', function(): void {
     $reservation = Mockery::mock(Reservation::class)->makePartial();
     $reservation->shouldReceive('mailGetData')->andReturn(['customer_name' => 'John Doe']);
     $reservation->status = Mockery::mock(Status::class);
@@ -29,7 +31,7 @@ it('makes params from event with reservation, status & assignee instance', funct
         ->and($params['assignee'])->toBe($reservation->assignee);
 });
 
-it('makes params from event without reservation, status & assignee instance', function() {
+it('makes params from event without reservation, status & assignee instance', function(): void {
     $params = ReservationAssigned::makeParamsFromEvent([null]);
 
     expect($params)->toHaveKey('status')

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Http\Requests;
 
 use Igniter\Reservation\Http\Requests\ReservationStatusRequest;
 
-it('returns correct attribute labels for reservation status', function() {
+it('returns correct attribute labels for reservation status', function(): void {
     $attributes = (new ReservationStatusRequest())->attributes();
 
     expect($attributes['status_id'])->toBe(lang('igniter::admin.label_status'))
@@ -14,7 +16,7 @@ it('returns correct attribute labels for reservation status', function() {
         ->and($attributes['assignee_id'])->toBe(lang('igniter::admin.statuses.label_assignee'));
 });
 
-it('validates rules correctly for reservation status', function() {
+it('validates rules correctly for reservation status', function(): void {
     $rules = (new ReservationStatusRequest())->rules();
 
     expect($rules['status_id'])->toBe(['sometimes', 'required', 'integer', 'exists:statuses'])

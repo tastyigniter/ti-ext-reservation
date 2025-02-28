@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Models;
 
 use Igniter\Flame\Database\Builder;
@@ -59,9 +61,7 @@ class DiningSection extends Model
 
     public function getPriorityOptions()
     {
-        return collect(range(0, 9))->map(function($priority) {
-            return lang('igniter.reservation::default.dining_tables.text_priority_'.$priority);
-        })->all();
+        return collect(range(0, 9))->map(fn($priority): string => lang('igniter.reservation::default.dining_tables.text_priority_'.$priority))->all();
     }
 
     public function scopeWhereIsReservable($query)

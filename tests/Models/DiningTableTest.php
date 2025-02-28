@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Models;
 
 use Carbon\Carbon;
@@ -13,7 +15,7 @@ use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Reservation;
 use Mockery;
 
-it('returns correct dining section id options when dining area exists', function() {
+it('returns correct dining section id options when dining area exists', function(): void {
     DiningSection::factory()->create(['location_id' => 1, 'name' => 'Section1']);
     DiningSection::factory()->create(['location_id' => 1, 'name' => 'Section2']);
 
@@ -27,14 +29,14 @@ it('returns correct dining section id options when dining area exists', function
     expect($diningTable->getDiningSectionIdOptions()->toArray())->toBe([1 => 'Section1', 2 => 'Section2']);
 });
 
-it('returns empty dining section id options when dining area does not exist', function() {
+it('returns empty dining section id options when dining area does not exist', function(): void {
     $diningTable = Mockery::mock(DiningTable::class)->makePartial();
     $diningTable->shouldReceive('exists')->andReturn(false);
 
     expect($diningTable->getDiningSectionIdOptions())->toBe([]);
 });
 
-it('returns priority options as an array of strings', function() {
+it('returns priority options as an array of strings', function(): void {
     $diningTable = new DiningTable();
 
     $options = $diningTable->getPriorityOptions();
@@ -44,7 +46,7 @@ it('returns priority options as an array of strings', function() {
         ->and($options[0])->toBeString();
 });
 
-it('returns correct section name attribute', function() {
+it('returns correct section name attribute', function(): void {
     $diningSection = Mockery::mock(DiningSection::class)->makePartial();
     $diningSection->shouldReceive('getAttribute')->with('name')->andReturn('Main Section');
 
@@ -54,14 +56,14 @@ it('returns correct section name attribute', function() {
     expect($diningTable->section_name)->toBe('Main Section');
 });
 
-it('returns null section name attribute when dining section is null', function() {
+it('returns null section name attribute when dining section is null', function(): void {
     $diningTable = Mockery::mock(DiningTable::class)->makePartial();
     $diningTable->shouldReceive('getAttribute')->with('dining_section')->andReturn(null);
 
     expect($diningTable->section_name)->toBeNull();
 });
 
-it('returns correct floor plan array without reservation', function() {
+it('returns correct floor plan array without reservation', function(): void {
     $diningTable = Mockery::mock(DiningTable::class)->makePartial();
     $diningTable->id = 1;
     $diningTable->name = 'Table1';
@@ -85,7 +87,7 @@ it('returns correct floor plan array without reservation', function() {
     expect($diningTable->toFloorPlanArray())->toBe($expectedArray);
 });
 
-it('returns correct floor plan array with reservation', function() {
+it('returns correct floor plan array with reservation', function(): void {
     $reservation = Mockery::mock(Reservation::class)->makePartial();
     $reservation->shouldReceive('getAttribute')->with('reservation_datetime')->andReturn(Carbon::parse('2023-10-10 12:00:00'));
     $reservation->shouldReceive('getAttribute')->with('reservation_end_datetime')->andReturn(Carbon::parse('2023-10-10 14:00:00'));
@@ -115,7 +117,7 @@ it('returns correct floor plan array with reservation', function() {
     expect($diningTable->toFloorPlanArray($reservation))->toBe($expectedArray);
 });
 
-it('configures dining table model correctly', function() {
+it('configures dining table model correctly', function(): void {
     $diningTable = new DiningTable();
 
     expect(class_uses_recursive($diningTable))

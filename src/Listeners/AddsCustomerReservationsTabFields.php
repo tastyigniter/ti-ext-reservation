@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Listeners;
 
 use Igniter\Admin\Widgets\Form;
@@ -7,7 +9,7 @@ use Igniter\User\Models\Customer;
 
 class AddsCustomerReservationsTabFields
 {
-    public function __invoke(Form $form)
+    public function __invoke(Form $form): void
     {
         if (!$form->model instanceof Customer) {
             return;

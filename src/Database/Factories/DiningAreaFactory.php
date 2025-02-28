@@ -1,13 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Database\Factories;
 
+use Igniter\Reservation\Models\DiningArea;
+use Override;
 use Igniter\Flame\Database\Factories\Factory;
 
 class DiningAreaFactory extends Factory
 {
-    protected $model = \Igniter\Reservation\Models\DiningArea::class;
+    protected $model = DiningArea::class;
 
+    #[Override]
     public function definition()
     {
         return [

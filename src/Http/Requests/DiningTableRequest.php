@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Http\Requests;
 
+use Override;
 use Igniter\System\Classes\FormRequest;
 
 class DiningTableRequest extends FormRequest
 {
+    #[Override]
     public function attributes()
     {
         return [
@@ -21,7 +25,7 @@ class DiningTableRequest extends FormRequest
         ];
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'between:2,255'],

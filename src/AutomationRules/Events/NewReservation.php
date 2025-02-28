@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\AutomationRules\Events;
 
+use Override;
 use Igniter\Automation\Classes\BaseEvent;
 use Igniter\Reservation\Models\Reservation;
 
 class NewReservation extends BaseEvent
 {
-    public function eventDetails()
+    #[Override]
+    public function eventDetails(): array
     {
         return [
             'name' => 'New Reservation Event',
@@ -16,6 +20,7 @@ class NewReservation extends BaseEvent
         ];
     }
 
+    #[Override]
     public static function makeParamsFromEvent(array $args, $eventName = null)
     {
         $params = [];

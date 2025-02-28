@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Models;
 
 use Igniter\Flame\Database\Builder;
@@ -76,18 +78,14 @@ class DiningArea extends Model
 
     public function getTablesForFloorPlan()
     {
-        return $this->available_tables->map(function(DiningTable $diningTable, int $key) {
-            return $diningTable->toFloorPlanArray();
-        });
+        return $this->available_tables->map(fn(DiningTable $diningTable, int $key) => $diningTable->toFloorPlanArray());
     }
 
     public function getDiningTablesWithReservation($reservations)
     {
         return $this->available_tables
             ->map(function(DiningTable $diningTable) use ($reservations) {
-                $reservation = $reservations->first(function(Reservation $reservation) use ($diningTable) {
-                    return $reservation->tables->where('id', $diningTable->id)->count() > 0;
-                });
+                $reservation = $reservations->first(fn(Reservation $reservation): bool => $reservation->tables->where('id', $diningTable->id)->count() > 0);
 
                 return $diningTable->toFloorPlanArray($reservation);
             });
@@ -101,7 +99,7 @@ class DiningArea extends Model
     // Accessors & Mutators
     //
 
-    public function getDiningTableCountAttribute($value)
+    public function getDiningTableCountAttribute($value): int
     {
         return $this->available_tables->count();
     }
@@ -118,10 +116,8 @@ class DiningArea extends Model
         $newDiningArea->save();
 
         $this->dining_tables
-            ->filter(function(DiningTable $table) {
-                return !$table->is_combo;
-            })
-            ->each(function(DiningTable $table) use ($newDiningArea) {
+            ->filter(fn(DiningTable $table): bool => !$table->is_combo)
+            ->each(function(DiningTable $table) use ($newDiningArea): void {
                 /** @var DiningTable $newTable */
                 $newTable = $table->replicate();
                 $newTable->dining_area_id = $newDiningArea->getKey();
@@ -137,9 +133,7 @@ class DiningArea extends Model
         $firstTable = $tables->first();
         $tableNames = $tables->pluck('name')->join('/');
 
-        if ($tables->filter(function(DiningTable $table) {
-            return $table->parent !== null;
-        })->isNotEmpty()) {
+        if ($tables->filter(fn(DiningTable $table): bool => $table->parent !== null)->isNotEmpty()) {
             throw new FlashException(lang('igniter.reservation::default.dining_areas.alert_table_already_combined'));
         }
 
@@ -159,7 +153,7 @@ class DiningArea extends Model
             'is_enabled' => true,
         ]);
 
-        $tables->each(function($table) use ($comboTable) {
+        $tables->each(function($table) use ($comboTable): void {
             $table->parent()->associate($comboTable)->saveQuietly();
         });
 

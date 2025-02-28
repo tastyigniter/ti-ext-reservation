@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\BulkActionWidget;
 
 use Igniter\Admin\Classes\AdminController;
@@ -10,7 +12,7 @@ use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Reservation;
 
-it('assigns tables to reservations without tables', function() {
+it('assigns tables to reservations without tables', function(): void {
     $controller = new class extends AdminController
     {
     };
@@ -38,7 +40,7 @@ it('assigns tables to reservations without tables', function() {
     expect(flash()->messages()->first())->message->not->toBeNull()->level->toBe('success');
 });
 
-it('does not assign tables to reservations with existing tables', function() {
+it('does not assign tables to reservations with existing tables', function(): void {
     $controller = new class extends AdminController
     {
     };
@@ -66,7 +68,7 @@ it('does not assign tables to reservations with existing tables', function() {
     expect(flash()->messages()->isEmpty())->toBeTrue();
 });
 
-it('shows warning if no tables can be assigned', function() {
+it('shows warning if no tables can be assigned', function(): void {
     $controller = new class extends AdminController
     {
     };
@@ -89,7 +91,7 @@ it('shows warning if no tables can be assigned', function() {
         ->level->toBe('warning');
 });
 
-it('assigns tables to reservations in correct order', function() {
+it('assigns tables to reservations in correct order', function(): void {
     $controller = new class extends AdminController
     {
     };

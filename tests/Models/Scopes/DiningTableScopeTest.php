@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Models\Scopes;
 
 use Carbon\Carbon;
@@ -8,12 +10,12 @@ use Igniter\Reservation\Models\Reservation;
 use Igniter\Reservation\Models\Scopes\DiningTableScope;
 use Mockery;
 
-beforeEach(function() {
+beforeEach(function(): void {
     $this->scope = new DiningTableScope();
     $this->builder = Mockery::mock(Builder::class);
 });
 
-it('adds reservable scope with all options', function() {
+it('adds reservable scope with all options', function(): void {
     $this->builder->shouldReceive('whereIsReservable')->once()->andReturnSelf();
     $this->builder->shouldReceive('whereIsAvailableOn')->with('2023-10-10 12:00:00', 15)->once()->andReturnSelf();
     $this->builder->shouldReceive('whereIsAvailableForDate')->with('2023-10-10')->once()->andReturnSelf();
@@ -32,10 +34,10 @@ it('adds reservable scope with all options', function() {
     ]);
 });
 
-it('adds where is reservable scope', function() {
+it('adds where is reservable scope', function(): void {
     $this->builder->shouldReceive('whereIsRoot')->once()->andReturnSelf();
     $this->builder->shouldReceive('where')->with('dining_tables.is_enabled', 1)->once()->andReturnSelf();
-    $this->builder->shouldReceive('leftJoin')->with('dining_sections', Mockery::on(function($callback) {
+    $this->builder->shouldReceive('leftJoin')->with('dining_sections', Mockery::on(function($callback): true {
         $join = Mockery::mock('alias:JoinClause');
         $join->shouldReceive('on')->with('dining_sections.id', '=', 'dining_tables.dining_section_id')->once()->andReturnSelf();
         $join->shouldReceive('where')->with('dining_sections.is_enabled', 1)->once();
@@ -47,22 +49,22 @@ it('adds where is reservable scope', function() {
     $addWhereIsReservable($this->builder);
 });
 
-it('adds where is combo scope', function() {
+it('adds where is combo scope', function(): void {
     $this->builder->shouldReceive('where')->with('is_combo', 1)->once()->andReturnSelf();
 
     $addWhereIsCombo = $this->scope->addWhereIsCombo();
     $addWhereIsCombo($this->builder);
 });
 
-it('adds where is not combo scope', function() {
+it('adds where is not combo scope', function(): void {
     $this->builder->shouldReceive('where')->with('is_combo', '!=', 1)->once()->andReturnSelf();
 
     $addWhereIsNotCombo = $this->scope->addWhereIsNotCombo();
     $addWhereIsNotCombo($this->builder);
 });
 
-it('adds where is available at scope', function() {
-    $this->builder->shouldReceive('join')->with('dining_areas', Mockery::on(function($callback) {
+it('adds where is available at scope', function(): void {
+    $this->builder->shouldReceive('join')->with('dining_areas', Mockery::on(function($callback): true {
         $join = Mockery::mock('alias:JoinClause');
         $join->shouldReceive('on')->with('dining_areas.id', '=', 'dining_tables.dining_area_id')->once()->andReturnSelf();
         $join->shouldReceive('where')->with('dining_areas.location_id', 1)->once();
@@ -74,8 +76,8 @@ it('adds where is available at scope', function() {
     $addWhereIsAvailableAt($this->builder, 1);
 });
 
-it('adds where is available for date scope', function() {
-    $this->builder->shouldReceive('whereDoesntHave')->with('reservations', Mockery::on(function($callback) {
+it('adds where is available for date scope', function(): void {
+    $this->builder->shouldReceive('whereDoesntHave')->with('reservations', Mockery::on(function($callback): true {
         $subBuilder = Mockery::mock(Builder::class);
         $subBuilder->shouldReceive('where')->with('reserve_date', '2023-10-10')->once()->andReturnSelf();
         $subBuilder->shouldReceive('whereNotIn')->with('status_id', [0, setting('canceled_reservation_status')])->once();
@@ -87,24 +89,20 @@ it('adds where is available for date scope', function() {
     $addWhereIsAvailableForDate($this->builder, '2023-10-10');
 });
 
-it('adds where is available on scope', function() {
+it('adds where is available on scope', function(): void {
     $duration = 15;
     $dateTime = Carbon::parse('2023-10-10 12:30:00')->toDateTimeString();
-    $this->builder->shouldReceive('whereDoesntHave')->with('reservations', Mockery::on(function($callback) use ($duration, $dateTime) {
+    $this->builder->shouldReceive('whereDoesntHave')->with('reservations', Mockery::on(function($callback) use ($duration, $dateTime): true {
         $subBuilder = Mockery::mock(Builder::class);
-        $subBuilder->shouldReceive('where')->with(Mockery::on(function($callback) use ($dateTime) {
+        $subBuilder->shouldReceive('where')->with(Mockery::on(function($callback) use ($dateTime): true {
             $subBuilder = Mockery::mock(Builder::class);
-            $subBuilder->shouldReceive('whereBetweenStayTime')->with(Mockery::on(function($dateTime) {
-                return $dateTime->eq('2023-10-10 12:31:00');
-            }))->once()->andReturnSelf();
+            $subBuilder->shouldReceive('whereBetweenStayTime')->with(Mockery::on(fn($dateTime) => $dateTime->eq('2023-10-10 12:31:00')))->once()->andReturnSelf();
             $callback($subBuilder);
             return true;
         }))->andReturnSelf();
-        $subBuilder->shouldReceive('orWhere')->with(Mockery::on(function($callback) use ($duration, $dateTime) {
+        $subBuilder->shouldReceive('orWhere')->with(Mockery::on(function($callback) use ($duration, $dateTime): true {
             $subBuilder = Mockery::mock(Builder::class);
-            $subBuilder->shouldReceive('whereBetweenStayTime')->with(Mockery::on(function($dateTime) {
-                return $dateTime->eq('2023-10-10 12:44:00');
-            }))->andReturnSelf();
+            $subBuilder->shouldReceive('whereBetweenStayTime')->with(Mockery::on(fn($dateTime) => $dateTime->eq('2023-10-10 12:44:00')))->andReturnSelf();
             $callback($subBuilder);
             return true;
         }))->andReturnSelf();
@@ -117,7 +115,7 @@ it('adds where is available on scope', function() {
     $addWhereIsAvailableOn($this->builder, $dateTime, $duration);
 });
 
-it('adds where can accommodate scope', function() {
+it('adds where can accommodate scope', function(): void {
     $this->builder->shouldReceive('where')->with('min_capacity', '<=', 4)->once()->andReturnSelf();
     $this->builder->shouldReceive('where')->with('max_capacity', '>=', 4)->once()->andReturnSelf();
 
@@ -125,7 +123,7 @@ it('adds where can accommodate scope', function() {
     $addWhereCanAccommodate($this->builder, 4);
 });
 
-it('adds where has reservation location scope', function() {
+it('adds where has reservation location scope', function(): void {
     $reservation = Mockery::mock(Reservation::class);
     $reservation->shouldReceive('extendableGet')->with('location_id')->andReturn(1);
     $this->builder->shouldReceive('whereHasLocation')->with(1)->once()->andReturnSelf();

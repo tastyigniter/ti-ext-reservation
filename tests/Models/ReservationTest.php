@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Models;
 
 use Carbon\Carbon;
@@ -16,12 +18,13 @@ use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Reservation;
 use Igniter\System\Models\Concerns\SendsMailTemplate;
 use Igniter\User\Models\Concerns\Assignable;
+use Igniter\User\Models\Customer;
 use Igniter\User\Models\User;
 use Igniter\User\Models\UserGroup;
 use Illuminate\Support\Facades\Event;
 use Mockery;
 
-it('returns correct customer name', function() {
+it('returns correct customer name', function(): void {
     $reservation = new Reservation([
         'first_name' => 'John',
         'last_name' => 'Doe',
@@ -30,7 +33,7 @@ it('returns correct customer name', function() {
     expect($reservation->customer_name)->toBe('John Doe');
 });
 
-it('calculates correct reservation end time with duration', function() {
+it('calculates correct reservation end time with duration', function(): void {
     $reservation = new Reservation([
         'reserve_date' => '2023-10-10',
         'reserve_time' => '12:00:00',
@@ -40,7 +43,7 @@ it('calculates correct reservation end time with duration', function() {
     expect($reservation->reservation_end_datetime->toDateTimeString())->toBe('2023-10-10 14:00:00');
 });
 
-it('calculates correct reservation end time without duration', function() {
+it('calculates correct reservation end time without duration', function(): void {
     $reservation = new Reservation([
         'reserve_date' => '2023-10-10',
         'reserve_time' => '12:00:00',
@@ -49,7 +52,7 @@ it('calculates correct reservation end time without duration', function() {
     expect($reservation->reservation_end_datetime->toDateTimeString())->toBe('2023-10-10 23:59:59');
 });
 
-it('returns null reservation end time when missing date time', function() {
+it('returns null reservation end time when missing date time', function(): void {
     $reservation = new Reservation([
         'reserve_date' => null,
         'reserve_time' => null,
@@ -58,7 +61,7 @@ it('returns null reservation end time when missing date time', function() {
     expect($reservation->reservation_end_datetime)->toBeNull();
 });
 
-it('returns correct table name when tables are assigned', function() {
+it('returns correct table name when tables are assigned', function(): void {
     $table1 = Mockery::mock(DiningTable::class)->makePartial();
     $table2 = Mockery::mock(DiningTable::class)->makePartial();
     $table1->name = 'Table1';
@@ -70,14 +73,14 @@ it('returns correct table name when tables are assigned', function() {
     expect($reservation->table_name)->toBe('Table1, Table2');
 });
 
-it('returns empty table name when no tables are assigned', function() {
+it('returns empty table name when no tables are assigned', function(): void {
     $reservation = new Reservation();
     $reservation->setRelation('tables', collect());
 
     expect($reservation->table_name)->toBe('');
 });
 
-it('sets location stay time as default duration when null', function() {
+it('sets location stay time as default duration when null', function(): void {
     $location = Location::factory()->create();
     $location->settings()->create([
         'item' => 'booking',
@@ -92,14 +95,14 @@ it('sets location stay time as default duration when null', function() {
     expect($reservation->duration)->toBe(120);
 });
 
-it('returns correct occasion attribute', function() {
+it('returns correct occasion attribute', function(): void {
     $reservation = new Reservation();
     $reservation->occasion_id = 1;
 
     expect($reservation->occasion)->toBe('birthday');
 });
 
-it('returns true if reservation is completed', function() {
+it('returns true if reservation is completed', function(): void {
     $reservation = Reservation::factory()->create();
     $reservation->addStatusHistory(setting('confirmed_reservation_status'));
 
@@ -108,7 +111,7 @@ it('returns true if reservation is completed', function() {
     expect($result)->toBeTrue();
 });
 
-it('returns true if reservation is canceled', function() {
+it('returns true if reservation is canceled', function(): void {
     $reservation = Reservation::factory()->create();
     $reservation->addStatusHistory(setting('canceled_reservation_status'));
 
@@ -117,7 +120,7 @@ it('returns true if reservation is canceled', function() {
     expect($result)->toBeTrue();
 });
 
-it('returns true if reservation is cancelable', function() {
+it('returns true if reservation is cancelable', function(): void {
     $location = Location::factory()->create();
     $location->settings()->create([
         'item' => 'booking',
@@ -134,7 +137,7 @@ it('returns true if reservation is cancelable', function() {
     expect($result)->toBeTrue();
 });
 
-it('returns false if reservation is not cancelable due to timeout', function() {
+it('returns false if reservation is not cancelable due to timeout', function(): void {
     $location = Location::factory()->create();
     $location->settings()->create([
         'item' => 'booking',
@@ -151,7 +154,7 @@ it('returns false if reservation is not cancelable due to timeout', function() {
     expect($result)->toBeFalse();
 });
 
-it('returns false if reservation is not cancelable due to past date', function() {
+it('returns false if reservation is not cancelable due to past date', function(): void {
     $location = Location::factory()->create();
     $location->settings()->create([
         'item' => 'booking',
@@ -168,7 +171,7 @@ it('returns false if reservation is not cancelable due to past date', function()
     expect($result)->toBeFalse();
 });
 
-it('marks reservation as canceled and dispatches event', function() {
+it('marks reservation as canceled and dispatches event', function(): void {
     Event::fake();
     $reservation = Reservation::factory()->create(['status_id' => 1]);
 
@@ -180,7 +183,7 @@ it('marks reservation as canceled and dispatches event', function() {
     Event::assertDispatched(ReservationCanceledEvent::class);
 });
 
-it('finds reserved tables for a given location and datetime', function() {
+it('finds reserved tables for a given location and datetime', function(): void {
     $location = Location::factory()->create();
     $diningArea = DiningArea::factory()->create(['location_id' => $location->getKey()]);
     $table = DiningTable::factory()->for($diningArea, 'dining_area')->create();
@@ -198,14 +201,14 @@ it('finds reserved tables for a given location and datetime', function() {
     expect($result->keys()->all())->toContain($table->getKey());
 });
 
-it('returns correct reservation dates', function() {
+it('returns correct reservation dates', function(): void {
     $reservation = Mockery::mock(Reservation::class)->makePartial();
     $reservation->shouldReceive('pluckDates')->with('reserve_date')->andReturn(['2023-10-10', '2023-10-11']);
 
     expect($reservation->getReservationDates())->toBe(['2023-10-10', '2023-10-11']);
 });
 
-it('adds reservation tables correctly', function() {
+it('adds reservation tables correctly', function(): void {
     $reservation = Mockery::mock(Reservation::class)->makePartial();
     $reservation->exists = true;
     $reservation->shouldReceive('tables->sync')->with([1, 2, 3])->once();
@@ -213,14 +216,14 @@ it('adds reservation tables correctly', function() {
     expect($reservation->addReservationTables([1, 2, 3]))->toBeTrue();
 });
 
-it('does not add reservation tables when reservation does not exist', function() {
+it('does not add reservation tables when reservation does not exist', function(): void {
     $reservation = Mockery::mock(Reservation::class)->makePartial();
     $reservation->shouldReceive('exists')->andReturn(false);
 
     expect($reservation->addReservationTables([1, 2, 3]))->toBeFalse();
 });
 
-it('returns false when no available table to assign', function() {
+it('returns false when no available table to assign', function(): void {
     $location = Location::factory()->create();
     $location->settings()->create([
         'item' => 'booking',
@@ -240,7 +243,7 @@ it('returns false when no available table to assign', function() {
     expect($result)->toBeFalse();
 });
 
-it('returns the next bookable table when available', function() {
+it('returns the next bookable table when available', function(): void {
     $location = Location::factory()->create();
     $location->settings()->create([
         'item' => 'booking',
@@ -269,7 +272,7 @@ it('returns the next bookable table when available', function() {
         ->and(collect([$diningTable1, $diningTable2])->pluck('id')->all())->toContain($result->first()->getKey());
 });
 
-it('returns the next bookable sectioned table when available', function() {
+it('returns the next bookable sectioned table when available', function(): void {
     $location = Location::factory()->create();
     $location->settings()->create([
         'item' => 'booking',
@@ -301,7 +304,7 @@ it('returns the next bookable sectioned table when available', function() {
         ->and(collect([$diningTable1, $diningTable2])->pluck('id')->all())->toContain($result->first()->getKey());
 });
 
-it('returns empty dining tables if location is not set', function() {
+it('returns empty dining tables if location is not set', function(): void {
     $reservation = Reservation::factory()->create(['location_id' => '']);
 
     $result = $reservation->getDiningTableOptions();
@@ -310,9 +313,10 @@ it('returns empty dining tables if location is not set', function() {
         ->and($result)->toBeEmpty();
 });
 
-it('returns dining table options for the given location', function() {
+it('returns dining table options for the given location', function(): void {
     $location = Location::factory()->create();
     $location = Location::factory()->create();
+
     $diningArea = DiningArea::factory()->create(['location_id' => $location->getKey()]);
     $diningTables = DiningTable::factory()->count(2)->for($diningArea, 'dining_area')->create();
     $reservation = Reservation::factory()->for($location, 'location')->create();
@@ -323,7 +327,7 @@ it('returns dining table options for the given location', function() {
         ->and($result)->toContain(...$diningTables->pluck('name')->all());
 });
 
-it('gets mail recipients correctly for customer type', function() {
+it('gets mail recipients correctly for customer type', function(): void {
     $reservation = Reservation::factory()->create([
         'email' => 'customer@example.com',
         'first_name' => 'John',
@@ -337,7 +341,7 @@ it('gets mail recipients correctly for customer type', function() {
     expect($recipients)->toBe([[$reservation->email, $reservation->customer_name]]);
 });
 
-it('gets mail recipients correctly for location type', function() {
+it('gets mail recipients correctly for location type', function(): void {
     $location = Location::factory()->create();
     $reservation = Reservation::factory()->for($location)->create();
 
@@ -348,29 +352,59 @@ it('gets mail recipients correctly for location type', function() {
     expect($recipients)->toBe([[$location->location_email, $location->location_name]]);
 });
 
-it('gets mail recipients correctly for admin type', function() {
+it('gets mail recipients correctly for admin type', function(): void {
     $reservation = Reservation::factory()->create();
 
-    setting()->set(['reservation_email' => ['admin']]);
+    setting()->set([
+        'site_email' => 'site@example.com',
+        'site_name' => 'Site',
+        'reservation_email' => ['admin'],
+    ]);
 
     $recipients = $reservation->mailGetRecipients('admin');
 
     expect($recipients)->toBe([[setting('site_email'), setting('site_name')]]);
 });
 
-it('returns empty array when type is not in reservation email settings', function() {
+it('gets mail reply to correctly for admin type', function(): void {
     $reservation = Reservation::factory()->create();
 
-    setting()->set(['reservation_email' => ['admin']]);
+    setting()->set([
+        'site_email' => 'site@example.com',
+        'site_name' => 'Site',
+        'reservation_email' => ['admin', 'location'],
+    ]);
 
     $recipients = $reservation->mailGetReplyTo('admin');
 
-    expect($recipients)->toBeArray()
-        ->and($recipients)->toContain($reservation->email)
-        ->and($recipients)->toContain($reservation->customer_name);
+    expect($recipients)->toBe([setting('site_email'), setting('site_name')]);
+
+    $recipients = $reservation->mailGetReplyTo('location');
+
+    expect($recipients)->toBe([$reservation->location->location_email, $reservation->location->location_name]);
 });
 
-it('returns correct mail data for reservation', function() {
+it('returns empty reply to array when type is not in reservation email settings', function(): void {
+    $reservation = Reservation::factory()->create();
+
+    setting()->set(['reservation_email' => 'invalid']);
+
+    $recipients = $reservation->mailGetReplyTo('admin');
+
+    expect($recipients)->toBeArray()->toBeEmpty();
+});
+
+it('returns empty recipient array when type is not in reservation email settings', function(): void {
+    $reservation = Reservation::factory()->create();
+
+    setting()->set(['reservation_email' => 'invalid']);
+
+    $recipients = $reservation->mailGetRecipients('admin');
+
+    expect($recipients)->toBeArray()->toBeEmpty();
+});
+
+it('returns correct mail data for reservation', function(): void {
     $location = Location::factory()->create();
     $reservation = Reservation::factory()->create([
         'location_id' => $location->getKey(),
@@ -400,7 +434,7 @@ it('returns correct mail data for reservation', function() {
         ->and($data['location_telephone'])->toBe($location->location_telephone);
 });
 
-it('applies filters to query builder', function() {
+it('applies filters to query builder', function(): void {
     $query = Reservation::query()->applyFilters([
         'status' => 'confirmed',
         'location' => 1,
@@ -415,7 +449,7 @@ it('applies filters to query builder', function() {
         ->toContain('lower(first_name) like ?', 'lower(last_name) like ?');
 });
 
-it('returns correct event details', function() {
+it('returns correct event details', function(): void {
     $location = Location::factory()->create();
     $reservation = Reservation::factory()->for($location, 'location')->create([
         'guest_num' => 4,
@@ -491,7 +525,7 @@ it('returns correct event details', function() {
     expect($reservation->getEventDetails())->toBe($expectedDetails);
 });
 
-it('assigns staff to reservation', function() {
+it('assigns staff to reservation', function(): void {
     Event::fake(['igniter.reservation.assigned']);
     $assigneeGroup = UserGroup::factory()->create();
     $assignee = User::factory()->create();
@@ -508,7 +542,7 @@ it('assigns staff to reservation', function() {
     Event::assertDispatched('igniter.reservation.assigned');
 });
 
-it('configures reservation model correctly', function() {
+it('configures reservation model correctly', function(): void {
     $reservation = new Reservation();
 
     expect(class_uses_recursive($reservation))
@@ -529,10 +563,10 @@ it('configures reservation model correctly', function() {
             'occasion_id', 'assignee_id', 'reserve_time',
             'reserve_date', 'notify', 'duration', 'processed',
         ])
-        ->and($reservation->relation['belongsTo']['customer'])->toBe(\Igniter\User\Models\Customer::class)
-        ->and($reservation->relation['belongsTo']['location'])->toBe(\Igniter\Local\Models\Location::class)
+        ->and($reservation->relation['belongsTo']['customer'])->toBe(Customer::class)
+        ->and($reservation->relation['belongsTo']['location'])->toBe(Location::class)
         ->and($reservation->relation['belongsToMany']['tables'])->toBe([
-            \Igniter\Reservation\Models\DiningTable::class, 'table' => 'reservation_tables',
+            DiningTable::class, 'table' => 'reservation_tables',
         ])
         ->and($reservation->getAppends())->toContain('customer_name', 'duration', 'table_name', 'reservation_datetime', 'reservation_end_datetime')
         ->and($reservation->getPurgeableAttributes())->toBe(['tables']);

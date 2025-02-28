@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Events;
 
 use Igniter\Flame\Traits\EventDispatchable;
@@ -11,7 +13,7 @@ class ReservationCanceledEvent
 
     public function __construct(public Reservation $reservation) {}
 
-    public static function eventName()
+    public static function eventName(): string
     {
         return 'admin.reservation.canceled';
     }

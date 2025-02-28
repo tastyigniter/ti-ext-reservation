@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Listeners;
 
 use Igniter\Reservation\Listeners\SendReservationConfirmation;
@@ -7,7 +9,7 @@ use Igniter\Reservation\Models\Reservation;
 use Igniter\Reservation\Notifications\ReservationCreatedNotification;
 use Mockery;
 
-it('sends reservation confirmation emails to customer, location, and admin', function() {
+it('sends reservation confirmation emails to customer, location, and admin', function(): void {
     $model = Mockery::mock(Reservation::class)->makePartial();
     $model->shouldReceive('mailSend')->with('igniter.reservation::mail.reservation', 'customer')->once();
     $model->shouldReceive('mailSend')->with('igniter.reservation::mail.reservation_alert', 'location')->once();

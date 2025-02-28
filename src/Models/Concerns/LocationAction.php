@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Models\Concerns;
 
+use Igniter\Local\Models\Location;
 use Igniter\System\Actions\ModelAction;
 
 /**
  * LocationAction Trait
  *
- * @property \Igniter\Local\Models\Location $model
+ * @property Location $model
  */
 class LocationAction extends ModelAction
 {

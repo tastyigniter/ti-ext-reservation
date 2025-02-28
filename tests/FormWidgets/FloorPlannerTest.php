@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\FormWidgets;
 
 use Igniter\Admin\Classes\AdminController;
@@ -9,14 +11,14 @@ use Igniter\Reservation\Models\Reservation;
 use Igniter\System\Facades\Assets;
 use Mockery;
 
-beforeEach(function() {
+beforeEach(function(): void {
     $controller = new class extends AdminController
     {
     };
     $this->floorPlanner = new FloorPlanner($controller, new FormField('test_field', 'Floor planner'), []);
 });
 
-it('initializes with default configuration', function() {
+it('initializes with default configuration', function(): void {
     $this->floorPlanner->initialize();
 
     $colors = [
@@ -32,14 +34,14 @@ it('initializes with default configuration', function() {
         ->and($this->floorPlanner->formTitle)->toBe('Edit table');
 });
 
-it('prepares vars', function() {
+it('prepares vars', function(): void {
     $this->floorPlanner->prepareVars();
 
     expect($this->floorPlanner->vars['field'])->toBeInstanceOf(FormField::class)
         ->and($this->floorPlanner->vars)->toHaveKeys(['sectionColors', 'diningTables', 'connectorWidgetAlias']);
 });
 
-it('loads assets correctly', function() {
+it('loads assets correctly', function(): void {
     Assets::shouldReceive('addJs')->with('https://unpkg.com/konva@8.3.12/konva.min.js', 'konva-js')->once();
     Assets::shouldReceive('addCss')->with('css/floorplanner.css', 'floorplanner-css')->once();
     Assets::shouldReceive('addJs')->with('js/floorplanner.js', 'floorplanner-js')->once();
@@ -47,7 +49,7 @@ it('loads assets correctly', function() {
     $this->floorPlanner->loadAssets();
 });
 
-it('saves state and updates model and tables', function() {
+it('saves state and updates model and tables', function(): void {
     $model = Mockery::mock(Reservation::class)->makePartial();
 
     $model->shouldReceive('save')->once();
@@ -65,7 +67,7 @@ it('saves state and updates model and tables', function() {
     $this->floorPlanner->onSaveState();
 });
 
-it('returns no save data for getSaveValue', function() {
+it('returns no save data for getSaveValue', function(): void {
     $result = $this->floorPlanner->getSaveValue('any value');
 
     expect($result)->toBe(FormField::NO_SAVE_DATA);

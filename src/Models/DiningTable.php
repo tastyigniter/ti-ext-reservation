@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Models;
 
 use Igniter\Flame\Database\Builder;
@@ -122,9 +124,7 @@ class DiningTable extends Model
 
     public function getPriorityOptions()
     {
-        return collect(range(0, 9))->map(function($priority) {
-            return lang('igniter.reservation::default.dining_tables.text_priority_'.$priority);
-        })->all();
+        return collect(range(0, 9))->map(fn($priority): string => lang('igniter.reservation::default.dining_tables.text_priority_'.$priority))->all();
     }
 
     //
@@ -140,7 +140,7 @@ class DiningTable extends Model
     // Helpers
     //
 
-    public function sortWhenCreating()
+    public function sortWhenCreating(): bool
     {
         return false;
     }

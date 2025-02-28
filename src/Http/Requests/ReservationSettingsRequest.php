@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Http\Requests;
 
+use Override;
 use Igniter\System\Classes\FormRequest;
 
 class ReservationSettingsRequest extends FormRequest
 {
+    #[Override]
     public function attributes()
     {
         return [
@@ -15,7 +19,7 @@ class ReservationSettingsRequest extends FormRequest
         ];
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'reservation_email.*' => ['required', 'alpha'],

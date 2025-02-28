@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Http\Requests;
 
 use Igniter\Reservation\Http\Requests\ReservationRequest;
 
-it('returns correct attribute labels for reservation', function() {
+it('returns correct attribute labels for reservation', function(): void {
     $attributes = (new ReservationRequest())->attributes();
 
     expect($attributes['location_id'])->toBe(lang('igniter.reservation::default.text_restaurant'))
@@ -18,7 +20,7 @@ it('returns correct attribute labels for reservation', function() {
         ->and($attributes['comment'])->toBe(lang('igniter.reservation::default.column_comment'));
 });
 
-it('validates rules correctly for reservation', function() {
+it('validates rules correctly for reservation', function(): void {
     $rules = (new ReservationRequest())->rules();
 
     expect($rules['location_id'])->toBe(['sometimes', 'required', 'integer'])

@@ -1,18 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\AutomationRules\Conditions;
 
+use Override;
 use Igniter\Admin\Models\Status;
 use Igniter\Automation\AutomationException;
 use Igniter\Automation\Classes\BaseModelAttributesCondition;
 
 class ReservationStatusAttribute extends BaseModelAttributesCondition
 {
-    protected $modelClass = \Igniter\Admin\Models\Status::class;
+    protected $modelClass = Status::class;
 
     protected $modelAttributes;
 
-    public function conditionDetails()
+    #[Override]
+    public function conditionDetails(): array
     {
         return [
             'name' => 'Reservation status attribute',
@@ -20,7 +24,8 @@ class ReservationStatusAttribute extends BaseModelAttributesCondition
         ];
     }
 
-    public function defineModelAttributes()
+    #[Override]
+    public function defineModelAttributes(): array
     {
         return [
             'status_id' => [
@@ -40,6 +45,7 @@ class ReservationStatusAttribute extends BaseModelAttributesCondition
      * @param array $params Specifies a list of parameters as an associative array.
      * @return bool
      */
+    #[Override]
     public function isTrue(&$params)
     {
         $status = array_get($params, 'status');

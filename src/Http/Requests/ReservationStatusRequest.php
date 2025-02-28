@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Http\Requests;
 
+use Override;
 use Igniter\System\Classes\FormRequest;
 
 class ReservationStatusRequest extends FormRequest
 {
+    #[Override]
     public function attributes()
     {
         return [
@@ -18,7 +22,7 @@ class ReservationStatusRequest extends FormRequest
         ];
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'status_id' => ['sometimes', 'required', 'integer', 'exists:statuses'],

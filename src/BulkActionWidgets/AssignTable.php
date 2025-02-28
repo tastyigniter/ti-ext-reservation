@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\BulkActionWidgets;
 
+use Override;
 use Igniter\Admin\Classes\BaseBulkActionWidget;
 use Illuminate\Support\Collection;
 
 class AssignTable extends BaseBulkActionWidget
 {
-    public function handleAction(array $requestData, Collection $records)
+    #[Override]
+    public function handleAction(array $requestData, Collection $records): void
     {
         $noTablesFound = [];
         $tablesAssigned = [];
@@ -24,13 +28,13 @@ class AssignTable extends BaseBulkActionWidget
             }
         }
 
-        if ($noTablesFound) {
+        if ($noTablesFound !== []) {
             flash()->warning(
                 lang('igniter.reservation::default.alert_no_assignable_table').' '.implode(', ', $noTablesFound),
             )->important();
         }
 
-        if ($tablesAssigned) {
+        if ($tablesAssigned !== []) {
             flash()->success(lang('igniter.reservation::default.alert_table_assigned'));
         }
     }

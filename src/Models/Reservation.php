@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Models;
 
 use Carbon\Carbon;
@@ -21,6 +23,7 @@ use Igniter\System\Models\Concerns\SendsMailTemplate;
 use Igniter\User\Models\Concerns\Assignable;
 use Igniter\User\Models\Concerns\HasCustomer;
 use Igniter\User\Models\Customer;
+use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Support\Collection;
 
 /**
@@ -65,16 +68,17 @@ use Illuminate\Support\Collection;
  * @property-read Status|null $status
  * @property-read Collection<int, DiningTable> $tables
  * @method static Builder<static>|Reservation query()
+ * @method static Builder<static>|Reservation with(string|array $with)
  * @method static array pluckDates(string $column, string $keyFormat = 'Y-m', string $valueFormat = 'F Y')
- * @method static BelongsTo<static> customer()
- * @method static BelongsTo<static>|Location location()
- * @method static BelongsTo<static>|Reservation status()
- * @method static BelongsTo<static>|DiningTable tables()
+ * @method static BelongsTo|Customer customer()
+ * @method static BelongsTo|Location location()
+ * @method static BelongsTo|Reservation status()
+ * @method static BelongsTo|DiningTable tables()
  * @method static Builder<static>|Reservation whereHash($value)
  * @method static Builder<static>|Reservation whereBetween($column, $values, $boolean = 'and')
  * @method static Builder<static>|Reservation whereHasLocation(int|string|Model $locationId)
  * @method static Builder<static>|Reservation whereBetweenStayTime($dateTime)
- * @method static Builder<static>|Reservation whereBetweenReservationDateTime($start, $end)
+ * @method static Builder|Reservation whereBetweenReservationDateTime(string $start, string $end)
  * @mixin Builder
  * @mixin Model
  */
@@ -131,7 +135,7 @@ class Reservation extends Model
             'location' => Location::class,
         ],
         'belongsToMany' => [
-            'tables' => [\Igniter\Reservation\Models\DiningTable::class, 'table' => 'reservation_tables'],
+            'tables' => [DiningTable::class, 'table' => 'reservation_tables'],
         ],
     ];
 
@@ -163,7 +167,7 @@ class Reservation extends Model
     // Accessors & Mutators
     //
 
-    public function getCustomerNameAttribute($value)
+    public function getCustomerNameAttribute($value): string
     {
         return $this->first_name.' '.$this->last_name;
     }
@@ -194,7 +198,7 @@ class Reservation extends Model
         return $this->reservation_datetime->copy()->endOfDay();
     }
 
-    public function getReservationDatetimeAttribute($value)
+    public function getReservationDatetimeAttribute($value): ?Carbon
     {
         return $this->reserve_date ? make_carbon($this->reserve_date)->setTimeFromTimeString($this->reserve_time) : null;
     }
@@ -211,14 +215,14 @@ class Reservation extends Model
         return $occasions[$this->occasion_id] ?? $occasions[0];
     }
 
-    public function getTableNameAttribute()
+    public function getTableNameAttribute(): string
     {
         return ($this->tables->isNotEmpty())
             ? implode(', ', $this->tables->pluck('name')->all())
             : '';
     }
 
-    public function setDurationAttribute($value)
+    public function setDurationAttribute($value): void
     {
         if (empty($value)) {
             $value = $this->location?->getReservationStayTime();
@@ -231,12 +235,12 @@ class Reservation extends Model
     // Helpers
     //
 
-    public function isCompleted()
+    public function isCompleted(): bool
     {
         return $this->hasStatus(setting('confirmed_reservation_status'));
     }
 
-    public function isCanceled()
+    public function isCanceled(): bool
     {
         return $this->hasStatus(setting('canceled_reservation_status'));
     }
@@ -267,8 +271,9 @@ class Reservation extends Model
 
     public static function findReservedTables($locationId, $dateTime)
     {
-        return self::query()->with('tables')
-            ->whereHas('tables', function(Builder|DiningTable $query) use ($locationId) {
+        return self::query()
+            ->with('tables')
+            ->whereHas('tables', function(BuilderContract $query) use ($locationId): void {
                 $query->whereHasLocation($locationId);
             })
             ->where('location_id', $locationId)
@@ -283,8 +288,8 @@ class Reservation extends Model
     public static function listCalendarEvents($startAt, $endAt, $locationId = null)
     {
         $query = self::query()->whereBetween('reserve_date', [
-            date('Y-m-d H:i:s', strtotime($startAt)),
-            date('Y-m-d H:i:s', strtotime($endAt)),
+            date('Y-m-d H:i:s', strtotime((string)$startAt)),
+            date('Y-m-d H:i:s', strtotime((string)$endAt)),
         ]);
 
         if (!is_null($locationId)) {
@@ -294,19 +299,15 @@ class Reservation extends Model
         /** @var Collection<int, Reservation> $collection */
         $collection = $query->get();
 
-        $collection->transform(function(Reservation $reservation) {
-            return $reservation->getEventDetails();
-        });
+        $collection->transform(fn(Reservation $reservation): array => $reservation->getEventDetails());
 
         return $collection->toArray();
     }
 
-    public function getEventDetails()
+    public function getEventDetails(): array
     {
         $status = $this->status;
-        $tables = $this->tables->map(function($table) {
-            return $table->toArray();
-        });
+        $tables = $this->tables->map(fn($table) => $table->toArray());
 
         return [
             'id' => $this->getKey(),
@@ -330,14 +331,14 @@ class Reservation extends Model
         ];
     }
 
-    public function isReservedAllDay()
+    public function isReservedAllDay(): bool
     {
         $diffInMinutes = (int)floor($this->reservation_datetime->diffInMinutes($this->reservation_end_datetime));
 
         return $diffInMinutes >= (60 * 23) || $diffInMinutes == 0;
     }
 
-    public function getOccasionOptions()
+    public function getOccasionOptions(): array
     {
         return [
             'not applicable',
@@ -363,34 +364,32 @@ class Reservation extends Model
      */
     public function getReservationDates()
     {
-        return $this->pluckDates('reserve_date');
+        return static::pluckDates('reserve_date');
     }
 
     /**
      * Create new or update existing reservation tables
      *
      * @param array $tableIds if empty all existing records will be deleted
-     *
-     * @return bool
      */
-    public function addReservationTables(array $tableIds = [])
+    public function addReservationTables(array $tableIds = []): bool
     {
         if (!$this->exists) {
             return false;
         }
 
-        $this->tables()->sync($tableIds);
+        static::tables()->sync($tableIds);
         return true;
     }
 
     /**
-     * @return \Illuminate\Support\Collection|null
+     * @return Collection|null
      */
     public function getNextBookableTable()
     {
         $diningTables = DiningTable::query()
             ->with(['dining_section'])
-            ->withCount(['reservations' => function($query) {
+            ->withCount(['reservations' => function($query): void {
                 $query->where('reserve_date', $this->reserve_date)
                     ->whereNotIn('status_id', [0, setting('canceled_reservation_status')]);
             }])
@@ -408,7 +407,7 @@ class Reservation extends Model
         return collect($diningTable ? [$diningTable] : []);
     }
 
-    public function assignTable()
+    public function assignTable(): bool
     {
         $diningTables = $this->getNextBookableTable();
         if ($diningTables->isEmpty()) {
@@ -422,18 +421,19 @@ class Reservation extends Model
 
     protected function getLastSectionId()
     {
+        /** @var null|Reservation $lastReservation */
         $lastReservation = $this->newQuery()
             ->has('tables')
             ->where('location_id', $this->location_id)
             ->whereDate('reserve_date', $this->reserve_date)
-            ->where(function($query) {
+            ->where(function($query): void {
                 $query->whereNotIn('status_id', [0, setting('canceled_reservation_status')]);
             })
             ->orderBy('reservation_id', 'desc')
             ->first();
 
         $nextSectionId = null;
-        if ($lastReservation && $lastReservation->tables && $lastReservation->tables->first()->dining_section) {
+        if ($lastReservation && $lastReservation->tables->first()->dining_section) {
             $nextSectionId = $lastReservation->tables->first()->dining_section->id;
         }
 
@@ -456,7 +456,7 @@ class Reservation extends Model
         $diningSectionsIds = $diningSectionsIds->all();
 
         $lastSectionId = $this->getLastSectionId();
-        if (($nextIndex = array_search($lastSectionId, $diningSectionsIds)) !== false) {
+        if (($nextIndex = array_search($lastSectionId, $diningSectionsIds, true)) !== false) {
             $nextIndex++;
         }
 
@@ -486,7 +486,9 @@ class Reservation extends Model
     public function mailGetRecipients($type)
     {
         $emailSetting = setting('reservation_email', []);
-        is_array($emailSetting) || $emailSetting = [];
+        if (!is_array($emailSetting)) {
+            $emailSetting = [];
+        }
 
         $recipients = [];
         if (in_array($type, $emailSetting)) {
@@ -509,11 +511,13 @@ class Reservation extends Model
     public function mailGetReplyTo($type)
     {
         $replyTo = [];
-        if (in_array($type, (array)setting('order_email', []))) {
+        if (in_array($type, (array)setting('reservation_email', []))) {
             switch ($type) {
                 case 'location':
+                    $replyTo = [$this->location->location_email, $this->location->location_name];
+                    break;
                 case 'admin':
-                    $replyTo = [$this->email, $this->customer_name];
+                    $replyTo = [setting('site_email'), setting('site_name')];
                     break;
             }
         }

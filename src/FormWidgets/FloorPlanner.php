@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\FormWidgets;
 
+use Override;
+use Igniter\Reservation\Models\DiningArea;
 use Igniter\Admin\Classes\BaseFormWidget;
 use Igniter\Admin\Classes\FormField;
 use Igniter\Admin\Traits\FormModelWidget;
@@ -12,7 +16,7 @@ use Igniter\Reservation\Models\DiningTable;
  * Floor planner
  * Renders a floor planner field.
  *
- * @property \Igniter\Reservation\Models\DiningArea $model
+ * @property DiningArea $model
  */
 class FloorPlanner extends BaseFormWidget
 {
@@ -55,7 +59,8 @@ class FloorPlanner extends BaseFormWidget
 
     protected string $defaultAlias = 'floorplanner';
 
-    public function initialize()
+    #[Override]
+    public function initialize(): void
     {
         $this->fillFromConfig([
             'sectionColors',
@@ -66,7 +71,8 @@ class FloorPlanner extends BaseFormWidget
         ]);
     }
 
-    public function render()
+    #[Override]
+    public function render(): string
     {
         $this->prepareVars();
 
@@ -76,7 +82,7 @@ class FloorPlanner extends BaseFormWidget
     /**
      * Prepares the list data
      */
-    public function prepareVars()
+    public function prepareVars(): void
     {
         $this->vars['field'] = $this->formField;
         $this->vars['sectionColors'] = $this->sectionColors();
@@ -84,16 +90,17 @@ class FloorPlanner extends BaseFormWidget
         $this->vars['connectorWidgetAlias'] = $this->getConnectorWidgetAlias();
     }
 
-    public function loadAssets()
+    #[Override]
+    public function loadAssets(): void
     {
         $this->addJs('https://unpkg.com/konva@8.3.12/konva.min.js', 'konva-js');
         $this->addCss('css/floorplanner.css', 'floorplanner-css');
         $this->addJs('js/floorplanner.js', 'floorplanner-js');
     }
 
-    public function onSaveState()
+    public function onSaveState(): void
     {
-        $state = json_decode(input('state'), true);
+        $state = json_decode((string) input('state'), true);
 
         $this->validate($state, [
             'stage.x' => ['required', 'numeric'],
@@ -108,7 +115,7 @@ class FloorPlanner extends BaseFormWidget
         $this->model->floor_plan = array_only($state, 'stage');
         $this->model->save();
 
-        collect(array_get($state, 'groups'))->each(function($group) {
+        collect(array_get($state, 'groups'))->each(function($group): void {
             $id = str_after(array_get($group, 'id'), 'group-');
             /** @var DiningTable $table */
             if ($table = $this->model->dining_tables()->find($id)) {
@@ -118,6 +125,7 @@ class FloorPlanner extends BaseFormWidget
         });
     }
 
+    #[Override]
     public function getSaveValue(mixed $value): int
     {
         return FormField::NO_SAVE_DATA;
@@ -133,7 +141,7 @@ class FloorPlanner extends BaseFormWidget
         return $colors;
     }
 
-    protected function getConnectorWidgetAlias()
+    protected function getConnectorWidgetAlias(): string
     {
         $formAlias = $this->controller->widgets['form']->alias ?? 'form';
 

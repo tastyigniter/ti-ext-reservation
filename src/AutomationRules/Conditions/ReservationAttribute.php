@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\AutomationRules\Conditions;
 
+use Igniter\Reservation\Models\Reservation;
+use Override;
 use Igniter\Automation\AutomationException;
 use Igniter\Automation\Classes\BaseModelAttributesCondition;
 
 class ReservationAttribute extends BaseModelAttributesCondition
 {
-    protected $modelClass = \Igniter\Reservation\Models\Reservation::class;
+    protected $modelClass = Reservation::class;
 
     protected $modelAttributes;
 
-    public function conditionDetails()
+    #[Override]
+    public function conditionDetails(): array
     {
         return [
             'name' => 'Reservation attribute',
@@ -19,7 +24,8 @@ class ReservationAttribute extends BaseModelAttributesCondition
         ];
     }
 
-    public function defineModelAttributes()
+    #[Override]
+    public function defineModelAttributes(): array
     {
         return [
             'first_name' => [
@@ -58,7 +64,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
         ];
     }
 
-    public function getHoursSinceAttribute($value, $reservation)
+    public function getHoursSinceAttribute($value, $reservation): float|int
     {
         $currentDateTime = now();
 
@@ -76,7 +82,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
             : 0;
     }
 
-    public function getDaysSinceAttribute($value, $reservation)
+    public function getDaysSinceAttribute($value, $reservation): float|int
     {
         $currentDateTime = now();
 
@@ -85,7 +91,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
             : 0;
     }
 
-    public function getDaysUntilAttribute($value, $reservation)
+    public function getDaysUntilAttribute($value, $reservation): float|int
     {
         $currentDateTime = now();
 
@@ -104,6 +110,7 @@ class ReservationAttribute extends BaseModelAttributesCondition
      * @param array $params Specifies a list of parameters as an associative array.
      * @return bool
      */
+    #[Override]
     public function isTrue(&$params)
     {
         if (!$reservation = array_get($params, 'reservation')) {

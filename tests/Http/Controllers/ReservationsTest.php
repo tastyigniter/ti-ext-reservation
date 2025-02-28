@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Http\Controllers;
 
 use Igniter\Admin\Models\Status;
@@ -7,34 +9,35 @@ use Igniter\Local\Facades\Location as LocationFacade;
 use Igniter\Local\Models\Location;
 use Igniter\Reservation\Models\Reservation;
 
-it('loads reservations page', function() {
+it('loads reservations page', function(): void {
     actingAsSuperUser()
         ->get(route('igniter.reservation.reservations'))
         ->assertOk();
 });
 
-it('loads reservation floor plan page', function() {
+it('loads reservation floor plan page', function(): void {
     actingAsSuperUser()
         ->get(route('igniter.reservation.reservations', ['slug' => 'floor_plan']))
         ->assertOk();
 });
 
-it('loads reservation calender page', function() {
+it('loads reservation calender page', function(): void {
     actingAsSuperUser()
         ->get(route('igniter.reservation.reservations', ['slug' => 'calendar']))
         ->assertOk();
 });
 
-it('generates events on reservation calender page', function() {
+it('generates events on reservation calender page', function(): void {
     $location = Location::factory()->create();
+    $status = Status::factory()->create();
     LocationFacade::shouldReceive('current')->andReturn($location);
     LocationFacade::shouldReceive('getId')->andReturn($location->getKey());
     $this->travelTo('2021-04-01');
 
-    Reservation::factory()->for($location, 'location')->count(5)->create([
+    Reservation::factory()->for($location, 'location')->for($status, 'status')->count(5)->create([
         'reserve_date' => '2021-04-01',
     ]);
-    Reservation::factory()->for($location, 'location')->count(3)->create([
+    Reservation::factory()->for($location, 'location')->for($status, 'status')->count(3)->create([
         'reserve_date' => '2021-04-10',
     ]);
 
@@ -49,7 +52,7 @@ it('generates events on reservation calender page', function() {
         ->assertJsonCount(5, 'generatedEvents');
 });
 
-it('updates events on reservation calender page', function() {
+it('updates events on reservation calender page', function(): void {
     $this->travelTo('2021-04-01');
 
     $reservation = Reservation::factory()->create(['reserve_date' => '2021-04-01']);
@@ -70,13 +73,13 @@ it('updates events on reservation calender page', function() {
         ->and($reservation->reserve_date->toDateString())->toBe('2021-04-09');
 });
 
-it('loads create reservation page', function() {
+it('loads create reservation page', function(): void {
     actingAsSuperUser()
         ->get(route('igniter.reservation.reservations', ['slug' => 'create']))
         ->assertOk();
 });
 
-it('loads edit reservation page', function() {
+it('loads edit reservation page', function(): void {
     $reservation = Reservation::factory()->create();
 
     actingAsSuperUser()
@@ -84,7 +87,7 @@ it('loads edit reservation page', function() {
         ->assertOk();
 });
 
-it('loads reservation preview page', function() {
+it('loads reservation preview page', function(): void {
     $reservation = Reservation::factory()->create();
 
     actingAsSuperUser()
@@ -92,7 +95,7 @@ it('loads reservation preview page', function() {
         ->assertOk();
 });
 
-it('creates reservation', function() {
+it('creates reservation', function(): void {
     actingAsSuperUser()
         ->post(route('igniter.reservation.reservations', ['slug' => 'create']), [
             'Reservation' => [
@@ -121,7 +124,7 @@ it('creates reservation', function() {
     ]);
 });
 
-it('updates reservation', function() {
+it('updates reservation', function(): void {
     $reservation = Reservation::factory()->create();
 
     actingAsSuperUser()
@@ -149,7 +152,7 @@ it('updates reservation', function() {
     ]);
 });
 
-it('updates reservation status', function() {
+it('updates reservation status', function(): void {
     $reservation = Reservation::factory()->create();
     $status = Status::factory()->create();
 
@@ -168,7 +171,7 @@ it('updates reservation status', function() {
     ]);
 });
 
-it('does not update reservation status when missing status id', function() {
+it('does not update reservation status when missing status id', function(): void {
     $reservation = Reservation::factory()->create();
 
     actingAsSuperUser()
@@ -185,7 +188,7 @@ it('does not update reservation status when missing status id', function() {
     ]);
 });
 
-it('deletes reservation from list page', function() {
+it('deletes reservation from list page', function(): void {
     $reservation = Reservation::factory()->create();
 
     actingAsSuperUser()
@@ -197,7 +200,7 @@ it('deletes reservation from list page', function() {
     expect(Reservation::find($reservation->getKey()))->toBeNull();
 });
 
-it('deletes reservation from edit page', function() {
+it('deletes reservation from edit page', function(): void {
     $reservation = Reservation::factory()->create();
 
     actingAsSuperUser()

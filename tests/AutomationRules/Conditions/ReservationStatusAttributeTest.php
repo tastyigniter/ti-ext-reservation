@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Local\Tests\AutomationRules\Conditions;
 
+use Igniter\Automation\AutomationException;
 use Igniter\Admin\Models\Status;
 use Igniter\Reservation\AutomationRules\Conditions\ReservationStatusAttribute;
 use Mockery;
 
-it('returns correct condition details', function() {
+it('returns correct condition details', function(): void {
     $result = (new ReservationStatusAttribute())->conditionDetails();
 
     expect($result)->toBe([
@@ -15,7 +18,7 @@ it('returns correct condition details', function() {
     ]);
 });
 
-it('defines model attributes correctly', function() {
+it('defines model attributes correctly', function(): void {
     $reservationStatusAttribute = new ReservationStatusAttribute;
 
     $attributes = $reservationStatusAttribute->defineModelAttributes();
@@ -23,7 +26,7 @@ it('defines model attributes correctly', function() {
     expect($attributes)->toHaveKeys(['status_id', 'status_name', 'notify_customer']);
 });
 
-it('returns true if status attribute condition is met', function() {
+it('returns true if status attribute condition is met', function(): void {
     $status = Mockery::mock(Status::class);
     $condition = Mockery::mock(ReservationStatusAttribute::class)->makePartial();
     $condition->shouldReceive('evalIsTrue')->with($status)->andReturn(true);
@@ -33,16 +36,16 @@ it('returns true if status attribute condition is met', function() {
     expect($result)->toBeTrue();
 });
 
-it('throws exception if status object is not found in parameters', function() {
+it('throws exception if status object is not found in parameters', function(): void {
     $params = [];
 
-    $this->expectException(\Igniter\Automation\AutomationException::class);
+    $this->expectException(AutomationException::class);
     $this->expectExceptionMessage('Error evaluating the status attribute condition: the status object is not found in the condition parameters.');
 
     (new ReservationStatusAttribute())->isTrue($params);
 });
 
-it('returns false if status attribute condition is not met', function() {
+it('returns false if status attribute condition is not met', function(): void {
     $status = Mockery::mock(Status::class);
     $condition = Mockery::mock(ReservationStatusAttribute::class)->makePartial();
     $condition->shouldReceive('evalIsTrue')->with($status)->andReturn(false);

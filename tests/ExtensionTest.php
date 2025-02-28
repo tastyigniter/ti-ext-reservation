@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests;
 
 use Igniter\Admin\DashboardWidgets\Charts;
@@ -25,11 +27,11 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Mockery;
 
-beforeEach(function() {
+beforeEach(function(): void {
     $this->extension = new Extension(app());
 });
 
-it('returns correct dining section class', function() {
+it('returns correct dining section class', function(): void {
     $this->extension->boot();
 
     $morphMap = Relation::morphMap();
@@ -37,7 +39,7 @@ it('returns correct dining section class', function() {
     expect($morphMap['dining_sections'])->toBe(DiningSection::class);
 });
 
-it('binds reservation event correctly', function() {
+it('binds reservation event correctly', function(): void {
     Event::shouldReceive('listen')->with('admin.statusHistory.beforeAddStatus', Mockery::any())->once();
     Event::shouldReceive('listen')->with('admin.statusHistory.added', Mockery::any())->once();
     Event::shouldReceive('listen')->with('admin.assignable.assigned', Mockery::any())->once();
@@ -47,7 +49,7 @@ it('binds reservation event correctly', function() {
     $this->extension->boot();
 });
 
-it('registers correct mail templates', function() {
+it('registers correct mail templates', function(): void {
     $mailTemplates = $this->extension->registerMailTemplates();
 
     expect($mailTemplates)->toHaveKey('igniter.reservation::mail.reservation')
@@ -55,7 +57,7 @@ it('registers correct mail templates', function() {
         ->and($mailTemplates)->toHaveKey('igniter.reservation::mail.reservation_update');
 });
 
-it('registers correct automation rules', function() {
+it('registers correct automation rules', function(): void {
     $automationRules = $this->extension->registerAutomationRules();
 
     expect($automationRules['events'])->toHaveKey('igniter.reservation.confirmed')
@@ -65,7 +67,7 @@ it('registers correct automation rules', function() {
         ->and($automationRules['conditions'])->toContain(ReservationStatusAttribute::class);
 });
 
-it('registers correct permissions', function() {
+it('registers correct permissions', function(): void {
     $permissions = $this->extension->registerPermissions();
 
     expect($permissions)->toHaveKey('Admin.Tables')
@@ -75,7 +77,7 @@ it('registers correct permissions', function() {
         ->and($permissions)->toHaveKey('Admin.AssignReservationTables');
 });
 
-it('registers correct navigation items', function() {
+it('registers correct navigation items', function(): void {
     $navigation = $this->extension->registerNavigation();
 
     expect($navigation)->toHaveKey('reservations')
@@ -84,21 +86,21 @@ it('registers correct navigation items', function() {
         ->and($navigation['restaurant']['child']['dining_areas']['href'])->toBe(admin_url('dining_areas'));
 });
 
-it('registers correct form widgets', function() {
+it('registers correct form widgets', function(): void {
     $formWidgets = $this->extension->registerFormWidgets();
 
     expect($formWidgets)->toHaveKey(FloorPlanner::class)
         ->and($formWidgets[FloorPlanner::class]['code'])->toBe('floorplanner');
 });
 
-it('registers correct list action widgets', function() {
+it('registers correct list action widgets', function(): void {
     $listActionWidgets = $this->extension->registerListActionWidgets();
 
     expect($listActionWidgets)->toHaveKey(AssignTable::class)
         ->and($listActionWidgets[AssignTable::class]['code'])->toBe('assign_table');
 });
 
-it('registers correct location settings', function() {
+it('registers correct location settings', function(): void {
     $locationSettings = $this->extension->registerLocationSettings();
 
     expect($locationSettings)->toHaveKey('booking')
@@ -106,25 +108,27 @@ it('registers correct location settings', function() {
         ->and($locationSettings['booking']['request'])->toBe(BookingSettingsRequest::class);
 });
 
-it('does not add reservations tab to customer edit form when model is invalid', function() {
+it('does not add reservations tab to customer edit form when model is invalid', function(): void {
     $model = mock(Model::class)->makePartial();
     $form = new Form(resolve(Customers::class), ['model' => $model, 'context' => 'edit']);
     $form->bindToController();
+
     $fields = $form->getFields();
 
     expect($fields)->not->toHaveKey('reservations');
 });
 
-it('adds reservations tab to customer edit form', function() {
+it('adds reservations tab to customer edit form', function(): void {
     $customer = mock(Customer::class)->makePartial();
     $form = new Form(resolve(Customers::class), ['model' => $customer, 'context' => 'edit']);
     $form->bindToController();
+
     $fields = $form->getFields();
 
     expect($fields['reservations']->tab)->toBe('lang:igniter.reservation::default.text_tab_reservations');
 });
 
-it('sends reservation update after status is updated', function() {
+it('sends reservation update after status is updated', function(): void {
     Mail::fake();
     $reservation = Reservation::factory()->create();
     $statusHistory = StatusHistory::factory()->create([
@@ -135,12 +139,10 @@ it('sends reservation update after status is updated', function() {
 
     event('igniter.reservation.statusAdded', [$reservation, $statusHistory]);
 
-    Mail::assertQueued(AnonymousTemplateMailable::class, function($mail) use ($reservation) {
-        return $mail->getTemplateCode() === 'igniter.reservation::mail.reservation_update';
-    });
+    Mail::assertQueued(AnonymousTemplateMailable::class, fn($mail): bool => $mail->getTemplateCode() === 'igniter.reservation::mail.reservation_update');
 });
 
-it('returns registered dashboard charts', function() {
+it('returns registered dashboard charts', function(): void {
     $charts = new class(resolve(Dashboard::class)) extends Charts
     {
         public function testDatasets()
@@ -153,10 +155,10 @@ it('returns registered dashboard charts', function() {
     expect($datasets['reports']['sets']['reservations']['model'])->toBe(Reservation::class);
 });
 
-it('returns registered dashboard statistic widgets', function() {
+it('returns registered dashboard statistic widgets', function(): void {
     $statistics = new class(resolve(Dashboard::class)) extends Statistics
     {
-        public function testCards()
+        public function testCards(): array
         {
             return $this->listCards();
         }
@@ -171,7 +173,7 @@ it('returns registered dashboard statistic widgets', function() {
     );
 });
 
-it('returns registered core settings', function() {
+it('returns registered core settings', function(): void {
     $items = (new Settings)->listSettingItems();
 
     expect(collect($items['core'])->firstWhere('code', 'reservation'))->not->toBeNull();

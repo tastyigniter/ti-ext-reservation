@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Models\Observers;
 
 use Igniter\Flame\Exception\SystemException;
@@ -7,7 +9,7 @@ use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Observers\DiningTableObserver;
 use Mockery;
 
-it('fixes tree when saving dining table without left or right values', function() {
+it('fixes tree when saving dining table without left or right values', function(): void {
     $diningTable = Mockery::mock(DiningTable::class)->makePartial();
     $diningTable->shouldReceive('getRgt')->andReturn(null);
     $diningTable->shouldReceive('getLft')->andReturn(null);
@@ -16,7 +18,7 @@ it('fixes tree when saving dining table without left or right values', function(
     (new DiningTableObserver())->saving($diningTable);
 });
 
-it('updates parent name when dining table is saved', function() {
+it('updates parent name when dining table is saved', function(): void {
     $children = collect([
         Mockery::mock(DiningTable::class)->makePartial(['name' => 'Child1']),
         Mockery::mock(DiningTable::class)->makePartial(['name' => 'Child2']),
@@ -31,7 +33,7 @@ it('updates parent name when dining table is saved', function() {
     (new DiningTableObserver())->saved($diningTable);
 });
 
-it('throws exception when deleting dining table with parent', function() {
+it('throws exception when deleting dining table with parent', function(): void {
     $diningTable = Mockery::mock(DiningTable::class)->makePartial();
     $diningTable->shouldReceive('extendableGet')->with('parent_id')->andReturn(1);
 
@@ -39,11 +41,11 @@ it('throws exception when deleting dining table with parent', function() {
         ->toThrow(SystemException::class);
 });
 
-it('saves descendants as root and fixes tree when deleting combo dining table', function() {
+it('saves descendants as root and fixes tree when deleting combo dining table', function(): void {
     $diningTable = Mockery::mock(DiningTable::class)->makePartial();
     $descendant = Mockery::mock(DiningTable::class)->makePartial();
     $diningTable->shouldReceive('extendableGet')->with('is_combo')->andReturnTrue();
-    $diningTable->shouldReceive('descendants->each')->andReturnUsing(function($callback) use ($descendant) {
+    $diningTable->shouldReceive('descendants->each')->andReturnUsing(function($callback) use ($descendant): void {
         $callback($descendant);
     });
     $descendant->shouldReceive('saveAsRoot')->once();

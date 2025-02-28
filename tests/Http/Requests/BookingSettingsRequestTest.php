@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Http\Requests;
 
 use Igniter\Reservation\Http\Requests\BookingSettingsRequest;
 
-it('returns correct attribute labels', function() {
+it('returns correct attribute labels', function(): void {
     $attributes = (new BookingSettingsRequest())->attributes();
 
     expect($attributes['is_enabled'])->toBe(lang('igniter.reservation::default.offer_reservation'))
@@ -18,7 +20,7 @@ it('returns correct attribute labels', function() {
         ->and($attributes['cancellation_timeout'])->toBe(lang('igniter.reservation::default.label_reservation_cancellation_timeout'));
 });
 
-it('validates rules correctly', function() {
+it('validates rules correctly', function(): void {
     $rules = (new BookingSettingsRequest())->rules();
 
     expect($rules['is_enabled'])->toBe(['boolean'])

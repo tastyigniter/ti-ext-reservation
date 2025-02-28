@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Models\Scopes;
 
-use Igniter\Flame\Database\Builder;
 use Igniter\Flame\Database\Scope;
 use Igniter\Reservation\Models\DiningTable;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class DiningTableScope extends Scope
 {
     public function addReservable()
     {
-        return function(Builder|DiningTable $builder, $options) {
+        return function(Builder|DiningTable $builder, $options): Builder|DiningTable {
             $builder->whereIsReservable();
 
             if ($dateTime = array_get($options, 'dateTime')) {
@@ -41,49 +43,39 @@ class DiningTableScope extends Scope
 
     public function addWhereIsReservable()
     {
-        return function(Builder|DiningTable $builder) {
-            return $builder
-                ->whereIsRoot()
-                ->where('dining_tables.is_enabled', 1)
-                ->leftJoin('dining_sections', function($join) {
-                    $join->on('dining_sections.id', '=', 'dining_tables.dining_section_id')
-                        ->where('dining_sections.is_enabled', 1);
-                });
-        };
+        return fn(Builder|DiningTable $builder) => $builder
+            ->whereIsRoot()
+            ->where('dining_tables.is_enabled', 1)
+            ->leftJoin('dining_sections', function($join): void {
+                $join->on('dining_sections.id', '=', 'dining_tables.dining_section_id')
+                    ->where('dining_sections.is_enabled', 1);
+            });
     }
 
     public function addWhereIsCombo()
     {
-        return function(Builder|DiningTable $builder) {
-            return $builder->where('is_combo', 1);
-        };
+        return fn(Builder|DiningTable $builder) => $builder->where('is_combo', 1);
     }
 
     public function addWhereIsNotCombo()
     {
-        return function(Builder|DiningTable $builder) {
-            return $builder->where('is_combo', '!=', 1);
-        };
+        return fn(Builder|DiningTable $builder) => $builder->where('is_combo', '!=', 1);
     }
 
     public function addWhereIsAvailableAt()
     {
-        return function(Builder|DiningTable $builder, $locationId) {
-            return $builder->join('dining_areas', function($join) use ($locationId) {
-                $join->on('dining_areas.id', '=', 'dining_tables.dining_area_id')
-                    ->where('dining_areas.location_id', $locationId);
-            });
-        };
+        return fn(Builder|DiningTable $builder, $locationId) => $builder->join('dining_areas', function($join) use ($locationId): void {
+            $join->on('dining_areas.id', '=', 'dining_tables.dining_area_id')
+                ->where('dining_areas.location_id', $locationId);
+        });
     }
 
     public function addWhereIsAvailableForDate()
     {
-        return function(Builder|DiningTable $builder, $date) {
-            return $builder->whereDoesntHave('reservations', function($builder) use ($date) {
-                $builder->where('reserve_date', $date)
-                    ->whereNotIn('status_id', [0, setting('canceled_reservation_status')]);
-            });
-        };
+        return fn(Builder|DiningTable $builder, $date) => $builder->whereDoesntHave('reservations', function($builder) use ($date): void {
+            $builder->where('reserve_date', $date)
+                ->whereNotIn('status_id', [0, setting('canceled_reservation_status')]);
+        });
     }
 
     public function addWhereIsAvailableOn()
@@ -93,12 +85,12 @@ class DiningTableScope extends Scope
                 $dateTime = make_carbon($dateTime);
             }
 
-            return $builder->whereDoesntHave('reservations', function($builder) use ($dateTime, $duration) {
+            return $builder->whereDoesntHave('reservations', function($builder) use ($dateTime, $duration): void {
                 $builder
-                    ->where(function($builder) use ($dateTime) {
+                    ->where(function($builder) use ($dateTime): void {
                         $builder->whereBetweenStayTime($dateTime->clone()->addMinute());
                     })
-                    ->orWhere(function($builder) use ($dateTime, $duration) {
+                    ->orWhere(function($builder) use ($dateTime, $duration): void {
                         $builder->whereBetweenStayTime($dateTime->clone()->addMinutes($duration - 1));
                     })
                     ->whereNotIn('status_id', [0, setting('canceled_reservation_status')]);
@@ -108,17 +100,13 @@ class DiningTableScope extends Scope
 
     public function addWhereCanAccommodate()
     {
-        return function(Builder|DiningTable $builder, $guestNumber) {
-            return $builder
-                ->where('min_capacity', '<=', $guestNumber)
-                ->where('max_capacity', '>=', $guestNumber);
-        };
+        return fn(Builder|DiningTable $builder, $guestNumber) => $builder
+            ->where('min_capacity', '<=', $guestNumber)
+            ->where('max_capacity', '>=', $guestNumber);
     }
 
     public function addWhereHasReservationLocation()
     {
-        return function(Builder|DiningTable $builder, $model) {
-            return $builder->whereHasLocation($model->location_id);
-        };
+        return fn(Builder|DiningTable $builder, $model) => $builder->whereHasLocation($model->location_id);
     }
 }

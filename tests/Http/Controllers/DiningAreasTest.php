@@ -1,23 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Http\Controllers;
 
 use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\DiningTable;
 
-it('loads dining areas page', function() {
+it('loads dining areas page', function(): void {
     actingAsSuperUser()
         ->get(route('igniter.reservation.dining_areas'))
         ->assertOk();
 });
 
-it('loads create dining area page', function() {
+it('loads create dining area page', function(): void {
     actingAsSuperUser()
         ->get(route('igniter.reservation.dining_areas', ['slug' => 'create']))
         ->assertOk();
 });
 
-it('loads edit dining area page', function() {
+it('loads edit dining area page', function(): void {
     $diningArea = DiningArea::factory()->create();
 
     actingAsSuperUser()
@@ -25,7 +27,7 @@ it('loads edit dining area page', function() {
         ->assertOk();
 });
 
-it('loads dining area preview page', function() {
+it('loads dining area preview page', function(): void {
     $diningArea = DiningArea::factory()->create();
 
     actingAsSuperUser()
@@ -33,12 +35,12 @@ it('loads dining area preview page', function() {
         ->assertOk();
 });
 
-it('duplicates dining area', function() {
+it('duplicates dining area', function(): void {
     $diningArea = DiningArea::factory()->create();
 
     actingAsSuperUser()
         ->post(route('igniter.reservation.dining_areas'), [
-            'id' => $diningArea->getKey(),
+            'id' => (string)$diningArea->getKey(),
         ], [
             'X-Requested-With' => 'XMLHttpRequest',
             'X-IGNITER-REQUEST-HANDLER' => 'onDuplicate',
@@ -48,7 +50,7 @@ it('duplicates dining area', function() {
     expect(DiningArea::where('name', $diningArea->name.' (copy)')->exists())->toBeTrue();
 });
 
-it('creates dining area', function() {
+it('creates dining area', function(): void {
     actingAsSuperUser()
         ->post(route('igniter.reservation.dining_areas', ['slug' => 'create']), [
             'DiningArea' => [
@@ -62,7 +64,7 @@ it('creates dining area', function() {
     expect(DiningArea::where('name', 'Created Dining Area')->exists())->toBeTrue();
 });
 
-it('creates a dining table combo', function() {
+it('creates a dining table combo', function(): void {
     $diningArea = DiningArea::factory()->create();
     $tables = $diningArea->dining_tables()->saveMany(DiningTable::factory(3)->make());
 
@@ -82,7 +84,7 @@ it('creates a dining table combo', function() {
     ]);
 });
 
-it('updates dining area', function() {
+it('updates dining area', function(): void {
     $diningArea = DiningArea::factory()->create();
 
     actingAsSuperUser()
@@ -98,7 +100,7 @@ it('updates dining area', function() {
     expect(DiningArea::find($diningArea->getKey()))->name->toBe('Updated Dining Area');
 });
 
-it('updates dining area fixes broken tree', function() {
+it('updates dining area fixes broken tree', function(): void {
     $diningArea = DiningArea::factory()->create();
     $diningTableMock = mock(DiningTable::class)->makePartial();
     $diningTableMock->shouldReceive('isBroken')->andReturnTrue();
@@ -119,7 +121,7 @@ it('updates dining area fixes broken tree', function() {
     expect(DiningArea::find($diningArea->getKey()))->name->toBe('Updated Dining Area');
 });
 
-it('deletes dining area', function() {
+it('deletes dining area', function(): void {
     $diningArea = DiningArea::factory()->create();
 
     actingAsSuperUser()

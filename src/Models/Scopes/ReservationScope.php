@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Models\Scopes;
 
 use Carbon\Carbon;
@@ -11,19 +13,15 @@ class ReservationScope extends Scope
 {
     public function addApplyDateTimeFilter()
     {
-        return function(Builder|Reservation $builder, $range) {
-            return $builder->whereBetweenReservationDateTime(
-                Carbon::parse(array_get($range, 'startAt'))->format('Y-m-d H:i:s'),
-                Carbon::parse(array_get($range, 'endAt'))->format('Y-m-d H:i:s'),
-            );
-        };
+        return fn(Builder|Reservation $builder, $range) => $builder->whereBetweenReservationDateTime(
+            Carbon::parse(array_get($range, 'startAt'))->format('Y-m-d H:i:s'),
+            Carbon::parse(array_get($range, 'endAt'))->format('Y-m-d H:i:s'),
+        );
     }
 
     public function addWhereBetweenReservationDateTime()
     {
-        return function(Builder|Reservation $builder, $start, $end) {
-            return $builder->whereRaw('ADDTIME(reserve_date, reserve_time) between ? and ?', [$start, $end]);
-        };
+        return fn(Builder|Reservation $builder, $start, $end) => $builder->whereRaw('ADDTIME(reserve_date, reserve_time) between ? and ?', [$start, $end]);
     }
 
     public function addWhereBetweenDate()
@@ -33,33 +31,27 @@ class ReservationScope extends Scope
 
     public function addWhereBetweenStayTime()
     {
-        return function(Builder|Reservation $builder, $dateTime) {
-            return $builder
-                ->whereRaw(
-                    '? between DATE_SUB(ADDTIME(reserve_date, reserve_time), INTERVAL 2 MINUTE)'.
-                    ' and DATE_ADD(ADDTIME(reserve_date, reserve_time), INTERVAL duration MINUTE)',
-                    [$dateTime],
-                );
-        };
+        return fn(Builder|Reservation $builder, $dateTime) => $builder
+            ->whereRaw(
+                '? between DATE_SUB(ADDTIME(reserve_date, reserve_time), INTERVAL 2 MINUTE)'.
+                ' and DATE_ADD(ADDTIME(reserve_date, reserve_time), INTERVAL duration MINUTE)',
+                [$dateTime],
+            );
     }
 
     public function addWhereNotBetweenStayTime()
     {
-        return function(Builder|Reservation $builder, $dateTime) {
-            return $builder->whereRaw(
-                '? not between DATE_SUB(ADDTIME(reserve_date, reserve_time), INTERVAL (duration - 2) MINUTE)'.
-                ' and DATE_ADD(ADDTIME(reserve_date, reserve_time), INTERVAL duration MINUTE)',
-                [$dateTime],
-            );
-        };
+        return fn(Builder|Reservation $builder, $dateTime) => $builder->whereRaw(
+            '? not between DATE_SUB(ADDTIME(reserve_date, reserve_time), INTERVAL (duration - 2) MINUTE)'.
+            ' and DATE_ADD(ADDTIME(reserve_date, reserve_time), INTERVAL duration MINUTE)',
+            [$dateTime],
+        );
     }
 
     public function addWhereHasDiningArea()
     {
-        return function(Builder|Reservation $builder, $diningAreaId) {
-            return $builder->whereHas('tables', function($q) use ($diningAreaId) {
-                $q->where('dining_tables.dining_area_id', $diningAreaId);
-            })->orDoesntHave('tables');
-        };
+        return fn(Builder|Reservation $builder, $diningAreaId) => $builder->whereHas('tables', function($q) use ($diningAreaId): void {
+            $q->where('dining_tables.dining_area_id', $diningAreaId);
+        })->orDoesntHave('tables');
     }
 }

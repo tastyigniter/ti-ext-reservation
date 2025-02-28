@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Listeners;
 
 use Igniter\Reservation\Models\Reservation;
@@ -7,7 +9,7 @@ use Igniter\Reservation\Notifications\ReservationCreatedNotification;
 
 class SendReservationConfirmation
 {
-    public function handle(Reservation $model)
+    public function handle(Reservation $model): void
     {
         ReservationCreatedNotification::make()->subject($model)->broadcast();
 

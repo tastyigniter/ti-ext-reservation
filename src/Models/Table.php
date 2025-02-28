@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Models;
 
+use Igniter\Local\Models\Location;
 use Igniter\Flame\Database\Factories\HasFactory;
 use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Sortable;
@@ -46,7 +49,7 @@ class Table extends Model
 
     public $relation = [
         'morphToMany' => [
-            'locations' => [\Igniter\Local\Models\Location::class, 'name' => 'locationable'],
+            'locations' => [Location::class, 'name' => 'locationable'],
         ],
     ];
 
@@ -64,5 +67,6 @@ class Table extends Model
         return $query->where('min_capacity', '<=', $noOfGuests)
             ->where('max_capacity', '>=', $noOfGuests);
     }
+
     // @codeCoverageIgnoreEnd
 }

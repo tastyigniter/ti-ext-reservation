@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Listeners;
 
 use Igniter\Reservation\Listeners\RegistersDashboardCards;
 use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Reservation;
 
-it('returns correct dashboard cards configuration', function() {
+it('returns correct dashboard cards configuration', function(): void {
     $cards = (new RegistersDashboardCards())();
 
     expect($cards)->toHaveKeys(['reserved_table', 'reserved_guest', 'reservation', 'completed_reservation'])
@@ -16,7 +18,7 @@ it('returns correct dashboard cards configuration', function() {
         ->and($cards['completed_reservation']['label'])->toBe('lang:igniter.reservation::default.text_total_completed_reservation');
 });
 
-it('returns total reserved table sum', function() {
+it('returns total reserved table sum', function(): void {
     setting()->set(['confirmed_reservation_status' => 1]);
 
     Reservation::factory()
@@ -31,7 +33,7 @@ it('returns total reserved table sum', function() {
     expect($result)->toBe(5);
 });
 
-it('returns total reserved guest sum', function() {
+it('returns total reserved guest sum', function(): void {
     setting()->set(['confirmed_reservation_status' => 1]);
 
     Reservation::factory()->create([
@@ -44,7 +46,7 @@ it('returns total reserved guest sum', function() {
     expect($result)->toBe(20);
 });
 
-it('returns total reservation sum', function() {
+it('returns total reservation sum', function(): void {
     Reservation::factory()->count(10)->create(['status_id' => 1]);
 
     $result = (new RegistersDashboardCards())->getValue('reservation', null, null, fn($query) => $query);
@@ -52,7 +54,7 @@ it('returns total reservation sum', function() {
     expect($result)->toBe(10);
 });
 
-it('returns total completed reservation sum', function() {
+it('returns total completed reservation sum', function(): void {
     setting()->set(['confirmed_reservation_status' => 1]);
 
     Reservation::factory()->count(8)->create(['status_id' => 1]);

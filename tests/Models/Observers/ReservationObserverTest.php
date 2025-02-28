@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Models\Observers;
 
 use Igniter\Local\Models\Location;
@@ -8,7 +10,7 @@ use Igniter\Reservation\Models\Reservation;
 use Igniter\User\Models\Customer;
 use Mockery;
 
-it('fills customer details when creating reservation with customer_id', function() {
+it('fills customer details when creating reservation with customer_id', function(): void {
     $customer = Mockery::mock(Customer::class)->makePartial();
     $reservation = Mockery::mock(Reservation::class)->makePartial();
 
@@ -36,7 +38,7 @@ it('fills customer details when creating reservation with customer_id', function
         ->and($reservation->telephone)->toBe('1234567890');
 });
 
-it('fills default values when creating reservation without customer_id', function() {
+it('fills default values when creating reservation without customer_id', function(): void {
     $reservation = Mockery::mock(Reservation::class)->makePartial();
     $reservation->shouldReceive('extendableGet')->with('customer_id')->andReturnNull();
     $reservation->shouldReceive('generateHash')->andReturn('hash');
@@ -57,7 +59,7 @@ it('fills default values when creating reservation without customer_id', functio
         ->and($reservation->telephone)->toBeNull();
 });
 
-it('restores purged values and adds reservation tables when saved', function() {
+it('restores purged values and adds reservation tables when saved', function(): void {
     $reservation = Mockery::mock(Reservation::class)->makePartial();
     $location = Mockery::mock(Location::class);
 
@@ -73,7 +75,7 @@ it('restores purged values and adds reservation tables when saved', function() {
     (new ReservationObserver())->saved($reservation);
 });
 
-it('does not assign table if auto allocate is disabled', function() {
+it('does not assign table if auto allocate is disabled', function(): void {
     $reservation = Mockery::mock(Reservation::class)->makePartial();
     $location = Mockery::mock(Location::class);
 

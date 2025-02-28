@@ -1,7 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Http\Controllers;
 
+use Igniter\Admin\Http\Actions\ListController;
+use Igniter\Admin\Http\Actions\FormController;
+use Igniter\Local\Http\Actions\LocationAwareController;
+use Igniter\Reservation\Models\DiningArea;
+use Igniter\Reservation\Http\Requests\DiningAreaRequest;
+use Illuminate\Http\RedirectResponse;
 use Igniter\Admin\Classes\AdminController;
 use Igniter\Admin\Facades\AdminMenu;
 use Igniter\Flame\Exception\FlashException;
@@ -13,14 +21,14 @@ use Igniter\Reservation\Models\DiningTable;
 class DiningAreas extends AdminController
 {
     public array $implement = [
-        \Igniter\Admin\Http\Actions\ListController::class,
-        \Igniter\Admin\Http\Actions\FormController::class,
-        \Igniter\Local\Http\Actions\LocationAwareController::class,
+        ListController::class,
+        FormController::class,
+        LocationAwareController::class,
     ];
 
     public array $listConfig = [
         'list' => [
-            'model' => \Igniter\Reservation\Models\DiningArea::class,
+            'model' => DiningArea::class,
             'title' => 'lang:igniter.reservation::default.dining_areas.text_title',
             'emptyMessage' => 'lang:igniter.reservation::default.dining_areas.text_empty',
             'defaultSort' => ['created_at', 'DESC'],
@@ -30,8 +38,8 @@ class DiningAreas extends AdminController
 
     public array $formConfig = [
         'name' => 'lang:igniter.reservation::default.dining_areas.text_form_name',
-        'model' => \Igniter\Reservation\Models\DiningArea::class,
-        'request' => \Igniter\Reservation\Http\Requests\DiningAreaRequest::class,
+        'model' => DiningArea::class,
+        'request' => DiningAreaRequest::class,
         'create' => [
             'title' => 'lang:admin::lang.form.create_title',
             'redirect' => 'dining_areas/edit/{id}',
@@ -56,7 +64,7 @@ class DiningAreas extends AdminController
 
     protected null|string|array $requiredPermissions = 'Admin.Tables';
 
-    public static function getSlug()
+    public static function getSlug(): string
     {
         return 'dining_areas';
     }
@@ -68,7 +76,7 @@ class DiningAreas extends AdminController
         AdminMenu::setContext('dining_areas', 'restaurant');
     }
 
-    public function index_onDuplicate($context)
+    public function index_onDuplicate($context): RedirectResponse
     {
         $model = $this->asExtension('FormController')->formFindModelObject(post('id'));
 
@@ -79,7 +87,7 @@ class DiningAreas extends AdminController
         return $this->redirect('dining_areas/edit/'.$duplicate->getKey());
     }
 
-    public function edit_onCreateCombo($context, $recordId)
+    public function edit_onCreateCombo($context, $recordId): RedirectResponse
     {
         $checked = (array)post('DiningArea._select_dining_tables', []);
         throw_if(!$checked || count($checked) < 2,
@@ -97,19 +105,19 @@ class DiningAreas extends AdminController
         return $this->redirectBack();
     }
 
-    public function listExtendQuery($query)
+    public function listExtendQuery($query): void
     {
         $query->with(['available_tables', 'dining_sections']);
     }
 
-    public function formExtendFields($form)
+    public function formExtendFields($form): void
     {
         if ($form->context != 'create') {
             $form->getField('location_id')->disabled = true;
         }
     }
 
-    public function formBeforeSave($model)
+    public function formBeforeSave($model): void
     {
         $diningTable = resolve(DiningTable::class);
         if ($diningTable->isBroken()) {

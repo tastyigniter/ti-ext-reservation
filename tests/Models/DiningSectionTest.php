@@ -1,20 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Models;
 
+use Igniter\Local\Models\Location;
+use Igniter\Reservation\Models\DiningArea;
 use Igniter\Flame\Database\Builder;
 use Igniter\Local\Models\Concerns\Locationable;
 use Igniter\Reservation\Models\DiningSection;
 use Mockery;
 
-it('returns correct record editor options', function() {
+it('returns correct record editor options', function(): void {
     $diningSection = Mockery::mock(DiningSection::class)->makePartial();
     $diningSection->shouldReceive('dropdown')->with('name')->andReturn(['Option1', 'Option2']);
 
     expect($diningSection->getRecordEditorOptions())->toBe(['Option1', 'Option2']);
 });
 
-it('returns correct priority options', function() {
+it('returns correct priority options', function(): void {
     $diningSection = new DiningSection();
     $expectedOptions = [
         lang('igniter.reservation::default.dining_tables.text_priority_0'),
@@ -32,7 +36,7 @@ it('returns correct priority options', function() {
     expect($diningSection->getPriorityOptions())->toBe($expectedOptions);
 });
 
-it('applies where is reservable scope', function() {
+it('applies where is reservable scope', function(): void {
     $builder = Mockery::mock(Builder::class);
     $builder->shouldReceive('where')->with('is_enabled', 1)->once()->andReturnSelf();
 
@@ -40,7 +44,7 @@ it('applies where is reservable scope', function() {
     $diningSection->scopeWhereIsReservable($builder);
 });
 
-it('configures dining section model correctly', function() {
+it('configures dining section model correctly', function(): void {
     $diningSection = new DiningSection();
 
     expect(class_uses_recursive($diningSection))
@@ -49,10 +53,10 @@ it('configures dining section model correctly', function() {
         ->and($diningSection->timestamps)->toBeFalse()
         ->and($diningSection->relation)->toEqual([
             'belongsTo' => [
-                'location' => ['Igniter\Local\Models\Location'],
+                'location' => [Location::class],
             ],
             'hasMany' => [
-                'dining_areas' => ['Igniter\Reservation\Models\DiningArea', 'foreignKey' => 'location_id', 'otherKey' => 'location_id'],
+                'dining_areas' => [DiningArea::class, 'foreignKey' => 'location_id', 'otherKey' => 'location_id'],
             ],
         ]);
 });

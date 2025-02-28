@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Models;
 
 use Igniter\Flame\Exception\FlashException;
@@ -11,7 +13,7 @@ use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Reservation;
 use Mockery;
 
-it('returns dropdown options with names', function() {
+it('returns dropdown options with names', function(): void {
     $diningArea = DiningArea::factory()->create();
 
     $options = DiningArea::getDropdownOptions()->all();
@@ -20,7 +22,7 @@ it('returns dropdown options with names', function() {
         ->and($options)->toHaveKey($diningArea->id, $diningArea->name);
 });
 
-it('returns tables for floor plan', function() {
+it('returns tables for floor plan', function(): void {
     $diningArea = DiningArea::factory()->create();
     $diningArea->available_tables()->save($diningTable = DiningTable::factory()->create());
 
@@ -30,7 +32,7 @@ it('returns tables for floor plan', function() {
         ->and($tables[0])->toHaveKey('id', $diningTable->id);
 });
 
-it('returns dining tables with reservation', function() {
+it('returns dining tables with reservation', function(): void {
     $diningArea = DiningArea::factory()->create();
     $diningArea->available_tables()->save($diningTable = DiningTable::factory()->create());
     $reservation = Reservation::factory()->create();
@@ -43,14 +45,14 @@ it('returns dining tables with reservation', function() {
         ->and($tables[0])->toHaveKey('id', $diningTable->id);
 });
 
-it('returns correct dining table count', function() {
+it('returns correct dining table count', function(): void {
     $diningArea = Mockery::mock(DiningArea::class)->makePartial();
     $diningArea->shouldReceive('getAttribute')->with('available_tables')->andReturn(collect([1, 2, 3]));
 
     expect($diningArea->dining_table_count)->toBe(3);
 });
 
-it('duplicates dining area with tables', function() {
+it('duplicates dining area with tables', function(): void {
     $diningArea = Mockery::mock(DiningArea::class)->makePartial();
     $diningArea->name = 'Original';
     $diningArea->shouldReceive('replicate')->andReturnSelf();
@@ -70,7 +72,7 @@ it('duplicates dining area with tables', function() {
     expect($newDiningArea->name)->toBe('Original (copy)');
 });
 
-it('creates combo dining table', function() {
+it('creates combo dining table', function(): void {
     $diningArea = DiningArea::factory()->create();
     $table1 = DiningTable::factory()->create([
         'shape' => 'square',
@@ -103,7 +105,7 @@ it('creates combo dining table', function() {
         ->and($table2->fresh()->parent_id)->toBe($comboTable->id);
 });
 
-it('throws an exception when table already combined', function() {
+it('throws an exception when table already combined', function(): void {
     $diningArea = DiningArea::factory()->create();
     $table1 = DiningTable::factory()->create();
     $table2 = DiningTable::factory()->create();
@@ -115,7 +117,7 @@ it('throws an exception when table already combined', function() {
         ->toThrow(new FlashException(lang('igniter.reservation::default.dining_areas.alert_table_already_combined')));
 });
 
-it('throws an exception when combining tables from different sections', function() {
+it('throws an exception when combining tables from different sections', function(): void {
     $diningArea = DiningArea::factory()->create();
     $table1 = DiningTable::factory()->create(['dining_section_id' => 1]);
     $table2 = DiningTable::factory()->create(['dining_section_id' => 2]);
@@ -126,7 +128,7 @@ it('throws an exception when combining tables from different sections', function
         ->toThrow(new FlashException(lang('igniter.reservation::default.dining_areas.alert_table_combo_section_mismatch')));
 });
 
-it('configures dining area model correctly', function() {
+it('configures dining area model correctly', function(): void {
     $diningArea = new DiningArea();
 
     expect(class_uses_recursive($diningArea))

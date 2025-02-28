@@ -1,14 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Database\Factories;
 
+use Igniter\Reservation\Models\Reservation;
+use Override;
 use Igniter\Flame\Database\Factories\Factory;
 use Igniter\Local\Models\Location;
 
 class ReservationFactory extends Factory
 {
-    protected $model = \Igniter\Reservation\Models\Reservation::class;
+    protected $model = Reservation::class;
 
+    #[Override]
     public function definition(): array
     {
         return [

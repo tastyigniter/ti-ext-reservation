@@ -1,7 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Http\Controllers;
 
+use Igniter\Admin\Classes\AdminController;
+use Igniter\Admin\Http\Actions\ListController;
+use Igniter\Admin\Http\Actions\CalendarController;
+use Igniter\Admin\Http\Actions\FormController;
+use Igniter\User\Http\Actions\AssigneeController;
+use Igniter\Local\Http\Actions\LocationAwareController;
+use Igniter\Reservation\Http\Requests\ReservationRequest;
+use Illuminate\Http\RedirectResponse;
 use Carbon\Carbon;
 use DateInterval;
 use DatePeriod;
@@ -12,26 +22,26 @@ use Igniter\Local\Facades\Location as LocationFacade;
 use Igniter\Reservation\Models\DiningArea;
 use Igniter\Reservation\Models\Reservation;
 
-class Reservations extends \Igniter\Admin\Classes\AdminController
+class Reservations extends AdminController
 {
     public array $implement = [
-        \Igniter\Admin\Http\Actions\ListController::class,
-        \Igniter\Admin\Http\Actions\CalendarController::class,
-        \Igniter\Admin\Http\Actions\FormController::class,
-        \Igniter\User\Http\Actions\AssigneeController::class,
-        \Igniter\Local\Http\Actions\LocationAwareController::class,
+        ListController::class,
+        CalendarController::class,
+        FormController::class,
+        AssigneeController::class,
+        LocationAwareController::class,
     ];
 
     public array $listConfig = [
         'list' => [
-            'model' => \Igniter\Reservation\Models\Reservation::class,
+            'model' => Reservation::class,
             'title' => 'lang:igniter.reservation::default.text_title',
             'emptyMessage' => 'lang:igniter.reservation::default.text_empty',
             'defaultSort' => ['reservation_id', 'DESC'],
             'configFile' => 'reservation',
         ],
         'floor_plan' => [
-            'model' => \Igniter\Reservation\Models\Reservation::class,
+            'model' => Reservation::class,
             'title' => 'lang:igniter.reservation::default.text_title',
             'emptyMessage' => 'lang:igniter.reservation::default.text_empty',
             'defaultSort' => ['reservation_id', 'DESC'],
@@ -52,8 +62,8 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
 
     public array $formConfig = [
         'name' => 'lang:igniter.reservation::default.text_form_name',
-        'model' => \Igniter\Reservation\Models\Reservation::class,
-        'request' => \Igniter\Reservation\Http\Requests\ReservationRequest::class,
+        'model' => Reservation::class,
+        'request' => ReservationRequest::class,
         'create' => [
             'title' => 'lang:igniter::admin.form.create_title',
             'redirect' => 'reservations/edit/{reservation_id}',
@@ -82,7 +92,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         'Admin.DeleteReservations',
     ];
 
-    public static function getSlug()
+    public static function getSlug(): string
     {
         return 'reservations';
     }
@@ -94,14 +104,14 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         AdminMenu::setContext('reservations', 'sales');
     }
 
-    public function index()
+    public function index(): void
     {
         $this->asExtension('ListController')->index();
 
-        $this->vars['statusesOptions'] = \Igniter\Admin\Models\Status::getDropdownOptionsForReservation();
+        $this->vars['statusesOptions'] = Status::getDropdownOptionsForReservation();
     }
 
-    public function floor_plan()
+    public function floor_plan(): void
     {
         $this->addJs('https://unpkg.com/konva@8.3.12/konva.min.js', 'konva-js');
         $this->addCss('igniter.reservation::/css/floorplanner.css', 'floorplanner-css');
@@ -118,15 +128,15 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
             new FlashException(lang('igniter::admin.alert_user_restricted')),
         );
 
-        return $this->asExtension(\Igniter\Admin\Http\Actions\ListController::class)->index_onDelete();
+        return $this->asExtension(ListController::class)->index_onDelete();
     }
 
-    public function onUpdateStatus()
+    public function onUpdateStatus(): ?RedirectResponse
     {
         $recordId = (int)post('recordId');
         $statusId = (int)post('statusId');
         if (!$recordId || !$statusId) {
-            return;
+            return null;
         }
 
         /** @var Reservation $model */
@@ -152,7 +162,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
             new FlashException(lang('igniter::admin.alert_user_restricted')),
         );
 
-        return $this->asExtension(\Igniter\Admin\Http\Actions\FormController::class)->edit_onDelete($context, $recordId);
+        return $this->asExtension(FormController::class)->edit_onDelete($context, $recordId);
     }
 
     public function calendarGenerateEvents($startAt, $endAt)
@@ -162,7 +172,7 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         );
     }
 
-    public function calendarUpdateEvent($eventId, $startAt, $endAt)
+    public function calendarUpdateEvent($eventId, $startAt, $endAt): void
     {
         /** @var Reservation $reservation */
         throw_unless($reservation = Reservation::query()->find($eventId),
@@ -179,15 +189,15 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         $reservation->save();
     }
 
-    public function listExtendQuery($query, $alias)
+    public function listExtendQuery($query, $alias): void
     {
         $query->with(['tables', 'status']);
     }
 
-    public function formExtendQuery($query)
+    public function formExtendQuery($query): void
     {
         $query->with([
-            'status_history' => function($q) {
+            'status_history' => function($q): void {
                 $q->orderBy('created_at', 'desc');
             },
             'status_history.user',
@@ -195,14 +205,14 @@ class Reservations extends \Igniter\Admin\Classes\AdminController
         ]);
     }
 
-    public function listFilterExtendScopesBefore($filter)
+    public function listFilterExtendScopesBefore($filter): void
     {
         if ($filter->alias === 'floor_plan_filter') {
             $filter->scopes['reserve_date']['default'] = now()->toDateString();
         }
     }
 
-    public function listFilterExtendScopes($filter)
+    public function listFilterExtendScopes($filter): void
     {
         if ($filter->alias !== 'floor_plan_filter') {
             return;

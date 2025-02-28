@@ -1,18 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Igniter\Reservation\Tests\Listeners;
 
 use Igniter\Local\Facades\Location as LocationFacade;
 use Igniter\Local\Models\Location;
 use Igniter\Reservation\Listeners\MaxGuestSizePerTimeslotReached;
 use Igniter\Reservation\Models\Reservation;
+use Illuminate\Support\Carbon;
 
-beforeEach(function() {
+beforeEach(function(): void {
     (new MaxGuestSizePerTimeslotReached())->clearInternalCache();
 });
 
-it('returns null when guest limit setting is disabled', function() {
-    $timeslot = '2023-12-01 18:00:00';
+it('returns null when guest limit setting is disabled', function(): void {
+    $timeslot = new Carbon('2023-12-01 18:00:00');
     $this->travelTo($timeslot);
     $location = Location::factory()->create();
     $location->settings()->create([
@@ -26,8 +29,8 @@ it('returns null when guest limit setting is disabled', function() {
     expect((new MaxGuestSizePerTimeslotReached())->handle($timeslot, 5))->toBeNull();
 });
 
-it('returns null when guest limit count is zero', function() {
-    $timeslot = '2023-12-01 18:00:00';
+it('returns null when guest limit count is zero', function(): void {
+    $timeslot = new Carbon('2023-12-01 18:00:00');
     $this->travelTo($timeslot);
     $location = Location::factory()->create();
     $location->settings()->create([
@@ -42,8 +45,8 @@ it('returns null when guest limit count is zero', function() {
     expect((new MaxGuestSizePerTimeslotReached())->handle($timeslot, 5))->toBeNull();
 });
 
-it('returns null when guest limit is not exceeded', function() {
-    $timeslot = '2023-12-01 18:00:00';
+it('returns null when guest limit is not exceeded', function(): void {
+    $timeslot = new Carbon('2023-12-01 18:00:00');
     $this->travelTo($timeslot);
     $location = Location::factory()->create();
     $location->settings()->create([
@@ -65,8 +68,8 @@ it('returns null when guest limit is not exceeded', function() {
     expect((new MaxGuestSizePerTimeslotReached())->handle($timeslot, 5))->toBeNull();
 });
 
-it('returns true when guest limit is exceeded', function() {
-    $timeslot = '2023-12-01 18:00:00';
+it('returns true when guest limit is exceeded', function(): void {
+    $timeslot = new Carbon('2023-12-01 18:00:00');
     $this->travelTo($timeslot);
     $location = Location::factory()->create();
     $location->settings()->create([
@@ -90,4 +93,3 @@ it('returns true when guest limit is exceeded', function() {
     expect($listener->handle($timeslot, 5))->toBeTrue()
         ->and($listener->handle($timeslot, 5))->toBeTrue(); // test cache result
 });
-
