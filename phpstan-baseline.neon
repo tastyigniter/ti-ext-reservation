@@ -1,0 +1,41 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#1 \\$model of method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\BelongsTo\\<Illuminate\\\\Database\\\\Eloquent\\\\Model,Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:associate\\(\\) expects Illuminate\\\\Database\\\\Eloquent\\\\Model\\|int\\|string\\|null, Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\|null given\\.$#"
+			count: 1
+			path: src/Classes/BookingManager.php
+
+		-
+			message: "#^Method Igniter\\\\Flame\\\\Database\\\\Builder\\:\\:whereBetweenReservationDateTime\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			count: 1
+			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Support\\\\Carbon\\:\\:diffInRealMinutes\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<int,Igniter\\\\Reservation\\\\Models\\\\Reservation\\>\\:\\:transform\\(\\) expects callable\\(Igniter\\\\Reservation\\\\Models\\\\Reservation, int\\)\\: Igniter\\\\Reservation\\\\Models\\\\Reservation, Closure\\(Igniter\\\\Reservation\\\\Models\\\\Reservation\\)\\: array given\\.$#"
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
+			message: "#^Relation 'tables' is not found in Igniter\\\\Reservation\\\\Models\\\\Reservation model\\.$#"
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:fireEvent\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Scopes/DiningTableScope.php
+
+		-
+			message: "#^Method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<\\*\\>\\:\\:whereIsAvailableOn\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			count: 1
+			path: src/Models/Scopes/DiningTableScope.php
+
+		-
+			message: "#^Method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:whereBetweenReservationDateTime\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			count: 1
+			path: src/Models/Scopes/ReservationScope.php
