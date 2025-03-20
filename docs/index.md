@@ -1,3 +1,9 @@
+---
+title: "Reservation"
+section: "extensions"
+sortOrder: 90
+---
+
 ## Installation
 
 You can install the extension via composer using the following command:
