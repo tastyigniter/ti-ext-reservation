@@ -35,7 +35,7 @@ class DiningTableScope extends Scope
                 ->orderBy('dining_sections.priority', 'desc')
                 ->orderBy('dining_tables.priority', 'desc');
 
-            $builder->getModel()->fireEvent('model.extendDiningTableReservableQuery', [$builder]);
+            $builder->getModel()->fireEvent('model.extendDiningTableReservableQuery', [$builder, $options]);
 
             return $builder;
         };
