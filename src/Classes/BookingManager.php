@@ -113,6 +113,7 @@ class BookingManager
         $reservation->reserve_date = $dateTime->format('Y-m-d');
         $reservation->reserve_time = $dateTime->format('H:i:s');
         $reservation->duration = $this->location->getReservationStayTime();
+        $reservation->status = setting('default_reservation_status');
 
         $reservation->save();
 

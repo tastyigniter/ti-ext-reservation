@@ -561,7 +561,7 @@ class Reservation extends Model
         $data['status_comment'] = $statusHistory?->comment;
 
         $controller = MainController::getController();
-        $data['reservation_view_url'] = $controller->pageUrl('account/reservations', [
+        $data['reservation_view_url'] = $controller->pageUrl('account.reservations', [
             'reservationId' => $model->reservation_id,
         ]);
 

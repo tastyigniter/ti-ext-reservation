@@ -16,6 +16,12 @@ beforeEach(function(): void {
 });
 
 it('adds reservable scope with all options', function(): void {
+    $options = [
+        'dateTime' => '2023-10-10 12:00:00',
+        'date' => '2023-10-10',
+        'locationId' => 1,
+        'guestNum' => 4,
+    ];
     $this->builder->shouldReceive('whereIsReservable')->once()->andReturnSelf();
     $this->builder->shouldReceive('whereIsAvailableOn')->with('2023-10-10 12:00:00', 15)->once()->andReturnSelf();
     $this->builder->shouldReceive('whereIsAvailableForDate')->with('2023-10-10')->once()->andReturnSelf();
@@ -23,15 +29,10 @@ it('adds reservable scope with all options', function(): void {
     $this->builder->shouldReceive('whereCanAccommodate')->with(4)->once()->andReturnSelf();
     $this->builder->shouldReceive('orderBy')->with('dining_sections.priority', 'desc')->once()->andReturnSelf();
     $this->builder->shouldReceive('orderBy')->with('dining_tables.priority', 'desc')->once()->andReturnSelf();
-    $this->builder->shouldReceive('getModel->fireEvent')->with('model.extendDiningTableReservableQuery', [$this->builder])->once();
+    $this->builder->shouldReceive('getModel->fireEvent')->with('model.extendDiningTableReservableQuery', [$this->builder, $options])->once();
 
     $addReservable = $this->scope->addReservable();
-    $addReservable($this->builder, [
-        'dateTime' => '2023-10-10 12:00:00',
-        'date' => '2023-10-10',
-        'locationId' => 1,
-        'guestNum' => 4,
-    ]);
+    $addReservable($this->builder, $options);
 });
 
 it('adds where is reservable scope', function(): void {
