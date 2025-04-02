@@ -86,7 +86,7 @@ return [
             'reserve_time' => [
                 'label' => '',
                 'type' => 'partial',
-                'path' => 'reservations/lists/floor_plan_column',
+                'path' => 'reservations/lists/column_floor_plan',
                 'sortable' => false,
             ],
             'status_name' => [
@@ -94,7 +94,7 @@ return [
                 'relation' => 'status',
                 'select' => 'status_name',
                 'type' => 'partial',
-                'path' => 'statuses/form/status_column',
+                'path' => 'statuses/status_column',
                 'sortable' => false,
             ],
         ],
