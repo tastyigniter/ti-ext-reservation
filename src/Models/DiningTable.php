@@ -119,7 +119,11 @@ class DiningTable extends Model
 
     public function getDiningSectionIdOptions()
     {
-        return $this->exists ? DiningSection::query()->where('location_id', $this->dining_area->location_id)->dropdown('name') : [];
+        return $this->exists
+            ? DiningSection::query()
+                ->where('location_id', $this->dining_area->location_id)
+                ->dropdown('name')
+            : [];
     }
 
     public function getPriorityOptions()
@@ -134,6 +138,17 @@ class DiningTable extends Model
     public function getSectionNameAttribute()
     {
         return $this->dining_section?->name;
+    }
+
+    public function getSummaryAttribute()
+    {
+        return sprintf(
+            '%s / %s - %s (%s)',
+            $this->name,
+            $this->min_capacity,
+            $this->max_capacity,
+            $this->extra_capacity
+        );
     }
 
     //

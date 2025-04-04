@@ -1,4 +1,4 @@
-<div class="d-inline-block border rounded py-1 px-2">
+<div class="d-inline-block border rounded py-1 px-2 text-wrap">
         @if($value)
                 <b>{{ $value }}</b>
         @else

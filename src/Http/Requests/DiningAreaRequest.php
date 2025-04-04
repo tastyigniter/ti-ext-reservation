@@ -21,6 +21,7 @@ class DiningAreaRequest extends FormRequest
     {
         return [
             'name' => ['required', 'between:2,128'],
+            'location_id' => ['required'],
         ];
     }
 }
