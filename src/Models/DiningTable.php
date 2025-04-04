@@ -135,12 +135,12 @@ class DiningTable extends Model
     // Accessors & Mutators
     //
 
-    public function getSectionNameAttribute()
+    public function getSectionNameAttribute(): ?string
     {
         return $this->dining_section?->name;
     }
 
-    public function getSummaryAttribute()
+    public function getSummaryAttribute(): string
     {
         return sprintf(
             '%s / %s - %s (%s)',

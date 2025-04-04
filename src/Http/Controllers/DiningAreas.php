@@ -80,7 +80,7 @@ class DiningAreas extends AdminController
 
     public function edit(string $context, ?string $recordId): void
     {
-        Event::listen('admin.form.extendFields', function($form, $fields) use ($recordId) {
+        Event::listen('admin.form.extendFields', function($form, $fields) use ($recordId): void {
             if (isset($fields['dining_area_id']) && !$fields['dining_area_id']->value) {
                 $fields['dining_area_id']->value = $recordId;
             }
