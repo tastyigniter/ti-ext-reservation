@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\Tests\Models;
 
-use Carbon\Carbon;
+use Igniter\Admin\Models\Status;
 use Igniter\Flame\Database\Traits\NestedTree;
 use Igniter\Flame\Database\Traits\Sortable;
 use Igniter\Local\Models\Concerns\Locationable;
@@ -16,17 +16,12 @@ use Igniter\Reservation\Models\Reservation;
 use Mockery;
 
 it('returns correct dining section id options when dining area exists', function(): void {
-    DiningSection::factory()->create(['location_id' => 1, 'name' => 'Section1']);
-    DiningSection::factory()->create(['location_id' => 1, 'name' => 'Section2']);
+    $location = Location::factory()->create();
+    $diningArea = DiningArea::factory()->create(['location_id' => $location->getKey()]);
+    $diningTable = DiningTable::factory()->create(['dining_area_id' => $diningArea->getKey()]);
+    DiningSection::factory()->count(5)->create(['location_id' => $location->getKey()]);
 
-    $diningTable = Mockery::mock(DiningTable::class)->makePartial();
-    $diningArea = Mockery::mock(DiningArea::class)->makePartial();
-
-    $diningTable->exists = true;
-    $diningTable->dining_area = $diningArea;
-    $diningArea->shouldReceive('getAttribute')->with('location_id')->andReturn(1);
-
-    expect($diningTable->getDiningSectionIdOptions()->toArray())->toBe([1 => 'Section1', 2 => 'Section2']);
+    expect($diningTable->getDiningSectionIdOptions()->count())->toBe(5);
 });
 
 it('returns empty dining section id options when dining area does not exist', function(): void {
@@ -64,7 +59,7 @@ it('returns null section name attribute when dining section is null', function()
 });
 
 it('returns correct floor plan array without reservation', function(): void {
-    $diningTable = Mockery::mock(DiningTable::class)->makePartial();
+    $diningTable = new DiningTable();
     $diningTable->id = 1;
     $diningTable->name = 'Table1';
     $diningTable->min_capacity = 2;
@@ -88,13 +83,15 @@ it('returns correct floor plan array without reservation', function(): void {
 });
 
 it('returns correct floor plan array with reservation', function(): void {
-    $reservation = Mockery::mock(Reservation::class)->makePartial();
-    $reservation->shouldReceive('getAttribute')->with('reservation_datetime')->andReturn(Carbon::parse('2023-10-10 12:00:00'));
-    $reservation->shouldReceive('getAttribute')->with('reservation_end_datetime')->andReturn(Carbon::parse('2023-10-10 14:00:00'));
-    $reservation->shouldReceive('getAttribute')->with('customer_name')->andReturn('John Doe');
-    $reservation->status = (object)['status_color' => 'red'];
+    $reservation = new Reservation();
+    $reservation->reserve_date = '2023-10-10';
+    $reservation->reserve_time = '12:00:00';
+    $reservation->duration = 120;
+    $reservation->first_name = 'John';
+    $reservation->last_name = 'Doe';
+    $reservation->setRelation('status', new Status(['status_color' => 'red']));
 
-    $diningTable = Mockery::mock(DiningTable::class)->makePartial();
+    $diningTable = new DiningTable();
     $diningTable->id = 1;
     $diningTable->name = 'Table1';
     $diningTable->min_capacity = 2;

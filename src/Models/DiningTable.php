@@ -73,7 +73,7 @@ class DiningTable extends Model
     use NestedTree;
     use Sortable;
 
-    public const SORT_ORDER = 'priority';
+    public const string SORT_ORDER = 'priority';
 
     public $table = 'dining_tables';
 
@@ -121,7 +121,7 @@ class DiningTable extends Model
     {
         return $this->exists
             ? DiningSection::query()
-                ->where('location_id', $this->dining_area->location_id)
+                ->whereHasLocation($this->dining_area?->location_id)
                 ->dropdown('name')
             : [];
     }
@@ -143,11 +143,11 @@ class DiningTable extends Model
     public function getSummaryAttribute(): string
     {
         return sprintf(
-            '%s / %s - %s (%s)',
+            '%s / %s - %s (%s+)',
             $this->name,
             $this->min_capacity,
             $this->max_capacity,
-            $this->extra_capacity
+            $this->extra_capacity,
         );
     }
 

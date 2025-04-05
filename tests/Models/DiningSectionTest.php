@@ -12,10 +12,12 @@ use Igniter\Reservation\Models\DiningSection;
 use Mockery;
 
 it('returns correct record editor options', function(): void {
-    $diningSection = Mockery::mock(DiningSection::class)->makePartial();
-    $diningSection->shouldReceive('dropdown')->with('name')->andReturn(['Option1', 'Option2']);
+    $diningArea = DiningArea::factory()->create();
+    DiningSection::factory()->count(5)->create([
+        'location_id' => $diningArea->location_id,
+    ]);
 
-    expect($diningSection->getRecordEditorOptions())->toBe(['Option1', 'Option2']);
+    expect(DiningSection::make()->getRecordEditorOptions($diningArea)->count())->toBe(5);
 });
 
 it('returns correct priority options', function(): void {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Igniter\Reservation\Database\Factories;
 
 use Igniter\Flame\Database\Factories\Factory;
+use Igniter\Local\Models\Location;
 use Igniter\Reservation\Models\DiningArea;
 use Override;
 
@@ -16,7 +17,7 @@ class DiningAreaFactory extends Factory
     public function definition()
     {
         return [
-            'location_id' => 1,
+            'location_id' => Location::factory(),
             'name' => $this->faker->sentence(2),
         ];
     }

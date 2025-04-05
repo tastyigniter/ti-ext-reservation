@@ -65,12 +65,18 @@ it('returns correct table name when tables are assigned', function(): void {
     $table1 = Mockery::mock(DiningTable::class)->makePartial();
     $table2 = Mockery::mock(DiningTable::class)->makePartial();
     $table1->name = 'Table1';
+    $table1->min_capacity = 2;
+    $table1->max_capacity = 4;
+    $table1->extra_capacity = 0;
     $table2->name = 'Table2';
+    $table2->min_capacity = 4;
+    $table2->max_capacity = 8;
+    $table2->extra_capacity = 2;
 
     $reservation = new Reservation;
     $reservation->setRelation('tables', collect([$table1, $table2]));
 
-    expect($reservation->table_name)->toBe('Table1, Table2');
+    expect($reservation->table_name)->toBe('Table1 / 2 - 4 (0+), Table2 / 4 - 8 (2+)');
 });
 
 it('returns empty table name when no tables are assigned', function(): void {
@@ -414,7 +420,7 @@ it('returns correct mail data for reservation', function(): void {
         'first_name' => 'John',
         'last_name' => 'Doe',
         'email' => 'john.doe@example.com',
-        'telephone' => '1234567890',
+        'telephone' => 1234567890,
         'comment' => 'Test comment',
     ]);
 
@@ -470,7 +476,11 @@ it('returns correct event details', function(): void {
 
     $expectedDetails = [
         'id' => $reservation->getKey(),
-        'title' => 'Table1 (4)',
+        'title' => sprintf('Table1 / %s - %s (%s+) (4)',
+            $diningTable->min_capacity,
+            $diningTable->max_capacity,
+            $diningTable->extra_capacity,
+        ),
         'start' => '2023-10-10T12:00:00+01:00',
         'end' => '2023-10-10T14:00:00+01:00',
         'allDay' => false,
