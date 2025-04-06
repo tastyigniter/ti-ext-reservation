@@ -54,9 +54,11 @@ class DiningSection extends Model
         ],
     ];
 
-    public function getRecordEditorOptions()
+    public function getRecordEditorOptions(DiningArea $diningArea)
     {
-        return self::dropdown('name');
+        return self::query()
+            ->whereHasLocation($diningArea->location_id)
+            ->dropdown('name');
     }
 
     public function getPriorityOptions()

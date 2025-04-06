@@ -115,8 +115,6 @@ $config['list']['columns'] = [
         'label' => 'lang:igniter.reservation::default.column_table',
         'type' => 'partial',
         'path' => 'reservations/lists/column_table_name',
-        'relation' => 'tables',
-        'select' => 'name',
         'searchable' => true,
     ],
     'status_name' => [
@@ -220,7 +218,7 @@ $config['form']['tabs'] = [
             'label' => 'lang:igniter.reservation::default.label_table_name',
             'type' => 'relation',
             'relationFrom' => 'tables',
-            'nameFrom' => 'name',
+            'nameFrom' => 'summary',
             'span' => 'left',
         ],
         'guest_num' => [

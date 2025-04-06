@@ -12,8 +12,10 @@ use Igniter\Flame\Exception\FlashException;
 use Igniter\Local\Http\Actions\LocationAwareController;
 use Igniter\Reservation\Http\Requests\DiningAreaRequest;
 use Igniter\Reservation\Models\DiningArea;
+use Igniter\Reservation\Models\DiningSection;
 use Igniter\Reservation\Models\DiningTable;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Event;
 
 /**
  * Admin Controller Class Dining Areas
@@ -74,6 +76,22 @@ class DiningAreas extends AdminController
         parent::__construct();
 
         AdminMenu::setContext('dining_areas', 'restaurant');
+    }
+
+    public function edit(string $context, ?string $recordId): void
+    {
+        Event::listen('admin.form.extendFields', function($form, $fields) use ($recordId): void {
+            if (isset($fields['dining_area_id']) && !$fields['dining_area_id']->value) {
+                $fields['dining_area_id']->value = $recordId;
+            }
+
+            $formModel = $this->asExtension('FormController')->getFormModel();
+            if ($form->model instanceof DiningSection && isset($fields['location_id']) && !$fields['location_id']->value) {
+                $fields['location_id']->value = $formModel->location_id;
+            }
+        });
+
+        $this->asExtension('FormController')->edit($context, $recordId);
     }
 
     public function index_onDuplicate($context): RedirectResponse

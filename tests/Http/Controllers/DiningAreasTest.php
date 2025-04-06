@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Igniter\Reservation\Tests\Http\Controllers;
 
+use Igniter\Local\Models\Location;
 use Igniter\Reservation\Models\DiningArea;
+use Igniter\Reservation\Models\DiningSection;
 use Igniter\Reservation\Models\DiningTable;
 
 it('loads dining areas page', function(): void {
@@ -51,10 +53,13 @@ it('duplicates dining area', function(): void {
 });
 
 it('creates dining area', function(): void {
+    $location = Location::factory()->create();
+
     actingAsSuperUser()
         ->post(route('igniter.reservation.dining_areas', ['slug' => 'create']), [
             'DiningArea' => [
                 'name' => 'Created Dining Area',
+                'location_id' => $location->getKey(),
             ],
         ], [
             'X-Requested-With' => 'XMLHttpRequest',
@@ -131,4 +136,199 @@ it('deletes dining area', function(): void {
         ]);
 
     expect(DiningArea::find($diningArea->getKey()))->toBeNull();
+});
+
+it('attaches new dining table', function(): void {
+    $diningArea = DiningArea::factory()->create();
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'formDiningTableSolos::onLoadRecord',
+        ])
+        ->assertSee('New Record');
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [
+            'recordId' => '',
+            'DiningArea' => [
+                'connectorData' => [
+                    'id' => '',
+                    'dining_area_id' => $diningArea->getKey(),
+                    'name' => 'New Dining Table',
+                    'priority' => '9',
+                    'min_capacity' => '2',
+                    'max_capacity' => '4',
+                    'extra_capacity' => '0',
+                    'shape' => 'square',
+                    'is_enabled' => '0',
+                ],
+            ],
+        ], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'formDiningTableSolos::onSaveRecord',
+        ]);
+
+    expect(DiningTable::where([
+        'name' => 'New Dining Table',
+        'dining_area_id' => $diningArea->getKey(),
+        'priority' => 9,
+        'min_capacity' => 2,
+        'max_capacity' => 4,
+        'extra_capacity' => 0,
+        'shape' => 'square',
+        'is_enabled' => 0,
+    ])->exists())->toBeTrue();
+});
+
+it('updates dining table', function(): void {
+    $diningArea = DiningArea::factory()->create();
+    $diningTable = DiningTable::factory()->create();
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [
+            'recordId' => $diningTable->getKey(),
+        ], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'formDiningTableSolos::onLoadRecord',
+        ])
+        ->assertSee('Edit Record');
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [
+            'recordId' => $diningTable->getKey(),
+            'DiningArea' => [
+                'connectorData' => [
+                    'id' => $diningTable->getKey(),
+                    'dining_area_id' => $diningArea->getKey(),
+                    'name' => 'Updated Dining Table',
+                    'priority' => '9',
+                    'min_capacity' => '2',
+                    'max_capacity' => '4',
+                    'extra_capacity' => '2',
+                    'shape' => 'square',
+                    'is_enabled' => '1',
+                ],
+            ],
+        ], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'formDiningTableSolos::onSaveRecord',
+        ]);
+
+    expect(DiningTable::where([
+        'name' => 'Updated Dining Table',
+        'dining_area_id' => $diningArea->getKey(),
+        'priority' => 9,
+        'min_capacity' => 2,
+        'max_capacity' => 4,
+        'extra_capacity' => 2,
+        'shape' => 'square',
+        'is_enabled' => 1,
+    ])->exists())->toBeTrue();
+});
+
+it('deletes dining table', function(): void {
+    $diningArea = DiningArea::factory()->create();
+    $diningTable = DiningTable::factory()->create();
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [
+            'recordId' => $diningTable->getKey(),
+        ], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'formDiningTableSolos::onDeleteRecord',
+        ]);
+
+    expect(DiningTable::find($diningTable->getKey()))->toBeNull();
+});
+
+it('attaches new dining section', function(): void {
+    $diningArea = DiningArea::factory()->create();
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'formDiningSections::onLoadRecord',
+        ])
+        ->assertSee('New Section');
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [
+            'recordId' => '',
+            'DiningArea' => [
+                'recordData' => [
+                    'location_id' => $diningArea->location->getKey(),
+                    'name' => 'New Dining Section',
+                    'priority' => '9',
+                    'description' => 'New Dining Section Description',
+                    'is_enabled' => '0',
+                ],
+            ],
+        ], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'formDiningSections::onSaveRecord',
+        ]);
+
+    expect(DiningSection::where([
+        'location_id' => $diningArea->location->getKey(),
+        'name' => 'New Dining Section',
+        'priority' => 9,
+        'description' => 'New Dining Section Description',
+        'is_enabled' => 0,
+    ])->exists())->toBeTrue();
+});
+
+it('updates dining section', function(): void {
+    $diningArea = DiningArea::factory()->create();
+    $diningSection = DiningSection::factory()->create();
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [
+            'recordId' => $diningSection->getKey(),
+        ], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'formDiningSections::onLoadRecord',
+        ])
+        ->assertSee('Edit Section')
+        ->assertSee($diningSection->name);
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [
+            'recordId' => $diningSection->getKey(),
+            'DiningArea' => [
+                'recordData' => [
+                    'location_id' => $diningArea->location->getKey(),
+                    'name' => 'Updated Dining Table',
+                    'priority' => '9',
+                    'description' => 'Updated Dining Section Description',
+                    'is_enabled' => '1',
+                ],
+            ],
+        ], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'formDiningSections::onSaveRecord',
+        ]);
+
+    expect(DiningSection::where([
+        'location_id' => $diningArea->location->getKey(),
+        'name' => 'Updated Dining Table',
+        'priority' => '9',
+        'description' => 'Updated Dining Section Description',
+        'is_enabled' => '1',
+    ])->exists())->toBeTrue();
+});
+
+it('deletes dining section', function(): void {
+    $diningArea = DiningArea::factory()->create();
+    $diningSection = DiningSection::factory()->create();
+
+    actingAsSuperUser()
+        ->post(route('igniter.reservation.dining_areas', ['slug' => 'edit/'.$diningArea->getKey()]), [
+            'recordId' => $diningSection->getKey(),
+        ], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'X-IGNITER-REQUEST-HANDLER' => 'formDiningSections::onDeleteRecord',
+        ]);
+
+    expect(DiningSection::find($diningSection->getKey()))->toBeNull();
 });

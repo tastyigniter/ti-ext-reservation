@@ -4,7 +4,7 @@ on: [ push, pull_request, workflow_dispatch ]
 
 jobs:
   php-lint:
-    uses: tastyigniter/workflows/.github/workflows/php-lint.yml@main
+    uses: tastyigniter/workflows/.github/workflows/php-tests-lint.yml@main
     with:
       composer: update --no-interaction --no-progress
   php-tests:

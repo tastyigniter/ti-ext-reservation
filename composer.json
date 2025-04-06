@@ -1,72 +1,73 @@
 {
-    "name": "tastyigniter/ti-ext-reservation",
-    "type": "tastyigniter-package",
-    "description": "Provides a simple booking form to accept table reservations.",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Sam Poyigi",
-            "email": "sam@sampoyigi.com"
-        }
-    ],
-    "require": {
-        "tastyigniter/core": "^v4.0",
-        "tastyigniter/ti-ext-automation": "^v4.0",
-        "tastyigniter/ti-ext-local": "^v4.0"
-    },
-    "require-dev": {
-        "larastan/larastan": "^2.4",
-        "laravel/pint": "^1.2",
-        "pestphp/pest-plugin-laravel": "^3.0",
-        "rector/rector": "^1.2",
-        "sampoyigi/testbench": "^1.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Igniter\\Reservation\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Igniter\\Reservation\\Tests\\": "tests/"
-        }
-    },
-    "extra": {
-        "tastyigniter-extension": {
-            "code": "igniter.reservation",
-            "name": "Reservation",
-            "icon": {
-                "class": "fa fa-calendar",
-                "backgroundColor": "#8C1243",
-                "color": "#FFF"
-            },
-            "homepage": "https://tastyigniter.com/marketplace/item/igniter-reservation"
-        },
-        "branch-alias": {
-            "dev-master": "4.0.x-dev"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "config": {
-        "allow-plugins": {
-            "pestphp/pest-plugin": true,
-            "php-http/discovery": true,
-            "composer/installers": true
-        },
-        "sort-packages": true
-    },
-    "scripts": {
-        "format": "vendor/bin/pint --ansi",
-        "test:refactor": "vendor/bin/rector process --dry-run --ansi",
-        "test:static": "vendor/bin/phpstan analyse --ansi --memory-limit 1056M",
-        "test:pest": "vendor/bin/pest",
-        "test:coverage": "vendor/bin/pest --coverage --exactly=100 --compact",
-        "test:type-coverage": "vendor/bin/pest --type-coverage --min=100",
-        "test": [
-            "@test:refactor",
-            "@test:static",
-            "@test:coverage"
-        ]
+  "name": "tastyigniter/ti-ext-reservation",
+  "type": "tastyigniter-package",
+  "description": "Provides a simple booking form to accept table reservations.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sam Poyigi",
+      "email": "sam@sampoyigi.com"
     }
+  ],
+  "require": {
+    "tastyigniter/core": "^v4.0",
+    "tastyigniter/ti-ext-automation": "^v4.0",
+    "tastyigniter/ti-ext-local": "^v4.0"
+  },
+  "require-dev": {
+    "larastan/larastan": "^2.4",
+    "laravel/pint": "^1.2",
+    "pestphp/pest-plugin-laravel": "^3.0",
+    "rector/rector": "^1.2",
+    "sampoyigi/testbench": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Igniter\\Reservation\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Igniter\\Reservation\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "tastyigniter-extension": {
+      "code": "igniter.reservation",
+      "name": "Reservation",
+      "icon": {
+        "class": "fa fa-calendar",
+        "backgroundColor": "#8C1243",
+        "color": "#FFF"
+      },
+      "homepage": "https://tastyigniter.com/marketplace/item/igniter-reservation"
+    },
+    "branch-alias": {
+      "dev-master": "4.0.x-dev"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true,
+      "php-http/discovery": true,
+      "composer/installers": true
+    },
+    "sort-packages": true
+  },
+  "scripts": {
+    "format": "vendor/bin/pint --ansi",
+    "test:lint": "vendor/bin/pint --test --ansi",
+    "test:refactor": "vendor/bin/rector process --dry-run --ansi",
+    "test:static": "vendor/bin/phpstan analyse --ansi --memory-limit 1056M",
+    "test:pest": "vendor/bin/pest",
+    "test:coverage": "vendor/bin/pest --coverage --exactly=100 --compact",
+    "test:type-coverage": "vendor/bin/pest --type-coverage --min=100",
+    "test": [
+      "@test:refactor",
+      "@test:static",
+      "@test:coverage"
+    ]
+  }
 }

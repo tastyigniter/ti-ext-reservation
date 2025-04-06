@@ -42,7 +42,7 @@ return [
                 'type' => 'text',
                 'searchable' => true,
             ],
-            'locations' => [
+            'location_name' => [
                 'label' => 'lang:admin::lang.column_location',
                 'relation' => 'location',
                 'select' => 'location_name',

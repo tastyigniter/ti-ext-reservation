@@ -43,8 +43,8 @@ use Kalnoy\Nestedset\QueryBuilder;
  * @property-read int|null $children_count
  * @property-read mixed $section_name
  * @property-read DiningTable|null $parent
- * @property-read Location $location
- * @property-read DiningArea $dining_area
+ * @property-read Location|null $location
+ * @property-read DiningArea|null $dining_area
  * @property-read DiningSection|null $dining_section
  * @property-read Collection<int, Reservation> $reservations
  * @method static Collection<int, DiningTable> descendants()
@@ -73,7 +73,7 @@ class DiningTable extends Model
     use NestedTree;
     use Sortable;
 
-    public const SORT_ORDER = 'priority';
+    public const string SORT_ORDER = 'priority';
 
     public $table = 'dining_tables';
 
@@ -119,7 +119,11 @@ class DiningTable extends Model
 
     public function getDiningSectionIdOptions()
     {
-        return $this->exists ? DiningSection::query()->where('location_id', $this->dining_area->location_id)->dropdown('name') : [];
+        return $this->exists
+            ? DiningSection::query()
+                ->whereHasLocation($this->dining_area?->location_id)
+                ->dropdown('name')
+            : [];
     }
 
     public function getPriorityOptions()
@@ -131,9 +135,20 @@ class DiningTable extends Model
     // Accessors & Mutators
     //
 
-    public function getSectionNameAttribute()
+    public function getSectionNameAttribute(): ?string
     {
         return $this->dining_section?->name;
+    }
+
+    public function getSummaryAttribute(): string
+    {
+        return sprintf(
+            '%s / %s - %s (%s+)',
+            $this->name,
+            $this->min_capacity,
+            $this->max_capacity,
+            $this->extra_capacity,
+        );
     }
 
     //
