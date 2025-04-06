@@ -43,8 +43,8 @@ use Kalnoy\Nestedset\QueryBuilder;
  * @property-read int|null $children_count
  * @property-read mixed $section_name
  * @property-read DiningTable|null $parent
- * @property-read Location $location
- * @property-read DiningArea $dining_area
+ * @property-read Location|null $location
+ * @property-read DiningArea|null $dining_area
  * @property-read DiningSection|null $dining_section
  * @property-read Collection<int, Reservation> $reservations
  * @method static Collection<int, DiningTable> descendants()
