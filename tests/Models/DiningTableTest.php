@@ -59,7 +59,7 @@ it('returns null section name attribute when dining section is null', function()
 });
 
 it('returns correct floor plan array without reservation', function(): void {
-    $diningTable = new DiningTable();
+    $diningTable = new DiningTable;
     $diningTable->id = 1;
     $diningTable->name = 'Table1';
     $diningTable->min_capacity = 2;
@@ -83,7 +83,7 @@ it('returns correct floor plan array without reservation', function(): void {
 });
 
 it('returns correct floor plan array with reservation', function(): void {
-    $reservation = new Reservation();
+    $reservation = new Reservation;
     $reservation->reserve_date = '2023-10-10';
     $reservation->reserve_time = '12:00:00';
     $reservation->duration = 120;
@@ -91,7 +91,7 @@ it('returns correct floor plan array with reservation', function(): void {
     $reservation->last_name = 'Doe';
     $reservation->setRelation('status', new Status(['status_color' => 'red']));
 
-    $diningTable = new DiningTable();
+    $diningTable = new DiningTable;
     $diningTable->id = 1;
     $diningTable->name = 'Table1';
     $diningTable->min_capacity = 2;
