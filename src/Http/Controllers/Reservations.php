@@ -13,6 +13,7 @@ use Igniter\Admin\Http\Actions\CalendarController;
 use Igniter\Admin\Http\Actions\FormController;
 use Igniter\Admin\Http\Actions\ListController;
 use Igniter\Admin\Models\Status;
+use Igniter\Admin\Widgets\Filter;
 use Igniter\Flame\Exception\FlashException;
 use Igniter\Local\Facades\Location as LocationFacade;
 use Igniter\Local\Http\Actions\LocationAwareController;
@@ -111,8 +112,10 @@ class Reservations extends AdminController
         $this->vars['statusesOptions'] = Status::getDropdownOptionsForReservation();
     }
 
-    public function floor_plan(): void
+    public function floor_plan()
     {
+        $this->defaultView = 'floor_plan';
+
         $this->addJs('https://unpkg.com/konva@8.3.12/konva.min.js', 'konva-js');
         $this->addCss('igniter.reservation::/css/floorplanner.css', 'floorplanner-css');
         $this->addJs('igniter.reservation::/js/floorplanner.js', 'floorplanner-js');
@@ -205,14 +208,14 @@ class Reservations extends AdminController
         ]);
     }
 
-    public function listFilterExtendScopesBefore($filter): void
+    public function listFilterExtendScopesBefore(Filter $filter): void
     {
         if ($filter->alias === 'floor_plan_filter') {
             $filter->scopes['reserve_date']['default'] = now()->toDateString();
         }
     }
 
-    public function listFilterExtendScopes($filter): void
+    public function listFilterExtendScopes(Filter $filter): void
     {
         if ($filter->alias !== 'floor_plan_filter') {
             return;

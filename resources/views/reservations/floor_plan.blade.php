@@ -14,6 +14,9 @@
         <div class="border-bottom">
             {!! $this->renderListToolbar('floor_plan') !!}
         </div>
+        <div class="border-bottom">
+            {!! $this->renderListFilter('floor_plan') !!}
+        </div>
         {!! $this->renderList('floor_plan', true) !!}
     </div>
 </div>
