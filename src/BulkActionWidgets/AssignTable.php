@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Igniter\Reservation\BulkActionWidgets;
 
 use Igniter\Admin\Classes\BaseBulkActionWidget;
+use Igniter\Reservation\Models\Reservation;
 use Illuminate\Support\Collection;
 use Override;
 
@@ -16,15 +17,16 @@ class AssignTable extends BaseBulkActionWidget
         $noTablesFound = [];
         $tablesAssigned = [];
 
-        foreach ($records->sortBy('reservation_datetime') as $record) {
-            if ($record->tables->count() > 0) {
+        foreach ($records->sortBy('reservation_datetime') as $reservation) {
+            /** @var Reservation $reservation */
+            if ($reservation->tables->count() > 0) {
                 continue;
             }
 
-            if ($record->assignTable()) {
-                $tablesAssigned[] = $record->reservation_id;
+            if ($reservation->autoAssignTable()) {
+                $tablesAssigned[] = $reservation->reservation_id;
             } else {
-                $noTablesFound[] = $record->reservation_id;
+                $noTablesFound[] = $reservation->reservation_id;
             }
         }
 
