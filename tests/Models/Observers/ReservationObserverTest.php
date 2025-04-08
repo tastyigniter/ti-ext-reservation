@@ -68,7 +68,7 @@ it('restores purged values and adds reservation tables when saved', function(): 
     $reservation->shouldReceive('addReservationTables')->with(['table1', 'table2'])->once();
     $reservation->shouldReceive('reloadRelations')->with('location')->once();
     $reservation->shouldReceive('tables->count')->andReturn(0);
-    $reservation->shouldReceive('assignTable')->once();
+    $reservation->shouldReceive('autoAssignTable')->once();
     $reservation->shouldReceive('extendableGet')->with('location')->andReturn($location);
     $location->shouldReceive('shouldAutoAllocateTable')->andReturn(true);
 
@@ -84,7 +84,7 @@ it('does not assign table if auto allocate is disabled', function(): void {
     $reservation->shouldReceive('addReservationTables')->with(['table1', 'table2'])->once();
     $reservation->shouldReceive('reloadRelations')->with('location')->once();
     $reservation->shouldReceive('tables->count')->andReturn(0);
-    $reservation->shouldNotReceive('assignTable');
+    $reservation->shouldNotReceive('autoAssignTable');
     $location->shouldReceive('shouldAutoAllocateTable')->andReturn(false);
     $reservation->shouldReceive('extendableGet')->with('location')->andReturn($location);
 

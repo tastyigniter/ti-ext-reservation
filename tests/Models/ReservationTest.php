@@ -244,7 +244,7 @@ it('returns false when no available table to assign', function(): void {
         'status_id' => 1,
     ]);
 
-    $result = $reservation->assignTable();
+    $result = $reservation->autoAssignTable();
 
     expect($result)->toBeFalse();
 });

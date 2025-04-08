@@ -408,7 +408,7 @@ class Reservation extends Model
         return collect($diningTable ? [$diningTable] : []);
     }
 
-    public function assignTable(): bool
+    public function autoAssignTable(): bool
     {
         $diningTables = $this->getNextBookableTable();
         if ($diningTables->isEmpty()) {
