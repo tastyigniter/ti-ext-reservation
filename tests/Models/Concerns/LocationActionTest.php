@@ -29,6 +29,20 @@ it('returns correct reservation stay time', function(): void {
     expect((new LocationAction($location))->getReservationStayTime())->toBe(90);
 });
 
+it('returns correct minimum reservation guest count', function(): void {
+    $location = Mockery::mock(Location::class)->makePartial();
+    $location->shouldReceive('getSettings')->with('booking.min_guest_count', 2)->andReturn(4);
+
+    expect((new LocationAction($location))->getMinReservationGuestCount())->toBe(4);
+});
+
+it('returns correct maximum reservation guest count', function(): void {
+    $location = Mockery::mock(Location::class)->makePartial();
+    $location->shouldReceive('getSettings')->with('booking.max_guest_count', 20)->andReturn(10);
+
+    expect((new LocationAction($location))->getMaxReservationGuestCount())->toBe(10);
+});
+
 it('returns correct minimum reservation advance time', function(): void {
     $location = Mockery::mock(Location::class)->makePartial();
     $location->shouldReceive('getSettings')->with('booking.min_advance_time', 2)->andReturn(3);

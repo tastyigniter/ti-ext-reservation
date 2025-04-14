@@ -48,6 +48,32 @@ return [
                     'condition' => 'checked',
                 ],
             ],
+            'min_guest_count' => [
+                'label' => 'lang:igniter.reservation::default.label_min_reservation_guest_num',
+                'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
+                'default' => 2,
+                'type' => 'number',
+                'span' => 'left',
+                'comment' => 'lang:igniter.reservation::default.help_min_reservation_guest_num',
+                'trigger' => [
+                    'action' => 'enable',
+                    'field' => 'is_enabled',
+                    'condition' => 'checked',
+                ],
+            ],
+            'max_guest_count' => [
+                'label' => 'lang:igniter.reservation::default.label_max_reservation_guest_num',
+                'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',
+                'default' => 20,
+                'type' => 'number',
+                'span' => 'right',
+                'comment' => 'lang:igniter.reservation::default.help_max_reservation_guest_num',
+                'trigger' => [
+                    'action' => 'enable',
+                    'field' => 'is_enabled',
+                    'condition' => 'checked',
+                ],
+            ],
             'min_advance_time' => [
                 'label' => 'lang:igniter.reservation::default.label_min_reservation_advance_time',
                 'accordion' => 'lang:igniter.reservation::default.text_tab_reservation',

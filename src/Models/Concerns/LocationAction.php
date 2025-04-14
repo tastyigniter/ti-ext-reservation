@@ -29,6 +29,16 @@ class LocationAction extends ModelAction
         return (int)$this->model->getSettings('booking.stay_time', 0);
     }
 
+    public function getMinReservationGuestCount(): int
+    {
+        return (int)$this->model->getSettings('booking.min_guest_count', 2);
+    }
+
+    public function getMaxReservationGuestCount(): int
+    {
+        return (int)$this->model->getSettings('booking.max_guest_count', 20);
+    }
+
     public function getMinReservationAdvanceTime(): int
     {
         return (int)$this->model->getSettings('booking.min_advance_time', 2);
