@@ -484,7 +484,7 @@ class Reservation extends Model
     // Mail
     //
 
-    public function mailGetRecipients($type)
+    public function mailGetRecipients($type): array
     {
         $emailSetting = setting('reservation_email', []);
         if (!is_array($emailSetting)) {
@@ -509,7 +509,7 @@ class Reservation extends Model
         return $recipients;
     }
 
-    public function mailGetReplyTo($type)
+    public function mailGetReplyTo($type): array
     {
         $replyTo = [];
         if (in_array($type, (array)setting('reservation_email', []))) {
@@ -528,10 +528,8 @@ class Reservation extends Model
 
     /**
      * Return the order data to build mail template
-     *
-     * @return array
      */
-    public function mailGetData()
+    public function mailGetData(): array
     {
         $model = $this->fresh();
 
