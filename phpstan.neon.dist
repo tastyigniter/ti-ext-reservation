@@ -10,3 +10,4 @@ parameters:
         - resources/
     ignoreErrors:
         - '#PHPDoc tag @var#'
+        - identifier: generics.notGeneric

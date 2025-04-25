@@ -17,7 +17,6 @@ use Igniter\Local\Models\Location;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Kalnoy\Nestedset\Collection as NestedSetCollection;
-use Kalnoy\Nestedset\QueryBuilder;
 
 /**
  * DiningTable Model Class
@@ -63,8 +62,6 @@ use Kalnoy\Nestedset\QueryBuilder;
  * @method static Builder<static>|DiningTable whereHasLocation(int|string|Model $locationId)
  * @method static Builder<static>|DiningTable reservable(array $options)
  * @mixin Model
- * @mixin Model
- * @mixin QueryBuilder
  */
 class DiningTable extends Model
 {

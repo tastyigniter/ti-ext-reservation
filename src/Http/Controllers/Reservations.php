@@ -112,7 +112,7 @@ class Reservations extends AdminController
         $this->vars['statusesOptions'] = Status::getDropdownOptionsForReservation();
     }
 
-    public function floor_plan()
+    public function floor_plan(): void
     {
         $this->defaultView = 'floor_plan';
 

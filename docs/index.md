@@ -9,7 +9,7 @@ sortOrder: 90
 You can install the extension via composer using the following command:
 
 ```bash
-composer require tastyigniter/ti-ext-reservation:"^4.0" -W
+composer require tastyigniter/ti-ext-reservation -W
 ```
 
 Run the database migrations to create the required tables:
