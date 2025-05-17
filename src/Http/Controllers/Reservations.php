@@ -171,7 +171,7 @@ class Reservations extends AdminController
     public function calendarGenerateEvents($startAt, $endAt)
     {
         return Reservation::listCalendarEvents(
-            $startAt, $endAt, LocationFacade::getId(),
+            $startAt, $endAt, LocationFacade::currentOrAssigned(),
         );
     }
 
