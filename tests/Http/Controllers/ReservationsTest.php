@@ -32,6 +32,7 @@ it('generates events on reservation calender page', function(): void {
     $status = Status::factory()->create();
     LocationFacade::shouldReceive('current')->andReturn($location);
     LocationFacade::shouldReceive('getId')->andReturn($location->getKey());
+    LocationFacade::shouldReceive('currentOrAssigned')->andReturn([$location->getKey()]);
     $this->travelTo('2021-04-01');
 
     Reservation::factory()->for($location, 'location')->for($status, 'status')->count(5)->create([
