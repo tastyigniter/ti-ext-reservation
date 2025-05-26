@@ -420,7 +420,7 @@ it('returns correct mail data for reservation', function(): void {
         'first_name' => 'John',
         'last_name' => 'Doe',
         'email' => 'john.doe@example.com',
-        'telephone' => 1234567890,
+        'telephone' => '1234567890',
         'comment' => 'Test comment',
     ]);
 
