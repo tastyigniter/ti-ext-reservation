@@ -43,7 +43,7 @@ From your TastyIgniter Admin, you can also configure the reservation settings fo
 
 ## Usage
 
-This section explains how to integrate the Reservation extension API into your own extension if you need to create reservations, generate reservation time slots, assign tables, update reservation status, assign staff members, or cancel reservations. The Reservation extension provides a simple API for managing reservations and their related features.
+This section covers how to integrate the Reservation extension API into your own extension if you need to create reservations, generate reservation time slots, assign tables, update reservation status, assign staff members, or cancel reservations. The Reservation extension provides a simple API for managing reservations and their related features.
 
 ### Making a Reservation
 
