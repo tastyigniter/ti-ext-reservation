@@ -31,7 +31,7 @@ return new class extends Migration
         Schema::create('dining_sections', function(Blueprint $table): void {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('location_id')->index();
+            $table->unsignedBigInteger('location_id')->index('dining_sections_location_id_index');
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('color')->nullable();
@@ -45,9 +45,9 @@ return new class extends Migration
         Schema::create('dining_tables', function(Blueprint $table): void {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('dining_area_id')->index();
-            $table->unsignedBigInteger('dining_section_id')->nullable()->index();
-            $table->unsignedBigInteger('parent_id')->nullable()->index();
+            $table->unsignedBigInteger('dining_area_id')->index('dining_tables_dining_area_id_index');
+            $table->unsignedBigInteger('dining_section_id')->nullable()->index('dining_tables_dining_section_id_index');
+            $table->unsignedBigInteger('parent_id')->nullable()->index('dining_tables_parent_id_index');
             $table->string('name');
             $table->string('shape')->nullable();
             $table->integer('min_capacity')->default(0);
@@ -71,7 +71,7 @@ return new class extends Migration
 
             Schema::table('reservation_tables', function(Blueprint $table): void {
                 $table->unsignedBigInteger('dining_table_id')->nullable()->after('reservation_id');
-                $table->unique(['reservation_id', 'dining_table_id']);
+                $table->unique(['reservation_id', 'dining_table_id'], 'res_tbl_reservation_dining_table_id_uniq_idx');
             });
         }
 
