@@ -1,7 +1,7 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Parameter \#1 \$model of method Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Illuminate\\Database\\Eloquent\\Model,Illuminate\\Database\\Eloquent\\Model\>\:\:associate\(\) expects Illuminate\\Database\\Eloquent\\Model\|int\|string\|null, Illuminate\\Contracts\\Auth\\Authenticatable\|null given\.$#'
+			message: '#^Parameter \#1 \$model of method Igniter\\Flame\\Database\\Relations\\BelongsTo\:\:associate\(\) expects Illuminate\\Database\\Eloquent\\Model\|int\|string\|null, Illuminate\\Contracts\\Auth\\Authenticatable\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Classes/BookingManager.php

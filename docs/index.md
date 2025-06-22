@@ -20,9 +20,11 @@ php artisan igniter:up
 
 ## Getting started
 
-### Location-specific Settings
+To manage dining areas and tables for each location in the admin area. Navigate to the _Restaurant > Dining Areas_ admin page.
 
-You can configure the reservation settings for each location in the admin area. Navigate to the _Restaurant > Settings > General_ admin page, and click the _Reservation settings_ button. You can set the following reservation settings for each location:
+### Location-specific settings
+
+From your TastyIgniter Admin, you can configure the reservation settings for each location. Navigate to the _Manage > Locations_ admin page, and click on the _Settings Icon_ next to the location then click the _Reservation settings_ button under the _General_ tab. You can set the following reservation settings for each location:
 
 - **Enable reservations:** Enable or disable reservations for the location.
 - **Auto assign tables:** Whether to automatically assign tables to reservations.
@@ -32,16 +34,16 @@ You can configure the reservation settings for each location in the admin area. 
 - **Reservation lead time:** Set the minimum and maximum time required to make a reservation.
 - **Reservation cancellation time:** Set the minimum time required to cancel a reservation.
 
-### Global Settings
+### Global reservation settings
 
-You can also configure the reservation settings for all locations in the admin area. Navigate to the _Manage > Settings > Reservation_ admin page. You can set the following reservation settings for all locations:
+From your TastyIgniter Admin, you can also configure the reservation settings for all locations. Navigate to the _Manage > Settings > Reservation_ admin page. You can set the following reservation settings for all locations:
 
 - **Send reservation confirmation email:** Whether to send reservation confirmation emails to customers, location email and admin email.
 - **Order status workflow:** Set the reservation status workflow for all locations. For example, you can set the reservation status to _Pending_ when a reservation is received, _Confirmed_ when the reservation is being confirmed, and _Canceled_ when the reservation is canceled.
 
-To manage dining areas and tables for each location in the admin area. Navigate to the _Restaurant > Dining Areas_ admin page.
-
 ## Usage
+
+This section covers how to integrate the Reservation extension API into your own extension if you need to create reservations, generate reservation time slots, assign tables, update reservation status, assign staff members, or cancel reservations. The Reservation extension provides a simple API for managing reservations and their related features.
 
 ### Making a Reservation
 
@@ -77,7 +79,7 @@ $timeslots = $bookingManager->makeTimeSlots($date, $interval, $leadTime);
 
 Both the `$interval` and `$leadTime` parameters are optional. The method will default to the reservation time interval and lead time configured in the admin area.
 
-For more information on generating schedule time slots, see the [Local Extension](https://tastyigniter.com/marketplace/item/igniter-local#working-hours) documentation.
+For more information on generating schedule time slots, see the [Local Extension](https://tastyigniter.com/docs/extensions/local#working-hours) documentation.
 
 ### Assigning tables
 
@@ -141,8 +143,8 @@ The `$statusData` array may contain the following keys:
 
 An automation event class used to capture the `igniter.reservation.confirmed` system event when a reservation is received. The event class is also used to prepare the order parameters for automation rules. The following parameters are available:
 
-- `reservation`: The `Reservation` model instance.
-- `status`: The `Status` model instance.
+- `reservation`: The `Igniter\Reservation\Models\Reservation` model instance.
+- `status`: The `Igniter\Admin\Models\Status` model instance.
 - `reservation_number`: The reservation ID.
 - `reservation_id`: The reservation ID.
 - `reservation_time`: The reservation time.
@@ -169,7 +171,7 @@ An automation event class used to capture the `igniter.reservation.statusAdded` 
 
 An automation event class used to capture the `igniter.reservation.assigned` system event when a reservation is assigned to a staff member. Similar to the `New Reservation Event`, the event class is also used to prepare the reservation parameters for automation rules. The available parameters are the same as the `New Reservation Event` including the following additional parameters:
 
-- `assignee`: The assignee `Staff` model instance.
+- `assignee`: The assignee `Igniter\User\Models\User` model instance.
 
 ### Automations Conditions
 
@@ -216,6 +218,8 @@ The Reservation extension registers the following permissions:
 - `Admin.AssignReservations`: Control who can assign reservations to staff members in the admin area.
 - `Admin.AssignReservationTables`: Control who can assign tables to reservations in the admin area.
 
+For more on restricting access to the admin area, see the [TastyIgniter Permissions](https://tastyigniter.com/docs/customize/permissions) documentation.
+
 ### Events
 
 The Booking Manager used with this extension will fire some global events that can be useful for interacting with other
@@ -223,12 +227,12 @@ extensions.
 
 | Event | Description | Parameters |
 | ----- | ----------- | ---------- |
-| `igniter.reservation.beforeSaveReservation` |    When a reservation is being created.    |      The `Reservation` model instance and the reservation form attributes     |
-| `igniter.reservation.confirmed` |      When a reservation has been placed.       |      The `Reservation` model instance     |
+| `igniter.reservation.beforeSaveReservation` |    When a reservation is being created.    |      The `Igniter\Reservation\Models\Reservation` model instance and the reservation form attributes     |
+| `igniter.reservation.confirmed` |      When a reservation has been placed.       |      The `Igniter\Reservation\Models\Reservation` model instance     |
 | `igniter.reservation.isFullyBookedOn` | When a reservation is fully booked on a specific date. | The `DataTime` instance and the number of guests |
-| `igniter.reservation.beforeAddStatus` | Before a reservation status is updated. | The `StatusHistory` model instance, the `Reservation` model instance, `$statusId` status ID and the `$previousStatus` previous status ID |
-| `igniter.reservation.statusAdded` | When a reservation status is updated. | The `Reservation` model instance and the `StatusHistory` model instance |
-| `igniter.reservation.assigned` | When a reservation is assigned to a staff member. | The `Reservation` model instance and the `AssignableLog` model instance |
+| `igniter.reservation.beforeAddStatus` | Before a reservation status is updated. | The `Igniter\Admin\Models\StatusHistory` model instance, the `Igniter\Reservation\Models\Reservation` model instance, `$statusId` status ID and the `$previousStatus` previous status ID |
+| `igniter.reservation.statusAdded` | When a reservation status is updated. | The `Igniter\Reservation\Models\Reservation` model instance and the `Igniter\Admin\Models\StatusHistory` model instance |
+| `igniter.reservation.assigned` | When a reservation is assigned to a staff member. | The `Igniter\Reservation\Models\Reservation` model instance and the `Igniter\User\Models\AssignableLog` model instance |
 
 Here is an example of hooking an event in the `boot` method of an extension class:
 
