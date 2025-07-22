@@ -37,8 +37,8 @@
       "name": "Reservation",
       "icon": {
         "class": "fa fa-calendar",
-        "backgroundColor": "#8C1243",
-        "color": "#FFF"
+        "backgroundColor": "#FF4900",
+        "color": "#FFFFFF"
       },
       "homepage": "https://tastyigniter.com/marketplace/item/igniter-reservation"
     },
