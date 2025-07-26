@@ -66,12 +66,12 @@ return new class extends Migration
 
         if (!Schema::hasColumn('reservation_tables', 'dining_table_id')) {
             rescue(fn() => Schema::table('reservation_tables', function(Blueprint $table): void {
-                $table->dropUnique(['reservation_id', 'table_id']);
+                $table->dropUnique('reservation_table_unique');
             }));
 
             Schema::table('reservation_tables', function(Blueprint $table): void {
                 $table->unsignedBigInteger('dining_table_id')->nullable()->after('reservation_id');
-                $table->unique(['reservation_id', 'dining_table_id'], 'res_tbl_reservation_dining_table_id_uniq_idx');
+                $table->unique(['reservation_id', 'dining_table_id'], 'reservation_dining_table_unique');
             });
         }
 
