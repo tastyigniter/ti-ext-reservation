@@ -326,8 +326,8 @@ class Reservation extends Model
             'reserve_time' => $this->reserve_time,
             'reserve_end_time' => $this->reserve_end_time->toTimeString(),
             'duration' => $this->duration,
-            'status' => $status->toArray(),
-            'tables' => $tables->toArray(),
+            'status' => $status?->toArray() ?? [],
+            'tables' => $tables?->toArray() ?? [],
         ];
     }
 
