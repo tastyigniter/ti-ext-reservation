@@ -10,7 +10,7 @@ use Override;
 class BookingSettingsRequest extends FormRequest
 {
     #[Override]
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'is_enabled' => lang('igniter.reservation::default.offer_reservation'),

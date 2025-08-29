@@ -14,7 +14,7 @@ class DiningAreaFactory extends Factory
     protected $model = DiningArea::class;
 
     #[Override]
-    public function definition()
+    public function definition(): array
     {
         return [
             'location_id' => Location::factory(),

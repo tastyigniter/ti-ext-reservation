@@ -10,7 +10,7 @@ use Override;
 class ReservationSettingsRequest extends FormRequest
 {
     #[Override]
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'default_reservation_status' => lang('igniter.reservation::default.label_default_reservation_status'),

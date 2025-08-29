@@ -10,7 +10,7 @@ use Override;
 class DiningSectionRequest extends FormRequest
 {
     #[Override]
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'location_id' => lang('igniter::admin.label_location'),

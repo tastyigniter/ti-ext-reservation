@@ -141,18 +141,18 @@ class Extension extends BaseExtension
                             [
                                 'attribute' => 'hours_until',
                                 'operator' => 'is',
-                                'value' => 15
-                            ]
+                                'value' => 15,
+                            ],
                         ],
                     ],
                     'actions' => [
                         SendMailTemplate::class => [
                             'template' => 'igniter.reservation::mail.reservation_reminder',
-                            'send_to' => 'customer'
-                        ]
-                    ]
-                ]
-            ]
+                            'send_to' => 'customer',
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 

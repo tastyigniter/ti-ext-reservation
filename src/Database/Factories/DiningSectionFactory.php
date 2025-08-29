@@ -13,7 +13,7 @@ class DiningSectionFactory extends Factory
     protected $model = DiningSection::class;
 
     #[Override]
-    public function definition()
+    public function definition(): array
     {
         return [
             'location_id' => $this->faker->numberBetween(1, 10),
