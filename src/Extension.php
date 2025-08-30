@@ -7,6 +7,8 @@ namespace Igniter\Reservation;
 use Igniter\Admin\DashboardWidgets\Charts;
 use Igniter\Admin\DashboardWidgets\Statistics;
 use Igniter\Admin\Models\StatusHistory;
+use Igniter\Automation\AutomationRules\Actions\SendMailTemplate;
+use Igniter\Automation\AutomationRules\Events\ReservationSchedule;
 use Igniter\Local\Models\Location;
 use Igniter\Local\Models\Location as LocationModel;
 use Igniter\Reservation\AutomationRules\Conditions\ReservationAttribute;
@@ -103,6 +105,7 @@ class Extension extends BaseExtension
             'igniter.reservation::mail.reservation' => 'lang:igniter.reservation::default.text_mail_reservation',
             'igniter.reservation::mail.reservation_alert' => 'lang:igniter.reservation::default.text_mail_reservation_alert',
             'igniter.reservation::mail.reservation_update' => 'lang:igniter.reservation::default.text_mail_reservation_update',
+            'igniter.reservation::mail.reservation_reminder' => 'lang:igniter.reservation::default.text_mail_reservation_reminder',
         ];
     }
 
@@ -118,6 +121,37 @@ class Extension extends BaseExtension
             'conditions' => [
                 ReservationAttribute::class,
                 ReservationStatusAttribute::class,
+            ],
+            'presets' => [
+                'remind_confirmed_reservation_3_days_before_date' => [
+                    'name' => 'Send a reminder 3 days before the confirmed reservation date',
+                    'event' => ReservationSchedule::class,
+                    'conditions' => [
+                        ReservationAttribute::class => [
+                            [
+                                'attribute' => 'days_until',
+                                'operator' => 'is',
+                                'value' => 3,
+                            ],
+                            [
+                                'attribute' => 'status_id',
+                                'operator' => 'is',
+                                'value' => setting('confirmed_reservation_status'),
+                            ],
+                            [
+                                'attribute' => 'hours_until',
+                                'operator' => 'is',
+                                'value' => 15,
+                            ],
+                        ],
+                    ],
+                    'actions' => [
+                        SendMailTemplate::class => [
+                            'template' => 'igniter.reservation::mail.reservation_reminder',
+                            'send_to' => 'customer',
+                        ],
+                    ],
+                ],
             ],
         ];
     }

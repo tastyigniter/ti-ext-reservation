@@ -61,6 +61,7 @@ return [
     'text_mail_reservation' => 'Reservation email to customer',
     'text_mail_reservation_alert' => 'Reservation alert to admin',
     'text_mail_reservation_update' => 'Reservation status update email to customer',
+    'text_mail_reservation_reminder' => 'Reservation reminder email to customer',
     'text_side_menu_tables' => 'Dining Areas',
     'text_side_menu_reservation' => 'Reservations',
     'text_tab_title_reservation' => 'Reservation',

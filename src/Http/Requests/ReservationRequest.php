@@ -10,7 +10,7 @@ use Override;
 class ReservationRequest extends FormRequest
 {
     #[Override]
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'location_id' => lang('igniter.reservation::default.text_restaurant'),
