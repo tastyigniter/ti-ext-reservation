@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('reservations', function(Blueprint $table): void {
-            $table->integer('status_id')->change();
+            $table->unsignedBigInteger('status_id')->nullable()->change();
         });
     }
 
