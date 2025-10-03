@@ -100,7 +100,7 @@ class FloorPlanner extends BaseFormWidget
 
     public function onSaveState(): void
     {
-        $state = json_decode((string) input('state'), true);
+        $state = json_decode((string)input('state'), true);
 
         $this->validate($state, [
             'stage.x' => ['required', 'numeric'],

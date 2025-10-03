@@ -13,6 +13,18 @@ parameters:
 			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
 
 		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$reservation_datetime\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$reservation_end_datetime\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
 			message: '#^Call to an undefined method Illuminate\\Support\\Carbon\:\:diffInRealMinutes\(\)\.$#'
 			identifier: method.notFound
 			count: 1
