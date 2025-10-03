@@ -9,9 +9,12 @@ use DateTime;
 use Igniter\Local\Classes\WorkingSchedule;
 use Igniter\Local\Models\Location;
 use Igniter\Reservation\Classes\BookingManager;
+use Igniter\Reservation\Models\DiningArea;
+use Igniter\Reservation\Models\DiningTable;
 use Igniter\Reservation\Models\Reservation;
 use Igniter\User\Facades\Auth;
 use Igniter\User\Models\Customer;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Facades\Event;
 use Mockery;
 
@@ -171,4 +174,100 @@ it('returns next bookable table for given date and time and number of guests', f
     $result = $manager->getNextBookableTable($dateTime, 4);
 
     expect($result)->toContain('table1', 'table2');
+});
+
+it('checks timeslots is fully booked', function(): void {
+    /** @var Location $location */
+    $location = Location::factory()->create();
+    $diningArea = DiningArea::factory()->create(['location_id' => $location->getKey()]);
+    $diningTableAttributes = ['min_capacity' => 21, 'max_capacity' => 26, 'dining_area_id' => $diningArea->getKey()];
+    $diningTable1 = DiningTable::factory()->create($diningTableAttributes);
+    $diningTable2 = DiningTable::factory()->create($diningTableAttributes);
+    $diningTable3 = DiningTable::factory()->create($diningTableAttributes);
+    Reservation::factory()
+        ->count(5)
+        ->state(new Sequence(
+            [
+                'reserve_date' => '2025-06-30',
+                'reserve_time' => '14:00:00',
+                'duration' => 60, // 15:00
+                'guest_num' => 22,
+                'status_id' => 1,
+                'location_id' => $location->getKey(),
+                'tables' => [$diningTable1],
+            ],
+            [
+                'reserve_date' => '2025-06-30',
+                'reserve_time' => '14:00:00',
+                'duration' => 60, // 15:00
+                'guest_num' => 23,
+                'status_id' => 1,
+                'location_id' => $location->getKey(),
+                'tables' => [$diningTable2],
+            ],
+            [
+                'reserve_date' => '2025-06-30',
+                'reserve_time' => '14:00:00',
+                'duration' => 60, // 15:00
+                'guest_num' => 24,
+                'status_id' => 1,
+                'location_id' => $location->getKey(),
+                'tables' => [$diningTable3],
+            ],
+            [
+                'reserve_date' => '2025-06-30',
+                'reserve_time' => '16:00:00',
+                'duration' => 60, // 17:00
+                'guest_num' => 22,
+                'status_id' => 1,
+                'location_id' => $location->getKey(),
+                'tables' => [$diningTable1],
+            ],
+            [
+                'reserve_date' => '2025-06-30',
+                'reserve_time' => '16:00:00',
+                'duration' => 60, // 17:00
+                'guest_num' => 22,
+                'status_id' => 1,
+                'location_id' => $location->getKey(),
+                'tables' => [$diningTable2, $diningTable3],
+            ],
+        ))
+        ->create();
+
+    $dateTime = Carbon::parse('2025-06-30');
+    $manager = new BookingManager;
+    $manager->useLocation($location);
+
+    $timeslots = collect([
+        Carbon::parse('2025-06-30 14:00:00'),
+        Carbon::parse('2025-06-30 15:00:00'),
+        Carbon::parse('2025-06-30 16:00:00'),
+        Carbon::parse('2025-06-30 17:00:00'),
+        Carbon::parse('2025-06-30 18:00:00'),
+    ]);
+
+    $result = $manager->isTimeslotsFullyBookedOn($timeslots, $dateTime, 22);
+    expect($result)->toContain('2025-06-30 14:00:00', '2025-06-30 16:00:00')
+        ->and($result)->not->toContain('2025-06-30 15:00:00')
+        ->and($result)->not->toContain('2025-06-30 17:00:00')
+        ->and($result)->not->toContain('2025-06-30 18:00:00');
+});
+
+it('checks timeslots is fully booked when no dining tables to accommodate guest', function(): void {
+    /** @var Location $location */
+    $location = Location::factory()->create();
+    $dateTime = Carbon::parse('2025-06-30');
+    $manager = new BookingManager;
+    $manager->useLocation($location);
+
+    $timeslots = collect([
+        Carbon::parse('2025-06-30 14:00:00'),
+        Carbon::parse('2025-06-30 15:00:00'),
+    ]);
+
+    expect($manager->isTimeslotsFullyBookedOn($timeslots, $dateTime, 22))->toContain(
+        '2025-06-30 14:00:00',
+        '2025-06-30 15:00:00',
+    );
 });

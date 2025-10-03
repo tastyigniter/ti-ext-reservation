@@ -174,15 +174,7 @@ class Reservation extends Model
 
     public function getDurationAttribute($value)
     {
-        if (!is_null($value)) {
-            return $value;
-        }
-
-        if (!$location = $this->location) {
-            return $value;
-        }
-
-        return $location->getReservationStayTime();
+        return $value ?? $this->location?->getReservationStayTime();
     }
 
     public function getReserveEndTimeAttribute($value)
@@ -383,6 +375,53 @@ class Reservation extends Model
         return true;
     }
 
+    public static function listFullyBookedTimeslots(
+        array $dateTimes,
+        int $locationId,
+        ?int $noOfGuest = null,
+    ): array {
+        // Get all available tables for the location
+        $totalAvailableTables = DiningTable::query()
+            ->whereIsAvailableAt($locationId)
+            ->whereIsReservable()
+            ->when($noOfGuest, fn($query) => $query->whereCanAccommodate($noOfGuest))
+            ->count('dining_tables.id');
+
+        if ($totalAvailableTables === 0) {
+            return $dateTimes;
+        }
+
+        // Get all tables that are booked during any of the requested timeslots
+        $bookedTables = self::query()
+            ->join('reservation_tables', 'reservation_tables.reservation_id', '=', 'reservations.reservation_id')
+            ->join('dining_tables', 'dining_tables.id', '=', 'reservation_tables.dining_table_id')
+            ->select([
+                'reservations.reservation_id',
+                'reservations.reserve_date',
+                'reservations.reserve_time',
+                'reservations.duration',
+                'dining_tables.id as dining_table_id',
+                'dining_tables.min_capacity',
+                'dining_tables.max_capacity',
+            ])
+            ->whereHasLocation($locationId)
+            ->whereBetweenReservationDateTime(min($dateTimes), max($dateTimes))
+            ->whereNotIn('status_id', [0, (int)setting('canceled_reservation_status')])
+            ->where('dining_tables.min_capacity', '<=', $noOfGuest)
+            ->where('dining_tables.max_capacity', '>=', $noOfGuest)
+            ->get();
+
+        // Find timeslots where all available tables are booked
+        return collect($dateTimes)
+            ->filter(fn($dateTime): bool => $bookedTables->filter(function($reservation) use ($dateTime): bool {
+                $dateTime = make_carbon($dateTime);
+
+                return $dateTime->gte($reservation->reservation_datetime)
+                    && $dateTime->lt($reservation->reservation_end_datetime);
+            })->unique('dining_table_id')->count() >= $totalAvailableTables,
+            )->all();
+    }
+
     /**
      * @return Collection|null
      */
@@ -391,7 +430,7 @@ class Reservation extends Model
         $diningTables = DiningTable::query()
             ->with(['dining_section'])
             ->withCount(['reservations' => function($query): void {
-                $query->where('reserve_date', $this->reserve_date)
+                $query->where('reserve_date', $this->reserve_date->toDateString())
                     ->whereNotIn('status_id', [0, setting('canceled_reservation_status')]);
             }])
             ->reservable([
