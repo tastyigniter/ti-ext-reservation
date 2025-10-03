@@ -7,6 +7,7 @@ namespace Igniter\Reservation\Classes;
 use Carbon\Carbon;
 use DateInterval;
 use DateTime;
+use Deprecated;
 use Exception;
 use Igniter\Admin\Models\Status;
 use Igniter\Local\Classes\WorkingSchedule;
@@ -144,6 +145,18 @@ class BookingManager
         return $this->location->newWorkingSchedule('opening', $days);
     }
 
+    public function isTimeslotsFullyBookedOn(Collection $timeslots, Carbon $date, ?int $noOfGuest = null): array
+    {
+        $dateTimesToCheck = $timeslots->map(fn($slot) => $date->copy()->setTimeFromTimeString($slot->format('H:i'))->toDateTimeString())->all();
+
+        return Reservation::listFullyBookedTimeslots(
+            $dateTimesToCheck,
+            $this->location->location_id,
+            $noOfGuest
+        );
+    }
+
+    #[Deprecated('Deprecated in favour of isTimeslotsFullyBookedOn()')]
     public function isFullyBookedOn(DateTime $dateTime, $noOfGuests = null)
     {
         /** @var Carbon $dateTime */
