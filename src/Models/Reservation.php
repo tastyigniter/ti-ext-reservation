@@ -327,7 +327,7 @@ class Reservation extends Model
     {
         $diffInMinutes = (int)floor($this->reservation_datetime->diffInMinutes($this->reservation_end_datetime));
 
-        return $diffInMinutes >= (60 * 23) || $diffInMinutes == 0;
+        return $diffInMinutes >= (60 * 23) || $diffInMinutes === 0;
     }
 
     public function getOccasionOptions(): array

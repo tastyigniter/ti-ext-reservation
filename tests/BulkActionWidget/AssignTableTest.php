@@ -15,6 +15,12 @@ use Igniter\Reservation\Models\Reservation;
 it('assigns tables to reservations without tables', function(): void {
     $controller = new class extends AdminController {};
     $location = Location::factory()->create();
+    $location->settings()->create([
+        'item' => 'booking',
+        'data' => [
+            'auto_allocate_table' => 0,
+        ],
+    ]);
     DiningTable::factory()
         ->count(2)
         ->for(DiningArea::factory()->for($location, 'location')->create(), 'dining_area')
@@ -41,6 +47,12 @@ it('assigns tables to reservations without tables', function(): void {
 it('does not assign tables to reservations with existing tables', function(): void {
     $controller = new class extends AdminController {};
     $location = Location::factory()->create();
+    $location->settings()->create([
+        'item' => 'booking',
+        'data' => [
+            'auto_allocate_table' => 0,
+        ],
+    ]);
     $diningTable = DiningTable::factory()
         ->for(DiningArea::factory()->for($location, 'location')->create(), 'dining_area')
         ->create([
@@ -88,6 +100,12 @@ it('shows warning if no tables can be assigned', function(): void {
 it('assigns tables to reservations in correct order', function(): void {
     $controller = new class extends AdminController {};
     $location = Location::factory()->create();
+    $location->settings()->create([
+        'item' => 'booking',
+        'data' => [
+            'auto_allocate_table' => 0,
+        ],
+    ]);
     DiningTable::factory()
         ->count(2)
         ->for(DiningArea::factory()->for($location, 'location')->create(), 'dining_area')

@@ -9,7 +9,6 @@ use Igniter\Admin\DashboardWidgets\Statistics;
 use Igniter\Admin\Models\StatusHistory;
 use Igniter\Automation\AutomationRules\Actions\SendMailTemplate;
 use Igniter\Automation\AutomationRules\Events\ReservationSchedule;
-use Igniter\Local\Models\Location;
 use Igniter\Local\Models\Location as LocationModel;
 use Igniter\Reservation\AutomationRules\Conditions\ReservationAttribute;
 use Igniter\Reservation\AutomationRules\Conditions\ReservationStatusAttribute;
@@ -88,7 +87,7 @@ class Extension extends BaseExtension
 
         LocationModel::implement(LocationAction::class);
 
-        Location::extend(function(Location $model): void {
+        LocationModel::extend(function(LocationModel $model): void {
             $model->relation['hasMany']['dining_areas'] = [DiningArea::class, 'delete' => true];
             $model->relation['morphedByMany']['tables'] = [DiningTable::class, 'name' => 'locationable'];
         });

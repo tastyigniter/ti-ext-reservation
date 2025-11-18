@@ -113,7 +113,7 @@ $config['list']['columns'] = [
         'label' => 'lang:igniter.reservation::default.column_table',
         'type' => 'partial',
         'path' => 'reservations/lists/column_table_name',
-        'searchable' => true,
+        'searchable' => false,
         'sortable' => false,
     ],
     'status_name' => [

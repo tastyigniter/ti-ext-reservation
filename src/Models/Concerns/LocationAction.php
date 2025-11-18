@@ -56,6 +56,6 @@ class LocationAction extends ModelAction
 
     public function shouldAutoAllocateTable(): bool
     {
-        return (bool)$this->model->getSettings('booking.auto_allocate_table', 0);
+        return (bool)$this->model->getSettings('booking.auto_allocate_table', 1);
     }
 }

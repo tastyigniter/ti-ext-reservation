@@ -55,12 +55,12 @@ class DiningTableScope extends Scope
 
     public function addWhereIsCombo()
     {
-        return fn(Builder|DiningTable $builder) => $builder->where('is_combo', 1);
+        return fn(Builder|DiningTable $builder) => $builder->with('dining_section')->where('is_combo', 1);
     }
 
     public function addWhereIsNotCombo()
     {
-        return fn(Builder|DiningTable $builder) => $builder->where('is_combo', '!=', 1);
+        return fn(Builder|DiningTable $builder) => $builder->with('dining_section')->where('is_combo', '!=', 1);
     }
 
     public function addWhereIsAvailableAt()

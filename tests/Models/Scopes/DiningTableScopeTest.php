@@ -53,6 +53,7 @@ it('adds where is reservable scope', function(): void {
 
 it('adds where is combo scope', function(): void {
     $this->builder->shouldReceive('where')->with('is_combo', 1)->once()->andReturnSelf();
+    $this->builder->shouldReceive('with')->andReturnSelf();
 
     $addWhereIsCombo = $this->scope->addWhereIsCombo();
     $addWhereIsCombo($this->builder);
@@ -60,6 +61,7 @@ it('adds where is combo scope', function(): void {
 
 it('adds where is not combo scope', function(): void {
     $this->builder->shouldReceive('where')->with('is_combo', '!=', 1)->once()->andReturnSelf();
+    $this->builder->shouldReceive('with')->andReturnSelf();
 
     $addWhereIsNotCombo = $this->scope->addWhereIsNotCombo();
     $addWhereIsNotCombo($this->builder);
