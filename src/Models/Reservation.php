@@ -422,10 +422,7 @@ class Reservation extends Model
             )->all();
     }
 
-    /**
-     * @return Collection|null
-     */
-    public function getNextBookableTable()
+    public function getNextBookableTable(): Collection
     {
         $diningTables = DiningTable::query()
             ->with(['dining_section'])

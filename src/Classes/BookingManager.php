@@ -177,9 +177,8 @@ class BookingManager
 
     /**
      * @param int $noOfGuests
-     * @return Collection|null
      */
-    public function getNextBookableTable(DateTime $dateTime, $noOfGuests)
+    public function getNextBookableTable(DateTime $dateTime, $noOfGuests): Collection
     {
         $reservation = $this->getReservation();
 
