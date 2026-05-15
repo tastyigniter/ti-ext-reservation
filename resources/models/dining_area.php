@@ -1,5 +1,7 @@
 <?php
 
+use Igniter\Reservation\Models\DiningSection;
+
 return [
     'list' => [
         'filter' => [],
@@ -112,7 +114,7 @@ return [
                     'context' => ['edit', 'preview'],
                     'mode' => 'checkbox',
                     'form' => 'dining_section',
-                    'modelClass' => \Igniter\Reservation\Models\DiningSection::class,
+                    'modelClass' => DiningSection::class,
                     'placeholder' => 'igniter.reservation::default.dining_areas.help_dining_sections',
                     'formName' => 'igniter.reservation::default.dining_areas.text_dining_section',
                 ],

@@ -1,5 +1,7 @@
 <?php
 
+use Igniter\Admin\Models\Status;
+
 return [
     'form' => [
         'toolbar' => [
@@ -29,7 +31,7 @@ return [
                 'tab' => 'lang:igniter.reservation::default.text_tab_title_reservation',
                 'type' => 'selectlist',
                 'mode' => 'radio',
-                'options' => [\Igniter\Admin\Models\Status::class, 'getDropdownOptionsForReservation'],
+                'options' => [Status::class, 'getDropdownOptionsForReservation'],
                 'comment' => 'lang:igniter.reservation::default.help_default_reservation_status',
             ],
             'confirmed_reservation_status' => [
@@ -37,7 +39,7 @@ return [
                 'tab' => 'lang:igniter.reservation::default.text_tab_title_reservation',
                 'type' => 'selectlist',
                 'mode' => 'radio',
-                'options' => [\Igniter\Admin\Models\Status::class, 'getDropdownOptionsForReservation'],
+                'options' => [Status::class, 'getDropdownOptionsForReservation'],
                 'comment' => 'lang:igniter.reservation::default.help_confirmed_reservation_status',
             ],
             'canceled_reservation_status' => [
@@ -45,7 +47,7 @@ return [
                 'tab' => 'lang:igniter.reservation::default.text_tab_title_reservation',
                 'type' => 'selectlist',
                 'mode' => 'radio',
-                'options' => [\Igniter\Admin\Models\Status::class, 'getDropdownOptionsForReservation'],
+                'options' => [Status::class, 'getDropdownOptionsForReservation'],
                 'comment' => 'lang:igniter.reservation::default.help_canceled_reservation_status',
             ],
         ],

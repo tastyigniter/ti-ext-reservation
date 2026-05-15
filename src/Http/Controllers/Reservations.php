@@ -136,16 +136,14 @@ class Reservations extends AdminController
 
     public function onUpdateStatus(): ?RedirectResponse
     {
-        $recordId = (int)post('recordId');
+        $recordId = (string)post('recordId');
         $statusId = (int)post('statusId');
         if (!$recordId || !$statusId) {
             return null;
         }
 
         /** @var Reservation $model */
-        throw_unless($model = Reservation::query()->find($recordId),
-            new FlashException(lang('igniter.reservation::default.alert_no_reservation_found')),
-        );
+        $model = $this->asExtension(FormController::class)->formFindModelObject($recordId);
 
         /** @var Status $status */
         throw_unless($status = Status::query()->find($statusId),
@@ -178,9 +176,7 @@ class Reservations extends AdminController
     public function calendarUpdateEvent($eventId, $startAt, $endAt): void
     {
         /** @var Reservation $reservation */
-        throw_unless($reservation = Reservation::query()->find($eventId),
-            new FlashException(lang('igniter.reservation::default.alert_no_reservation_found')),
-        );
+        $reservation = $this->asExtension(FormController::class)->formFindModelObject((string)$eventId);
 
         $startAt = make_carbon($startAt);
         $endAt = make_carbon($endAt);

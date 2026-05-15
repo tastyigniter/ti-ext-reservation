@@ -284,7 +284,7 @@ class Reservation extends Model
             date('Y-m-d H:i:s', strtotime((string)$endAt)),
         ]);
 
-        if (!is_null($locationId)) {
+        if (!empty($locationId)) {
             $query->whereHasLocation($locationId);
         }
 

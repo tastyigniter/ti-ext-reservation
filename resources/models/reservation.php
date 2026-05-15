@@ -1,5 +1,9 @@
 <?php
 
+use Igniter\Admin\Models\Status;
+use Igniter\Reservation\Http\Requests\ReservationStatusRequest;
+use Igniter\User\Models\Customer;
+
 $listButtonItems = [
     'index' => [
         'label' => 'igniter.reservation::default.text_view_list',
@@ -38,7 +42,7 @@ $config['list']['filter'] = [
             'label' => 'lang:igniter::admin.text_filter_status',
             'type' => 'selectlist',
             'conditions' => 'status_id IN(:filtered)',
-            'modelClass' => \Igniter\Admin\Models\Status::class,
+            'modelClass' => Status::class,
             'options' => 'getDropdownOptionsForReservation',
         ],
         'date' => [
@@ -206,7 +210,7 @@ $config['form']['fields'] = [
         'span' => 'right',
         'context' => ['edit', 'preview'],
         'form' => 'reservationstatus',
-        'request' => \Igniter\Reservation\Http\Requests\ReservationStatusRequest::class,
+        'request' => ReservationStatusRequest::class,
     ],
 ];
 
@@ -240,7 +244,7 @@ $config['form']['tabs'] = [
         'customer_id' => [
             'label' => 'lang:igniter.reservation::default.text_customer',
             'type' => 'select',
-            'options' => [Igniter\User\Models\Customer::class, 'getDropdownOptions'],
+            'options' => [Customer::class, 'getDropdownOptions'],
             'placeholder' => 'lang:igniter.reservation::default.text_guest',
         ],
         'first_name' => [

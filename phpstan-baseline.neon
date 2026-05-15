@@ -7,12 +7,6 @@ parameters:
 			path: src/Classes/BookingManager.php
 
 		-
-			message: '#^Method Igniter\\Flame\\Database\\Builder\:\:whereBetweenReservationDateTime\(\) invoked with 2 parameters, 0\-1 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: src/Listeners/MaxGuestSizePerTimeslotReached.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$reservation_datetime\.$#'
 			identifier: property.notFound
 			count: 1
@@ -21,6 +15,12 @@ parameters:
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$reservation_end_datetime\.$#'
 			identifier: property.notFound
+			count: 1
+			path: src/Models/Reservation.php
+
+		-
+			message: '#^Call to an undefined method Igniter\\Flame\\Database\\Builder\<Igniter\\Reservation\\Models\\DiningTable\>\|Illuminate\\Database\\Eloquent\\Builder\<Igniter\\Reservation\\Models\\DiningTable\>\:\:reservable\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Models/Reservation.php
 

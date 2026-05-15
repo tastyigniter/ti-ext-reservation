@@ -1,5 +1,9 @@
 <?php
 
+use Igniter\Admin\Models\Status;
+use Igniter\Reservation\Models\DiningArea;
+use Igniter\Reservation\Models\Reservation;
+
 return [
     'floor_plan' => [
         'filter' => [
@@ -7,7 +11,7 @@ return [
                 'dining_area' => [
                     'label' => 'lang:igniter.reservation::default.text_filter_dining_area',
                     'type' => 'select',
-                    'modelClass' => \Igniter\Reservation\Models\DiningArea::class,
+                    'modelClass' => DiningArea::class,
                     'nameFrom' => 'name',
                     'scope' => 'whereHasDiningArea',
                 ],
@@ -19,7 +23,7 @@ return [
                 'reserve_time' => [
                     'label' => 'lang:igniter.reservation::default.text_filter_time',
                     'type' => 'select',
-                    'options' => [\Igniter\Reservation\Models\Reservation::class, 'getReserveTimeOptions'],
+                    'options' => [Reservation::class, 'getReserveTimeOptions'],
                     'scope' => 'whereBetweenStayTime',
                 ],
                 'assignee' => [
@@ -36,7 +40,7 @@ return [
                     'label' => 'lang:admin::lang.text_filter_status',
                     'type' => 'selectlist',
                     'conditions' => 'status_id IN(:filtered)',
-                    'modelClass' => \Igniter\Admin\Models\Status::class,
+                    'modelClass' => Status::class,
                     'options' => 'getDropdownOptionsForReservation',
                 ],
             ],
