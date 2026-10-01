@@ -16,7 +16,6 @@ class DiningTableScope extends Scope
             $builder->whereIsReservable();
 
             if ($dateTime = array_get($options, 'dateTime')) {
-                // @phpstan-ignore-next-line arguments.count
                 $builder->whereIsAvailableOn($dateTime, array_get($options, 'duration', 15));
             }
 

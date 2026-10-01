@@ -442,7 +442,7 @@ it('returns correct mail data for reservation', function(): void {
 
 it('applies filters to query builder', function(): void {
     $query = Reservation::query()->applyFilters([
-        'status' => 'confirmed',
+        'status' => 1,
         'location' => 1,
         'dateTimeFilter' => '2023-10-10 12:00:00',
         'search' => 'John Doe',
@@ -453,6 +453,16 @@ it('applies filters to query builder', function(): void {
         ->toContain('`location_id` in (?)')
         ->toContain('ADDTIME(reserve_date, reserve_time) between ? and ?')
         ->toContain('lower(first_name) like ?', 'lower(last_name) like ?');
+});
+
+it('applies status filter from array of ids', function(): void {
+    expect(Reservation::query()->applyStatusFilter([1, 2])->toSql())
+        ->toContain('`status_id` in (?, ?)');
+});
+
+it('skips status filter when no valid ids given', function(): void {
+    expect(Reservation::query()->applyStatusFilter('0')->toSql())
+        ->not->toContain('`status_id`');
 });
 
 it('returns correct event details', function(): void {

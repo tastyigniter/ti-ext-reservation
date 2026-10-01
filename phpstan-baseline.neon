@@ -19,7 +19,7 @@ parameters:
 			path: src/Models/Reservation.php
 
 		-
-			message: '#^Call to an undefined method Igniter\\Flame\\Database\\Builder\<Igniter\\Reservation\\Models\\DiningTable\>\|Illuminate\\Database\\Eloquent\\Builder\<Igniter\\Reservation\\Models\\DiningTable\>\:\:reservable\(\)\.$#'
+			message: '#^Call to an undefined method Igniter\\Flame\\Database\\Builder\<Igniter\\Reservation\\Models\\DiningTable\>\|Igniter\\Flame\\Database\\NestedSet\\QueryBuilder\:\:reservable\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: src/Models/Reservation.php
@@ -31,19 +31,7 @@ parameters:
 			path: src/Models/Reservation.php
 
 		-
-			message: '#^Relation ''tables'' is not found in Igniter\\Reservation\\Models\\Reservation model\.$#'
-			identifier: larastan.relationExistence
-			count: 1
-			path: src/Models/Reservation.php
-
-		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:fireEvent\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: src/Models/Scopes/DiningTableScope.php
-
-		-
-			message: '#^Method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:whereBetweenReservationDateTime\(\) invoked with 2 parameters, 0\-1 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: src/Models/Scopes/ReservationScope.php

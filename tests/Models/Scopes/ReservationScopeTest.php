@@ -23,6 +23,16 @@ it('applies date time filter with valid range', function(): void {
     $applyDateTimeFilter($this->builder, ['startAt' => '2023-10-10 12:00:00', 'endAt' => '2023-10-10 14:00:00']);
 });
 
+it('applies date time filter with separate start and end arguments', function(): void {
+    $this->builder->shouldReceive('whereBetweenReservationDateTime')
+        ->with('2023-10-10 12:00:00', '2023-10-10 14:00:00')
+        ->once()
+        ->andReturnSelf();
+
+    $applyDateTimeFilter = $this->scope->addApplyDateTimeFilter();
+    $applyDateTimeFilter($this->builder, '2023-10-10 12:00:00', '2023-10-10 14:00:00');
+});
+
 it('applies date time filter with missing range', function(): void {
     $this->travelTo('2023-10-10 12:00:00');
 
