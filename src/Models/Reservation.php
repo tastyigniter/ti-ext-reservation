@@ -151,7 +151,7 @@ class Reservation extends Model
     protected array $queryModifierFilters = [
         'customer' => 'applyCustomer',
         'location' => 'whereHasLocation',
-        'status' => 'whereStatus',
+        'status' => 'applyStatusFilter',
         'dateTimeFilter' => 'applyDateTimeFilter',
     ];
 
@@ -162,6 +162,24 @@ class Reservation extends Model
     ];
 
     protected array $queryModifierSearchableFields = ['reservation_id', 'first_name', 'last_name', 'email', 'telephone'];
+
+    public function scopeApplyStatusFilter($query, mixed $statusId)
+    {
+        $ids = is_array($statusId)
+            ? $statusId
+            : preg_split('/\s*,\s*/', (string)$statusId, -1, PREG_SPLIT_NO_EMPTY);
+
+        $ids = array_values(array_unique(array_filter(
+            array_map(static fn($id): int => (int)$id, $ids ?: []),
+            static fn(int $id): bool => $id > 0,
+        )));
+
+        if ($ids === []) {
+            return $query;
+        }
+
+        return $query->whereStatus($ids);
+    }
 
     //
     // Accessors & Mutators
@@ -468,13 +486,11 @@ class Reservation extends Model
             })
             ->orderBy('reservation_id', 'desc')
             ->first();
-
-        $nextSectionId = null;
         if ($lastReservation && $lastReservation->tables->first()->dining_section) {
-            $nextSectionId = $lastReservation->tables->first()->dining_section->id;
+            return $lastReservation->tables->first()->dining_section->id;
         }
 
-        return $nextSectionId;
+        return null;
     }
 
     protected function getNextBookableTableInSection($diningTables)
