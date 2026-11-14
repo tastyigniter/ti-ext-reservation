@@ -255,7 +255,7 @@ class Reservation extends Model
         return $this->hasStatus(setting('canceled_reservation_status'));
     }
 
-    public function isCancelable()
+    public function isCancelable(): bool
     {
         if (!$timeout = $this->location->getReservationCancellationTimeout()) {
             return false;
