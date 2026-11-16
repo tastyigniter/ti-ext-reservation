@@ -101,10 +101,22 @@ class Extension extends BaseExtension
     public function registerMailTemplates(): array
     {
         return [
-            'igniter.reservation::mail.reservation' => 'lang:igniter.reservation::default.text_mail_reservation',
-            'igniter.reservation::mail.reservation_alert' => 'lang:igniter.reservation::default.text_mail_reservation_alert',
-            'igniter.reservation::mail.reservation_update' => 'lang:igniter.reservation::default.text_mail_reservation_update',
-            'igniter.reservation::mail.reservation_reminder' => 'lang:igniter.reservation::default.text_mail_reservation_reminder',
+            'igniter.reservation::mail.reservation' => [
+                'label' => 'lang:igniter.reservation::default.text_mail_reservation',
+                'variables' => ['igniter::system.mail_variables.text_group_reservation'],
+            ],
+            'igniter.reservation::mail.reservation_alert' => [
+                'label' => 'lang:igniter.reservation::default.text_mail_reservation_alert',
+                'variables' => ['igniter::system.mail_variables.text_group_reservation'],
+            ],
+            'igniter.reservation::mail.reservation_update' => [
+                'label' => 'lang:igniter.reservation::default.text_mail_reservation_update',
+                'variables' => ['igniter::system.mail_variables.text_group_reservation'],
+            ],
+            'igniter.reservation::mail.reservation_reminder' => [
+                'label' => 'lang:igniter.reservation::default.text_mail_reservation_reminder',
+                'variables' => ['igniter::system.mail_variables.text_group_reservation'],
+            ],
         ];
     }
 
