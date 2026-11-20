@@ -307,6 +307,7 @@ class Extension extends BaseExtension
                 $charts->mergeDataset('reports', 'sets', [
                     'reservations' => [
                         'label' => 'lang:igniter.reservation::default.text_charts_reservations',
+                        'permission' => 'Admin.Reservations',
                         'color' => '#BA68C8',
                         'model' => Reservation::class,
                         'column' => 'reserve_date',

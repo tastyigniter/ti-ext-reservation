@@ -152,7 +152,8 @@ it('returns registered dashboard charts', function(): void {
     };
     $datasets = $charts->testDatasets();
 
-    expect($datasets['reports']['sets']['reservations']['model'])->toBe(Reservation::class);
+    expect($datasets['reports']['sets']['reservations']['model'])->toBe(Reservation::class)
+        ->and($datasets['reports']['sets']['reservations']['permission'])->toBe('Admin.Reservations');
 });
 
 it('returns registered dashboard statistic widgets', function(): void {

@@ -15,21 +15,25 @@ class RegistersDashboardCards
             'reserved_table' => [
                 'label' => 'lang:igniter.reservation::default.text_total_reserved_table',
                 'icon' => ' text-primary fa fa-4x fa-table',
+                'permission' => 'Admin.Reservations',
                 'valueFrom' => $this->getValue(...),
             ],
             'reserved_guest' => [
                 'label' => 'lang:igniter.reservation::default.text_total_reserved_guest',
                 'icon' => ' text-primary fa fa-4x fa-table',
+                'permission' => 'Admin.Reservations',
                 'valueFrom' => $this->getValue(...),
             ],
             'reservation' => [
                 'label' => 'lang:igniter.reservation::default.text_total_reservation',
                 'icon' => ' text-success fa fa-4x fa-table',
+                'permission' => 'Admin.Reservations',
                 'valueFrom' => $this->getValue(...),
             ],
             'completed_reservation' => [
                 'label' => 'lang:igniter.reservation::default.text_total_completed_reservation',
                 'icon' => ' text-success fa fa-4x fa-table',
+                'permission' => 'Admin.Reservations',
                 'valueFrom' => $this->getValue(...),
             ],
         ];
