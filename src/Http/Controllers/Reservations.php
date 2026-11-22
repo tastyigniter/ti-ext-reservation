@@ -64,6 +64,7 @@ class Reservations extends AdminController
     public array $formConfig = [
         'name' => 'lang:igniter.reservation::default.text_form_name',
         'model' => Reservation::class,
+        'recordName' => 'reservation_id',
         'request' => ReservationRequest::class,
         'create' => [
             'title' => 'lang:igniter::admin.form.create_title',

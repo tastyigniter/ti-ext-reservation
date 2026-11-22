@@ -15,7 +15,8 @@ it('returns correct dashboard cards configuration', function(): void {
         ->and($cards['reserved_table']['label'])->toBe('lang:igniter.reservation::default.text_total_reserved_table')
         ->and($cards['reserved_guest']['label'])->toBe('lang:igniter.reservation::default.text_total_reserved_guest')
         ->and($cards['reservation']['label'])->toBe('lang:igniter.reservation::default.text_total_reservation')
-        ->and($cards['completed_reservation']['label'])->toBe('lang:igniter.reservation::default.text_total_completed_reservation');
+        ->and($cards['completed_reservation']['label'])->toBe('lang:igniter.reservation::default.text_total_completed_reservation')
+        ->and(array_column($cards, 'permission'))->toBe(array_fill(0, count($cards), 'Admin.Reservations'));
 });
 
 it('returns total reserved table sum', function(): void {
